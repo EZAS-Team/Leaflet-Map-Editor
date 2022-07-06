@@ -1,0 +1,29 @@
+{
+            "MapElements": {
+                "Marker": {
+                    "LatLng": [
+                        50, 
+                        30
+                    ],
+                    "Options": {
+                        "icon": "undefined",
+                        "keyboard": true,
+                        "title": "",
+                        "alt": "Marker",
+                        "zIndexOffset": 0,
+                        "opacity": 1.0,
+                        "riseOnHover": false,
+                        "riseOffset": 250,
+                        "pane": "markerPane",
+                        "shadowPane": "shadowPane",
+                        "bubblingMouseEvents": false,
+                        "autoPanOnFocus": true,
+                        "draggable": false,
+                        "autoPan": false,
+                        "autoPanPadding": "Point(50, 50)",
+                        "autoPanSpeed": 10
+                    },
+                    "js": "`map.addMarker(${Marker.LatLng},${Marker.Options});`"
+                }
+            }
+        }
