@@ -2,7 +2,7 @@
 
 ### Marker Object
 
-```
+```js
 Marker: {
     LatLng: [
         50, //latitude
@@ -29,3 +29,8 @@ Marker: {
     js: `L.marker(${this.LatLng},${this.Options}).addTo(map);`,
 }
 ```
+### Info
+
+The marker feature adds a marker to the map. The object in in export details is the marker object.
+The parameters are: LatLng and options as defined above.
+

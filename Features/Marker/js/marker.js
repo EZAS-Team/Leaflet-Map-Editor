@@ -26,7 +26,7 @@ class FeatureMarker {
         debugInfo(this.exportDetails);
     }
     //returns the object that will be exported: Elliot 7/6/2022
-    getExport() {
+    getExportDetails() {
         return this.exportDetails;
     }
 
@@ -41,14 +41,12 @@ class FeatureMarker {
     }
 
     //latlng is a L.latlng type
-    //sets the latlng in the exportDetails : Elliot 7/7/2022
-    //and updates the marker :
+    //sets the latlng in the exportDetails
+    //and updates the marker : Elliot 7/7/2022
     setLatLng(latlng) {
         this.exportDetails.parameters.latlng = latlng;
+        this.marker.setLatLng(latlng);
     }
 
-    //sets the options in the exportDetails : Elliot 7/7/2022
-    setOptions(options) {
-        this.exportDetails.parameters.options = options; //set the option to the new options : Elliot 7/7/2022
-    }
+    //each option must be set individually rather than in bulk: Elliot 7/7/2022
 }
