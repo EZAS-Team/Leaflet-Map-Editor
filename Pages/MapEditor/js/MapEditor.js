@@ -1,5 +1,4 @@
 let exportedMap = new ExportedMap("Map Title");
-let mapGeoJSON = new geoJSON();
 let IdGenerator = new IdGenerator();
 
 // A function that takes an array of options and
