@@ -57,7 +57,11 @@ function onMapClick(e) {
             break;
         case "ADD_MARKER":
             let defaultOptions = {}; //set the default options for the marker
-            let marker = new FeatureMarker(e.latlng, {}); //create a new marker that can be exported
+            let clickLatLng = e.latlng; //get the latlng of the click
+            let marker = new FeatureMarker({
+                latlng: clickLatLng,
+                options: defaultOptions,
+            }); //create a new marker that can be exported
             let newmarker = marker.getMarker().addTo(map); //add the marker to the map
             break;
         case "NONE":
