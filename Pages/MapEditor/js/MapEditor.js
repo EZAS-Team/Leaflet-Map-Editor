@@ -1,3 +1,6 @@
+let exportedMap = new ExportedMap("Map Title");
+let IdGenerator = new IdGenerator();
+
 // A function that takes an array of options and
 // returns a button for each in html and returns it for use in the basic popup editor : Elliot 6/30/2022
 function createPopupEditor(options) {
