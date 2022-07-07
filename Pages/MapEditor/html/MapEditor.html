@@ -10,34 +10,48 @@
         <meta charset="utf-8" />
         <!-- Start of required for leaflet -->
         <link
+            id="leaflet_css"
             rel="stylesheet"
             href="../../../node_modules/leaflet/dist/leaflet.css"
-            crossorigin=""
         />
         <!-- Make sure you put this AFTER Leaflet's CSS -->
         <script
+            id="leaflet_js"
             src="../../../node_modules/leaflet/dist/leaflet.js"
-            crossorigin=""
         ></script>
         <!-- End of required for leaflet -->
         <!-- Start of required for leaflet-edit -->
-        <script src="../../../node_modules/leaflet-toolbar/dist/leaflet.toolbar.js"></script>
+        <script
+            id="leaflet_toolbar_js"
+            src="../../../node_modules/leaflet-toolbar/dist/leaflet.toolbar.js"
+        ></script>
         <link
+            id="leaflet_toolbar_css"
             rel="stylesheet"
             href="../../../node_modules/leaflet-toolbar/dist/leaflet.toolbar.css"
         />
         <!-- End of required for leaflet-edit -->
         <!-- Start of required for MapEditor -->
-        <link rel="stylesheet" href="../stylesheets/MapEditor.css"/>
-        <script src="../../../FeatureManager/js/FeatureManager.js"></script>
-        <script src="../../../node_modules/src/Leaflet.Editable.js"></script>
+        <link
+            id="MapEditor_css"
+            rel="stylesheet"
+            href="../stylesheets/MapEditor.css"
+        />
+        <script
+            id="FeatureManager_js"
+            src="../../../FeatureManager/js/FeatureManager.js"
+        ></script>
+        <script
+            id="leaflet_editable_js"
+            src="../../../node_modules/src/Leaflet.Editable.js"
+        ></script>
         <!-- End of required for MapEditor -->
     </head>
     <body>
         <!--The map that will be export is not directly edited but rather when a element is changed to the map a callback function adds or removes the element to a key:value dictonary
             which is then saved as the html with the embbeded map in the temp js file-->
         <div id="map">
-            <script src="../javascript/MapEditor.js"></script>
+            <script id="MapEditor_js" src="../js/MapEditor.js"></script>
         </div>
     </body>
 </html>
