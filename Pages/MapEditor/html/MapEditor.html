@@ -41,6 +41,16 @@
             id="FeatureManager_js"
             src="../../../FeatureManager/js/FeatureManager.js"
         ></script>
+        <!-- The state handler contains states for the program-->
+        <!-- the callback functions used to change them should be located strictly in this script tag unless not possible-->
+        <!-- if they are located somewhere else the exact location and reason must be included as a comment within the tags-->
+        <!-- Elliot : 7/6/2022 -->
+        <script id="StateHandler_js" src="../../../Util/js/StateHandle.js">
+            function newMarker(e)
+                {
+                    MAP_EDITOR_ON_CLICK_STATE = "NEW_MARKER"; //set the next map click to drop a marker
+                };
+        </script>
         <script
             id="leaflet_editable_js"
             src="../../../node_modules/src/Leaflet.Editable.js"
@@ -49,9 +59,12 @@
     </head>
     <body>
         <!--The map that will be export is not directly edited but rather when a element is changed to the map a callback function adds or removes the element to a key:value dictonary
-            which is then saved as the html with the embbeded map in the temp js file-->
-        <div id="map">
-            <script id="MapEditor_js" src="../js/MapEditor.js"></script>
-        </div>
+            which is then saved as the html with the embbeded map as js -->
+        <button id="MAP_EDITOR_NEW_MARKER_BUTTON" onclick="newMarker()">
+            New Marker
+        </button>
     </body>
+    <div id="map">
+        <script id="MapEditor_js" src="../js/MapEditor.js"></script>
+    </div>
 </html>

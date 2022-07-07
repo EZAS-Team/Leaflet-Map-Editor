@@ -24,6 +24,8 @@ function initializeMap() {
         maxZoom: 19,
         attribution: "© OpenStreetMap",
     }); //add the tile layer to the map
+    //add the map editing using leaflet.editable
+    enableEdit(map);
     return map;
 }
 
@@ -54,7 +56,8 @@ function onMapClick(e) {
                 .openOn(map);
             break;
         case "ADD_MARKER":
-            L.addMarker(e.latlng).addTo(map);
+            let marker = L.marker(e.latlng).addTo(map);
+            break;
         case "NONE":
             break;
         default:
@@ -83,10 +86,10 @@ function onMapClick(e) {
 // let geolayer = L.geoJSON().addTo(map);
 // geolayer.addData(mapGeoJSON.getGeoJSON()).addTo(map);
 
-//register map click event
-map.on("click", onMapClick);
-
 //Consider below this line to be main : Elliot 7/6/2022
 
 //initialize the map
 let map = initializeMap();
+
+//register map click event
+map.on("click", onMapClick);
