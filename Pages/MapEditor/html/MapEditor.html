@@ -4,7 +4,7 @@
 <!-- html page with a centered div element that is the map-->
 <!DOCTYPE html>
 <html>
-    <head>
+    <head id="head">
         <title>Map Editor</title>
         <meta lang="en-us" />
         <meta charset="utf-8" />
@@ -37,24 +37,37 @@
             rel="stylesheet"
             href="../stylesheets/MapEditor.css"
         />
-        <script
+        <!-- <script
             id="FeatureManager_js"
             src="../../../FeatureManager/js/FeatureManager.js"
+        ></script> -->
+        <script
+            id="Marker_js"
+            src="../../../Features/Marker/js/marker.js"
         ></script>
+
         <!-- The state handler contains states for the program-->
-        <!-- the callback functions used to change them should be located strictly in this script tag unless not possible-->
-        <!-- if they are located somewhere else the exact location and reason must be included as a comment within the tags-->
         <!-- Elliot : 7/6/2022 -->
-        <script id="StateHandler_js" src="../../../Util/js/StateHandle.js">
-            function newMarker(e)
-                {
-                    MAP_EDITOR_ON_CLICK_STATE = "NEW_MARKER"; //set the next map click to drop a marker
-                };
-        </script>
+        <script
+            id="StateHandler_js"
+            src="../../../Util/js/StateHandle.js"
+        ></script>
+
+        <!-- the callback functions used to change them should be located strictly in this script unless not possible-->
+        <!-- if they are located somewhere else the exact location and reason must be included as a comment within the tags-->
+        <script id="ButtonCallback_js" src="../js/ButtonCallbacks.js"></script>
+
+        <!-- BROKEN -->
         <script
             id="leaflet_editable_js"
-            src="../../../node_modules/src/Leaflet.Editable.js"
+            src="../../../node_modules/leaflet/src/Leaflet.Editable.js"
         ></script>
+
+        <!-- The Id generator-->
+        <!-- <script
+            id="IdGenerator_js"
+            src="../../../Util/js/IdGenerator.js"
+        ></script> -->
         <!-- End of required for MapEditor -->
     </head>
     <body>

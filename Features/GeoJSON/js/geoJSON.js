@@ -1,5 +1,5 @@
 //handles interacting with the maps geoJSON : Elliot 7/5/2022
-class geoJSON{
+class FeatureGeoJSON {
     constructor() {
         this.geoJSON = {
             type: "FeatureCollection",

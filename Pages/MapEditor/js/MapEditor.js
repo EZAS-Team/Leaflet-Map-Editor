@@ -25,7 +25,7 @@ function initializeMap() {
         attribution: "© OpenStreetMap",
     }); //add the tile layer to the map
     //add the map editing using leaflet.editable
-    enableEdit(map);
+    //L.editTool.enableEdit(Marker);
     return map;
 }
 
@@ -56,7 +56,9 @@ function onMapClick(e) {
                 .openOn(map);
             break;
         case "ADD_MARKER":
-            let marker = L.marker(e.latlng).addTo(map);
+            let defaultOptions = {}; //set the default options for the marker
+            let marker = new FeatureMarker(e.latlng, {}); //create a new marker that can be exported
+            let newmarker = marker.getMarker().addTo(map); //add the marker to the map
             break;
         case "NONE":
             break;
@@ -92,4 +94,6 @@ function onMapClick(e) {
 let map = initializeMap();
 
 //register map click event
-map.on("click", onMapClick);
+map.on("click", (e) => {
+    onMapClick(e);
+});
