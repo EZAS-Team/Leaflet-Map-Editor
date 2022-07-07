@@ -78,11 +78,6 @@ class ExportedMap {
         );
         return this.blankHTML;
     }
-    //adds an element to the map by adding it to the embeddedMapElementsJSON and the displayed map
-    addMapElement(mapElement)
-    {
-        mapElement.
-    }
 
     //sets the map title
     setTitle(title) {

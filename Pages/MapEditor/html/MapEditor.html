@@ -1,32 +1,90 @@
-<!-- Make a html page with a centered div element -->
+<!-- The MapEditor Html file  -->
+<!-- Path: ./Pages/MapEditor/Html/MapEditor.html -->
+<!-- Elliot : 7/6/2022 -->
+<!-- html page with a centered div element that is the map-->
+<!DOCTYPE html>
 <html>
-    <head>
+    <head id="head">
         <title>Map Editor</title>
+        <meta lang="en-us" />
+        <meta charset="utf-8" />
         <!-- Start of required for leaflet -->
         <link
+            id="leaflet_css"
             rel="stylesheet"
-            href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
-            integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
-            crossorigin=""
+            href="../../../node_modules/leaflet/dist/leaflet.css"
         />
         <!-- Make sure you put this AFTER Leaflet's CSS -->
         <script
-            src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
-            integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
-            crossorigin=""
+            id="leaflet_js"
+            src="../../../node_modules/leaflet/dist/leaflet.js"
         ></script>
         <!-- End of required for leaflet -->
-        <link rel="stylesheet" href="../stylesheets/MapEditor.css" />
+        <!-- Start of required for leaflet-toolbar -->
+        <script
+            id="leaflet_toolbar_js"
+            src="../../../node_modules/leaflet-toolbar/dist/leaflet.toolbar.js"
+        ></script>
+        <link
+            id="leaflet_toolbar_css"
+            rel="stylesheet"
+            href="../../../node_modules/leaflet-toolbar/dist/leaflet.toolbar.css"
+        />
+        <!-- End of required for leaflet-toolbar -->
+        <!-- Start of required for MapEditor -->
+        <link
+            id="MapEditor_css"
+            rel="stylesheet"
+            href="../stylesheets/MapEditor.css"
+        />
+        <!-- <script
+            id="FeatureManager_js"
+            src="../../../FeatureManager/js/FeatureManager.js"
+        ></script> -->
+        <script
+            id="Marker_js"
+            src="../../../Features/Marker/js/marker.js"
+        ></script>
+
+        <!-- The state handler contains states for the program-->
+        <!-- Elliot : 7/6/2022 -->
+        <script
+            id="StateHandler_js"
+            src="../../../Util/js/StateHandle.js"
+        ></script>
+
+        <!-- the callback functions used to change them should be located strictly in this script unless not possible-->
+        <!-- if they are located somewhere else the exact location and reason must be included as a comment within the tags-->
+        <script id="ButtonCallback_js" src="../js/ButtonCallbacks.js"></script>
+        <!--Includes the debugging functions-->
+        <script id="Debug_js" src="../../../Util/js/Debug.js"></script>
+        <!-- BROKEN -->
+        <!-- <script
+            id="leaflet_editable_js"
+            src="../../../node_modules/leaflet/src/Leaflet.Editable.js"
+        ></script> -->
+
+        <!-- The Id generator-->
+        <!-- <script
+            id="IdGenerator_js"
+            src="../../../Util/js/IdGenerator.js"
+        ></script> -->
+        <!-- End of required for MapEditor -->
     </head>
     <body>
         <!--The map that will be export is not directly edited but rather when a element is changed to the map a callback function adds or removes the element to a key:value dictonary
-    which is then saved as the html with the embbeded map in the temp js file-->
-        <div id="map">
-            <script src="../../../FeatureManager/js/FeatureManager.js">
-                
-            </script>
-            <script src="./geoJSON.js"></script>
-            <script src="./MapEditor.js"></script>
-        </div>
+            which is then saved as the html with the embbeded map as js -->
+        <button id="MAP_EDITOR_NEW_MARKER_BUTTON" onclick="none()">
+            None
+        </button>
+        <button id="MAP_EDITOR_NEW_MARKER_BUTTON" onclick="newMarker()">
+            New Marker
+        </button>
+        <button id="MAP_EDITOR_NEW_MARKER_BUTTON" onclick="popupEditor()">
+            Popup Editor
+        </button>
     </body>
+    <div id="map">
+        <script id="MapEditor_js" src="../js/MapEditor.js"></script>
+    </div>
 </html>
