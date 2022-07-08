@@ -348,3 +348,6 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# .ignored folder so that things can be moved to there to prevent committing it to a branch 
+.ignored/*
