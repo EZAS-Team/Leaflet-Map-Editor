@@ -35,9 +35,10 @@ class FeatureMarker {
         return this.exportDetails.object;
     }
 
-    //returns the Marker that can be added to the map : Elliot 7/6/2022
+    //returns the Marker that can be added to the map
+    //included for readablility: Elliot 7/6/2022
     getMarker() {
-        return this.marker;
+        return this.getObject();
     }
 
     //latlng is a L.latlng type
@@ -45,7 +46,7 @@ class FeatureMarker {
     //and updates the marker : Elliot 7/7/2022
     setLatLng(latlng) {
         this.exportDetails.parameters.latlng = latlng;
-        this.marker.setLatLng(latlng);
+        this.exportDetails.object.setLatLng(latlng);
     }
 
     //each option must be set individually rather than in bulk: Elliot 7/7/2022
