@@ -12,33 +12,36 @@
         <link
             id="leaflet_css"
             rel="stylesheet"
-            href="../../../node_modules/leaflet/dist/leaflet.css"
+            href="/node_modules/leaflet/dist/leaflet.css"
         />
         <!-- Make sure you put this AFTER Leaflet's CSS -->
         <script
             id="leaflet_js"
-            src="../../../node_modules/leaflet/dist/leaflet.js"
+            src="/node_modules/leaflet/dist/leaflet.js"
         ></script>
         <!-- End of required for leaflet -->
         <!-- Start of required for leaflet-toolbar -->
         <script
             id="leaflet_toolbar_js"
-            src="../../../node_modules/leaflet-toolbar/dist/leaflet.toolbar.js"
+            src="/node_modules/leaflet-toolbar/dist/leaflet.toolbar.js"
         ></script>
         <link
             id="leaflet_toolbar_css"
             rel="stylesheet"
-            href="../../../node_modules/leaflet-toolbar/dist/leaflet.toolbar.css"
+            href="/node_modules/leaflet-toolbar/dist/leaflet.toolbar.css"
         />
         <!-- End of required for leaflet-toolbar -->
         <!-- Start of required for MapEditor -->
         <link
             id="MapEditor_css"
             rel="stylesheet"
-            href="../stylesheets/MapEditor.css"
+            href="/Pages/MapEditor/stylesheets/MapEditor.css"
         />
-
-        <php? require "/FeatureManager/html/FeatureManager.html"; ?>
+        <!-- Start of feature class includes -->
+        <!-- Feature Scripts Go Here : Elliot :7/8/2022 -->
+        <script src="/Features/Marker/js/FeatureMarker.js"></script>
+        <script src="/Features/GeoJSON/js/FeatureGeoJSON.js"></script>
+        <!-- End of feature class includes -->
 
         <!-- The state handler contains states for the program-->
         <!-- Elliot : 7/6/2022 -->
@@ -47,10 +50,13 @@
         <!-- the callback functions used to change them should be located strictly in this script unless not possible-->
         <!-- if they are located somewhere else the exact location and reason must be included as a comment within the tags-->
         <!-- Elliot : 7/8/2022-->
-        <script id="ButtonCallback_js" src="../js/ButtonCallbacks.js"></script>
+        <script
+            id="ButtonCallback_js"
+            src="/Pages/MapEditor/js/ButtonCallbacks.js"
+        ></script>
 
         <!--Includes the debugging functions-->
-        <script id="Debug_js" src="../../../Util/js/Debug.js"></script>
+        <script id="Debug_js" src="/Util/js/Debug.js"></script>
         <!-- End of required for MapEditor -->
     </head>
     <body>
@@ -65,6 +71,9 @@
         </button>
     </body>
     <div id="map">
-        <script id="MapEditor_js" src="../js/MapEditor.js"></script>
+        <script
+            id="MapEditor_js"
+            src="/Pages/MapEditor/js/MapEditor.js"
+        ></script>
     </div>
 </html>
