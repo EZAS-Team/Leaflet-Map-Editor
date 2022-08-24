@@ -1,3 +1,4 @@
+`use strict`;
 //The marker feature class used to create a marker and add it to the map : Elliot 7/5/2022
 class FeatureMarker {
     //id needs to default to a new id but be able to be set to a specific id : Elliot 7/6/2022
@@ -51,3 +52,5 @@ class FeatureMarker {
 
     //each option must be set individually rather than in bulk: Elliot 7/7/2022
 }
+
+export {FeatureMarker}

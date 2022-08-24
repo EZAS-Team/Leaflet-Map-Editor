@@ -2,5 +2,8 @@
   "dependencies": {
     "leaflet": "^1.8.0",
     "leaflet-toolbar": "^0.4.0-alpha.2"
+  },
+  "scripts": {
+    "test":"node ./Tests/Features/Marker/test.js"
   }
 }
