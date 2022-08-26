@@ -52,5 +52,3 @@ class FeatureMarker {
 
     //each option must be set individually rather than in bulk: Elliot 7/7/2022
 }
-
-export {FeatureMarker}
