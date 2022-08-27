@@ -351,3 +351,4 @@ MigrationBackup/
 
 #custom .ignored folder
 .ignored/*
+.vscode/launch.json
