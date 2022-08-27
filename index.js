@@ -4,3 +4,7 @@
 function redirectToMapEditor() {
     window.location.href = "/Pages/MapEditor/html/MapEditor.html";
 }
+
+function redirectToTester() {
+    window.location.href = "/Pages/TestingPage/html/TestingPage.html";
+}

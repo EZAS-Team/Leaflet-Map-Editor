@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta lang="en-us" />
+        <meta charset="utf-8" />
+        <!-- Start of required for leaflet -->
+        <link
+            id="leaflet_css"
+            rel="stylesheet"
+            href="/node_modules/leaflet/dist/leaflet.css"
+        />
+        <!-- Make sure you put this AFTER Leaflet's CSS -->
+        <script
+            id="leaflet_js"
+            src="/node_modules/leaflet/dist/leaflet.js"
+        ></script>
+        <!-- End of required for leaflet -->
+        <!-- Start of required for leaflet-toolbar -->
+        <script
+            id="leaflet_toolbar_js"
+            src="/node_modules/leaflet-toolbar/dist/leaflet.toolbar.js"
+        ></script>
+        <link
+            id="leaflet_toolbar_css"
+            rel="stylesheet"
+            href="/node_modules/leaflet-toolbar/dist/leaflet.toolbar.css"
+        />
+        <!-- End of required for leaflet-toolbar -->
+
+        <!-- StateHandler_js -->
+        <script id="StateHandler_js" src="/Util/js/StateHandle.js"></script>
+
+        <!-- ButtonCallback_js -->
+        <script
+            id="ButtonCallback_js"
+            src="/Pages/TestingPage/js/ButtonCallbacks.js"
+        ></script>
+
+        <script
+            id="testing_page_js"
+            src="/Pages/TestingPage/js/TestingPage.js"
+            type="module"
+        ></script>
+        <script></script>
+    </head>
+    <body>
+        <div>
+            <button id="Test_All_Button" onclick="allTests()">Test All</button>
+        </div>
+    </body>
+</html>

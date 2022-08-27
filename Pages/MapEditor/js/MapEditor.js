@@ -117,18 +117,11 @@ map.on("click", (e) => {
     onMapClick(e);
 });
 
+//add the mapFeatures array to the window so that it can be accessed globally
+window.mapFeatures = mapFeatures;
+
 function getMapExport() {
     return mapFeatures;
 }
-
-// runTests = () => {
-//     let testFeatures = [Features.FeatureMarker];
-//     let numOfFeatures = testFeatures.length;
-//     for (let i = 0; i < numOfFeatures; i++)
-//     {
-//         let feature = new testFeatures[i].test();
-//         console.log(feature.getMarker());
-//     }
-// }
 
 getMapExport();
