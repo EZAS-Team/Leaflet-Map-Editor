@@ -30,22 +30,22 @@
         <!-- StateHandler_js -->
         <script id="StateHandler_js" src="/Util/js/StateHandle.js"></script>
 
-        <!-- Required for Features and Debugging -->
-        <!-- <script id="requirements_js" src="/Util/js/requirements.js">
-            type="module"
-        </script> -->
-
-        <!-- Tester script -->
-        <script id="tester_js" src="/Util/js/Tester.js" type="module"></script>
+        <!-- ButtonCallback_js -->
         <script
-            id="tester_js"
+            id="ButtonCallback_js"
+            src="/Pages/TestingPage/js/ButtonCallbacks.js"
+        ></script>
+
+        <script
+            id="testing_page_js"
             src="/Pages/TestingPage/js/TestingPage.js"
             type="module"
         ></script>
+        <script></script>
     </head>
     <body>
         <div>
-            <button id="Test_All_Button" onclick="testAll()">Test All</button>
+            <button id="Test_All_Button" onclick="allTests()">Test All</button>
         </div>
     </body>
 </html>

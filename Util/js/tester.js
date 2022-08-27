@@ -1,6 +1,6 @@
 "use strict";
-import * as Debug from "../../Util/js/debug.js";
-import * as Tests from "../../Tests/tests.js";
+import { Features, Debug } from "../../../Util/js/requirements.js";
+import * as Tests from "../../../Tests/tests.js";
 class Tester {
     //Tests is an array of the arrays of test functions from the tests.js file
     //Example of a passed Tests array is the FeatureTests Array from tests.js
@@ -19,15 +19,10 @@ class Tester {
     run(tests = this.tests) {
         let testsLength = tests.length;
         for (let i = 0; i < testsLength; i++) {
-            //gets the set of test functions to run
-            let testSet = tests[i];
-            let testSetLength = testSet.length;
-            for (let j = 0; j < testSetLength; j++) {
-                //gets the test function to run
-                let test = testSet[j];
-                //runs the test function and pushes the result to the results array
-                this.results.push(test());
-            }
+            //runs the next test function and save results
+            let result = tests[i]();
+            //pushes the result to the results array
+            this.results.push(result);
         }
     }
 

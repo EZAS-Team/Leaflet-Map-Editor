@@ -49,6 +49,10 @@
             id="ButtonCallback_js"
             src="/Pages/MapEditor/js/ButtonCallbacks.js"
         ></script>
+        <!-- The mapFeatures array -->
+        <script id="mapFeatures" type="module">
+            export const mapFeatures = [];
+        </script>
     </head>
     <body>
         <!--The map that will be export is not directly edited but rather when a element is changed to the map a callback function adds or removes the element to a key:value dictonary
@@ -66,6 +70,18 @@
             id="MapEditor_js"
             src="/Pages/MapEditor/js/MapEditor.js"
             type="module"
-        ></script>
+        >
+                    var baseLayers = {
+                "Mapbox": mapbox,
+                "OpenStreetMap": osm
+            };
+
+            var overlays = {
+                "Marker": marker,
+                "Roads": roadsLayer
+            };
+
+            L.control.layers(baseLayers, overlays).addTo(map);
+        </script>
     </div>
 </html>

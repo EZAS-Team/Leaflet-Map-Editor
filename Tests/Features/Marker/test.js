@@ -1,5 +1,6 @@
 "use strict";
 //Marker test.js : Elliot 8/28/2022
+import FeatureMarker from "../../../Features/Marker/js/FeatureMarker.js";
 //Test that a marker can be created with the default constructor to be at 0,0 with no options and a unique id: Elliot Imhoff 8/24/2022
 function FeatureMarkerCreationTest(results) {
     let Markers = [];
@@ -7,30 +8,38 @@ function FeatureMarkerCreationTest(results) {
     for (let i = 0; i < 10; i++) {
         Markers.push(new FeatureMarker());
     }
-    while (Markers.length() > 0) {
+    let numOfMarkers = Markers.length;
+    while (numOfMarkers > 0) {
         let temp = Markers.pop();
+        if (temp === undefined) {
+            break;
+        }
         let tempexport = temp.getExportDetails();
         //tests
-        results.total += 5(
-            //test that the id is unique
-            ids.find(this === tempexport.id)
-        )
-            ? results.failed++
-            : results.passed++;
+        results.total += 5; //test that the id is unique
+        ids.find(() => {
+            return this.id === tempexport.id;
+        }) === undefined
+            ? results.passed++
+            : results.failed++;
         //test that the latlng is [0,0]
-        tempexport.parameters.latlng == [0, 0]
+        tempexport.parameters.latlng.lat === 0 &&
+        tempexport.parameters.latlng.lng === 0
             ? results.passed++
             : results.failed++;
         //test that the options are empty
-        tempexport.parameters.options == {}
+        let testOptions = {};
+        tempexport.parameters.options == testOptions
             ? results.passed++
             : results.failed++;
         //test that the type is a Marker
-        tempexport.type == "Marker" ? results.passed++ : results.failed++;
+        tempexport.type === "Marker" ? results.passed++ : results.failed++;
         //test that we can recreate the object with the parameters
-        tempexport.object == new L.marker(parameters.latlng, parameters.options)
-            ? results.passed++
-            : results.failed++;
+        let tempMarker = new L.Marker(
+            tempexport.parameters.latlng,
+            tempexport.parameters.options
+        );
+        tempexport.object === tempMarker ? results.passed++ : results.failed++;
         //push the id into ids
         ids.push(tempexport.id);
     }
@@ -66,7 +75,7 @@ const Test_Feature_Marker = () => {
 };
 
 const Test = () => {
-    Test_Feature_Marker();
+    return Test_Feature_Marker();
 };
 
 export { Test };
