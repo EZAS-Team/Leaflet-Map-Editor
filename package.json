@@ -1,6 +1,11 @@
 {
-  "dependencies": {
-    "leaflet": "^1.8.0",
-    "leaflet-toolbar": "^0.4.0-alpha.2"
-  }
+    "dependencies": {
+        "leaflet": "^1.8.0",
+        "leaflet-toolbar": "^0.4.0-alpha.2"
+    },
+    "type": "module",
+    "scripts": {
+        "install": "npm install",
+        "test": "node ./Util/js/tester.js"
+    }
 }
