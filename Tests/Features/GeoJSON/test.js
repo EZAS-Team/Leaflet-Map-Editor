@@ -1,3 +1,4 @@
+"use strict";
 //test file for the GeoJSON feature in geoJSON.js : Elliot : 7/6/2022
 import { geoJSON } from "../../Features/GeoJSON/geoJSON.js";
 
