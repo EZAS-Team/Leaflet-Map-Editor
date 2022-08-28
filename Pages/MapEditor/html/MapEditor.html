@@ -37,11 +37,6 @@
             rel="stylesheet"
             href="/Pages/MapEditor/stylesheets/MapEditor.css"
         />
-        <!-- Start of feature class includes -->
-        <!-- Feature Scripts Go Here : Elliot :7/8/2022 -->
-        <script src="/Features/Marker/js/FeatureMarker.js"></script>
-        <script src="/Features/GeoJSON/js/FeatureGeoJSON.js"></script>
-        <!-- End of feature class includes -->
 
         <!-- The state handler contains states for the program-->
         <!-- Elliot : 7/6/2022 -->
@@ -54,19 +49,19 @@
             id="ButtonCallback_js"
             src="/Pages/MapEditor/js/ButtonCallbacks.js"
         ></script>
-
-        <!--Includes the debugging functions-->
-        <script id="Debug_js" src="/Util/js/Debug.js"></script>
-        <!-- End of required for MapEditor -->
+        <!-- The mapFeatures array -->
+        <script id="mapFeatures" type="module">
+            export const mapFeatures = [];
+        </script>
     </head>
     <body>
         <!--The map that will be export is not directly edited but rather when a element is changed to the map a callback function adds or removes the element to a key:value dictonary
             which is then saved as the html with the embbeded map as js -->
-        <button id="MAP_EDITOR_NEW_MARKER_BUTTON" onclick="none()">None</button>
+        <button id="MAP_EDITOR_NONE_BUTTON" onclick="none()">None</button>
         <button id="MAP_EDITOR_NEW_MARKER_BUTTON" onclick="newMarker()">
             New Marker
         </button>
-        <button id="MAP_EDITOR_NEW_MARKER_BUTTON" onclick="popupEditor()">
+        <button id="MAP_EDITOR_POPUP_EDITOR_BUTTON" onclick="popupEditor()">
             Popup Editor
         </button>
     </body>
@@ -74,6 +69,19 @@
         <script
             id="MapEditor_js"
             src="/Pages/MapEditor/js/MapEditor.js"
-        ></script>
+            type="module"
+        >
+                    var baseLayers = {
+                "Mapbox": mapbox,
+                "OpenStreetMap": osm
+            };
+
+            var overlays = {
+                "Marker": marker,
+                "Roads": roadsLayer
+            };
+
+            L.control.layers(baseLayers, overlays).addTo(map);
+        </script>
     </div>
 </html>

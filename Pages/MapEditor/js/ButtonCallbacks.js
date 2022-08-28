@@ -1,3 +1,4 @@
+"use strict";
 //The callback function for the newMarker button Map Editor : Elliot 7/6/2022
 function newMarker() {
     MAP_EDITOR_ON_CLICK_STATE = "ADD_MARKER";
