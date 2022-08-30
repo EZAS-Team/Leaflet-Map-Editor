@@ -1,3 +1,4 @@
+import * as EZAS from "./Requirements";
 function generateGUID() {
     // generate a guid and return it
     let guid = "";

@@ -1,19 +1,14 @@
-import { latLng } from "leaflet";
+import * as EZAS from "./Requirements";
 
 window.addEventListener("importMap", (e) => { importMap(); });
 
-function importMap() {
-    //dispach event to import map with the map object
+let map = new EZAS.Map("map", {});
 
-    
-}
-//converting json to leaflet
-function initization(json) {
-
-
-if (json.type) === "marker" 
+//dispach event to import map with the map object
+function importMap() 
 {
-    let marker = new MarkerFeature(latLng, options);
-    marker.addTo(map);
-}
+    
+    //dispach event to that an import has occured and the map should be imported
+    let event = new CustomEvent("importFinished", { detail: map});
+    window.dispatchEvent(event);
 }
