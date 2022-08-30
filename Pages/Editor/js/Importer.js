@@ -2,7 +2,7 @@ import * as EZAS from "./Requirements";
 
 window.addEventListener("importMap", (e) => { importMap(); });
 
-let map = new EZAS.Map("map", {});
+let map = new EZAS.MapFeature("map", {});
 
 //dispach event to import map with the map object
 function importMap() 
