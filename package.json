@@ -5,7 +5,11 @@
     },
     "type": "module",
     "scripts": {
-        "install": "npm install",
-        "test": "node ./Util/js/tester.js"
+        "install": "npm install"
+    },
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/EZAS-Team/Leaflet-Map-Editor"
     }
 }

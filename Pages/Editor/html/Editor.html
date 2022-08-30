@@ -1,0 +1,58 @@
+<!-- The MapEditor Html file  -->
+<!-- Path: /Pages/MapEditor/html/MapEditor.html -->
+<!-- Elliot : 7/6/2022 -->
+<!-- html page with a centered div element that is the map-->
+<!DOCTYPE html>
+<html>
+    <head id="head">
+        <title>Map Editor</title>
+        <meta lang="en-us" />
+        <meta charset="utf-8" />
+        <!-- Start of required for leaflet -->
+        <link
+            id="leaflet_css"
+            rel="stylesheet"
+            href="/node_modules/leaflet/dist/leaflet.css"
+        />
+        <!-- Make sure you put this AFTER Leaflet's CSS -->
+        <script
+            id="leaflet_js"
+            src="/node_modules/leaflet/dist/leaflet.js"
+        ></script>
+        <!-- End of required for leaflet -->
+        <!-- Start of required for leaflet-toolbar -->
+        <script
+            id="leaflet_toolbar_js"
+            src="/node_modules/leaflet-toolbar/dist/leaflet.toolbar.js"
+        ></script>
+        <link
+            id="leaflet_toolbar_css"
+            rel="stylesheet"
+            href="/node_modules/leaflet-toolbar/dist/leaflet.toolbar.css"
+        />
+        <!-- End of required for leaflet-toolbar -->
+
+        <!-- Callbacks for buttons -->
+        <script id="callbacks_js" src="/Pages/Editor/js/Callbacks.js"></script>
+        <!-- End Callbacks for buttons -->
+
+        <!-- Start Editor stylesheet -->
+        <link rel="stylesheet" href="/Pages/Editor/stylesheet/Editor.css" />
+        <!-- End editor stylesheet -->
+    </head>
+    <body>
+        <!--The map that will be export is not directly edited but rather when a element is changed to the map a callback function adds or removes the element to a key:value dictonary
+            which is then saved as the html with the embbeded map as js -->
+        <div id="map">
+            <script
+                id="Editor_js"
+                src="/Pages/Editor/js/Editor.js"
+                type="module"
+            ></script>
+        </div>
+        <!-- button that calls a export callback -->
+        <button id="export_button" onclick="exportMap()">Export</button>
+        <!-- button that calls a import callback -->
+        <button id="import_button" onclick="importMap()">Import</button>
+    </body>
+</html>
