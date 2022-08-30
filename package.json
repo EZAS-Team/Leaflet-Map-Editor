@@ -1,6 +1,15 @@
 {
-  "dependencies": {
-    "leaflet": "^1.8.0",
-    "leaflet-toolbar": "^0.4.0-alpha.2"
-  }
+    "dependencies": {
+        "leaflet": "^1.8.0",
+        "leaflet-toolbar": "^0.4.0-alpha.2"
+    },
+    "type": "module",
+    "scripts": {
+        "install": "npm install"
+    },
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/EZAS-Team/Leaflet-Map-Editor"
+    }
 }
