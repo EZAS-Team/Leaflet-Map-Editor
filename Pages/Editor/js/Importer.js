@@ -1,14 +1,17 @@
-import * as EZAS from "./Requirements";
+"use strict";
+import * as EZAS from "./Requirements.js";
 
-window.addEventListener("importMap", (e) => { importMap(); });
+//listen for if we need to import a map
+window.addEventListener("importTheMap", (e) => {
+    importMap();
+});
 
-let map = new EZAS.MapFeature("map", {});
+//the map that is built by the importer based on JSON and dispatched to the editor when the import is done
+let gmap = new EZAS.MapFeature("map", {});
 
-//dispach event to import map with the map object
-function importMap() 
-{
-    
-    //dispach event to that an import has occured and the map should be imported
-    let event = new CustomEvent("importFinished", { detail: map});
+//import the map and then tell the editor that it needs to update the map
+function importMap() {
+    //dispach event to the window that an import has occured and the map should be imported
+    let event = new CustomEvent("updateMap", { map_object: gmap });
     window.dispatchEvent(event);
 }
