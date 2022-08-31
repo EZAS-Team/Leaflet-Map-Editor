@@ -1,6 +1,6 @@
 "use strict";
-import * as EditorRequirements from "./EditorRequirements.js";
-import { GUID } from "./Requirements.js";
+import * as EditorRequirements from "../EditorRequirements.js";
+import { GUID } from "../Requirements.js";
 //Marker Feature with a property editor
 class MarkerFeature extends L.Marker {
     constructor(latlng, options, guid = new GUID()) {

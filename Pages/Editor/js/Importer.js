@@ -1,5 +1,5 @@
 "use strict";
-import * as EZAS from "../js/Requirements.js";
+import * as EZAS from "./Requirements.js";
 
 //listen for if we need to import a map
 window.addEventListener("importTheMap", (e) => {

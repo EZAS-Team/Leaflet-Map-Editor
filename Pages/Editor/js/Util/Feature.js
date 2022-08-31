@@ -1,5 +1,5 @@
 "use strict";
-import * as EZAS from "./Requirements.js";
+import * as EZAS from "../Requirements.js";
 //extends the leaflet class to add a guid property to leaflet objects
 class Feature {
     constructor(id = new EZAS.GUID()) {
