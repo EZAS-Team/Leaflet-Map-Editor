@@ -8,18 +8,34 @@
         <title>Map Editor</title>
         <meta lang="en-us" />
         <meta charset="utf-8" />
-        <!-- Start of required for leaflet -->
+        <!-- Start of local required for leaflet -->
+        <!-- <link -->
+        <!-- id="leaflet_css" -->
+        <!-- rel="stylesheet" -->
+        <!-- href="/node_modules/leaflet/dist/leaflet.css" -->
+        <!-- /> -->
+        <!-- Make sure you put this AFTER Leaflet's CSS -->
+        <!-- <script -->
+        <!-- id="leaflet_js" -->
+        <!-- src="/node_modules/leaflet/dist/leaflet.js" -->
+        <!-- ></script> -->
+        <!-- End of local required for leaflet -->
+
+        <!-- Start of remote required for leaflet -->
         <link
-            id="leaflet_css"
             rel="stylesheet"
-            href="/node_modules/leaflet/dist/leaflet.css"
+            href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+            integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+            crossorigin=""
         />
         <!-- Make sure you put this AFTER Leaflet's CSS -->
         <script
-            id="leaflet_js"
-            src="/node_modules/leaflet/dist/leaflet.js"
+            src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+            integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+            crossorigin=""
         ></script>
-        <!-- End of required for leaflet -->
+        <!-- End of remote required for leaflet -->
+
         <!-- Start of required for leaflet-toolbar -->
         <script
             id="leaflet_toolbar_js"
@@ -40,9 +56,19 @@
         <link rel="stylesheet" href="/Pages/Editor/stylesheet/Editor.css" />
         <!-- End editor stylesheet -->
     </head>
+    <!--The map that will be export is not directly edited but rather when a element is changed to the map a callback function adds or removes the element to a key:value dictonary
+        which is then saved as the html with the embbeded map as js -->
     <body>
-        <!--The map that will be export is not directly edited but rather when a element is changed to the map a callback function adds or removes the element to a key:value dictonary
-            which is then saved as the html with the embbeded map as js -->
+        <!-- button that calls a export callback -->
+        <button id="export_button" onclick="exportMap()">Export</button>
+        <!-- button that calls a import callback -->
+        <button id="import_button" onclick="importMap()">Import</button>
+        <button
+            id="add_marker"
+            onclick="changeEditorState('Map','OnClick','ADD_MARKER')"
+        >
+            Add Marker
+        </button>
         <div id="map">
             <script
                 id="Editor_js"
@@ -50,9 +76,5 @@
                 type="module"
             ></script>
         </div>
-        <!-- button that calls a export callback -->
-        <button id="export_button" onclick="exportMap()">Export</button>
-        <!-- button that calls a import callback -->
-        <button id="import_button" onclick="importMap()">Import</button>
     </body>
 </html>

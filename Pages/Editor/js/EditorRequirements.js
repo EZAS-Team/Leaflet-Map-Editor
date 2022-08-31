@@ -166,4 +166,4 @@ class FeaturePropertyEditor extends PropertyEditor {
     }
 }
 
-export { EditableField, PropertyEditor, PropertyEditor, FeaturePropertyEditor };
+export { EditableField, PropertyEditor, FeaturePropertyEditor };
