@@ -20,11 +20,11 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 MapFeatures.push(gmap);
 
 //listen for a state change event and change the state
-window.addEventListener("editorStateChange", (e) => {
-    switch(e.name)
+document.addEventListener("editorStateChange", (e) => {
+    switch(e.detail.name)
     {
         case "Map":
-            gmap.dispatchEvent(new CustomEvent("mapStateChange", { action: e.action, state: e.state }));
+            gmap.eventTarget.dispatchEvent(new CustomEvent("mapStateChange", {detail:{ action: e.detail.action, state: e.detail.state }}));
         break;
         default:
             break;
@@ -35,14 +35,14 @@ window.addEventListener("editorStateChange", (e) => {
  * Events and callbacks for interacting with the map and features
  */
 
-window.addEventListener("doAction", (e) => { doAction(e); });
+document.addEventListener("doAction", (e) => { doAction(e); });
 function doAction(e)
 {
-    switch(e.action)
+    switch(e.detail.action)
     {
         case "ADD_MARKER":
             //add the marker to the layer that dispatched the event
-            let marker = new EZAS.MarkerFeature(e.event.latlng).addTo(e.dispatcher);
+            let marker = new EZAS.MarkerFeature(e.detail.event.latlng).addTo(e.detail.dispatcher);
             MapFeatures.push(marker);//add the marker to the map features
             break;
         default:
@@ -51,7 +51,7 @@ function doAction(e)
 };
 
 //listen for DeleteMe events and locate the feature with the guid and delete it
-window.addEventListener("DeleteMe", (e)=>{deleteFeature(e);});
+document.addEventListener("DeleteMe", (e)=>{deleteFeature(e);});
 //finds the feature with the given guid and removes it from the map and the MapFeatures array
 function deleteFeature(e)
 {
@@ -66,21 +66,17 @@ function deleteFeature(e)
     }
 }
 
-
-window.addEventListener("e")
-
-
 /**
  * Events for the importer and exporter
  */
 
 //listens for a finished import event containing the map and updates the map to it
-window.addEventListener("updateMap", (e) => {
+document.addEventListener("updateMap", (e) => {
     updateMap(e.map_object);
 });
 
 //listen for an exportTheMap event from a button click and dispatch an event to the exporter with the map
-window.addEventListener("exportTheMap", (e) => {
+document.addEventListener("exportTheMap", (e) => {
     exportMap();
 });
 
@@ -92,6 +88,6 @@ function updateMap(map) {
 function exportMap() {
     //custom event telling the exporter to export the map
     let event = new CustomEvent("exportMap", { map_object: gmap });
-    window.dispatchEvent(event);
+    document.dispatchEvent(event);
 }
 

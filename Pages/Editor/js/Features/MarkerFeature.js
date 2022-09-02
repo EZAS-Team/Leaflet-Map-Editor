@@ -27,6 +27,7 @@ class MarkerFeature extends L.Marker {
     };
     constructor(latlng, options, guid = new GUID()) {
         super(latlng, options);
+        this.eventTarget = new EventTarget();
         this.marker = this; //reference to the marker object (Self due to extending L.Marker)
         this.guid = guid; //GUID object for the marker
         this.propertyEditor = new EditorRequirements.FeaturePropertyEditor(
@@ -38,16 +39,16 @@ class MarkerFeature extends L.Marker {
         this.stateHandle = new StateHandle(MarkerFeature.initialStates);
         //listen for a marker state change event and change the state
         //this allows for all the marker states to be changed at the same time when dispatched
-        //to the window. dispatches an event to itself to ensure that the event doesn't get acted on 2 times
-        window.on("markerStateChange", (e) => {
-            let event = new customEvent("markerStateChange", e);
-            this.dispatchEvent(event); 
+        //to the document. dispatches an event to itself to ensure that the event doesn't get acted on 2 times
+        document.addEventListener("markerStateChange", (e) => {
+            let event = new customEvent("markerStateChange", {detail:e});
+            this.eventTarget.dispatchEvent(event); 
         });
         //allows for each marker to be able to change states individually
-        this.on("markerStateChange", (e) => { this.stateHandle.setState(e.action, e.state); });
+        this.eventTarget.addEventListener("markerStateChange", (e) => { this.stateHandle.setState(e.detail.action, e.detail.state); });
         //create the events for the marker
-        this.on("click", (e) => { this.OnClick(); });
-        this.on("add", (e) => {this.OnAdd();})
+        this.eventTarget.addEventListener("click", (e) => { this.OnClick(); });
+        this.eventTarget.addEventListener("add", (e) => {this.OnAdd();})
 
     }
 
@@ -62,8 +63,8 @@ class MarkerFeature extends L.Marker {
                 this.propertyEditor.open();
                 break;
             case "DELETE":
-                let event = new CustomEvent("DeleteMe", {"guid":this.guid});
-                window.dispatchEvent(event);
+                let event = new CustomEvent("DeleteMe", {detail:{"guid":this.guid}});
+                document.dispatchEvent(event);
                 break;
             default:
                 break;
