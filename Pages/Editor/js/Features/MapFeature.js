@@ -10,11 +10,9 @@ import {
     RectangleFeature,
 } from "../Requirements.js";
 
-//Map states
-class MapState extends StateHandle {
-    //Map states
-    constructor() {
-        let initialStates = {
+//Map class
+class MapFeature extends L.Map {
+    static initialStates = {
             OnClick: "NONE",
             OnDoubleClick: "NONE",
             OnMouseMove: "NONE",
@@ -39,19 +37,23 @@ class MapState extends StateHandle {
             OnPopupClose: "NONE",
             OnPreclick: "NONE",
         };
-        super(initialStates);
-    }
-}
-
-//Map class
-class MapFeature extends L.Map {
     constructor(id, options) {
         super(id, options);
         this.guid = new GUID();
-        this.MapStateHandle = new MapState();
-        this.on("click", (e) => {
+        this.eventTarget = new EventTarget();
+        this.MapStateHandle = new StateHandle(MapFeature.initialStates);
+        //listen for a map state change event set to the and change the state of all the map states
+        document.addEventListener("mapStateChange", (e) => {
+            let event = new customEvent("mapStateChange", {detail:e});
+            this.eventTarget.dispatchEvent(event);
+        });
+        //allows for each map to be able to change states individually
+        this.eventTarget.addEventListener("mapStateChange", (e) => { this.MapStateHandle.setState(e.detail.action, e.detail.state); });
+        this.addEventListener("click", (e) => {
             this.MapOnClick(e);
         });
+        
+
         // this.on("dblclick", (e) => {
         //     MapOnDoubleClick(e);
         // });
@@ -126,8 +128,16 @@ class MapFeature extends L.Map {
             case "NONE":
                 break;
             case "ADD_MARKER":
-                let marker = new MarkerFeature(e.latlng);
-                marker.addTo(this.self);
+                //dispatch a doAction event to add a marker to the map
+                let event = new CustomEvent("doAction", {detail:
+                {
+                    guid: this.guid,
+                    dispatcher: this,
+                    action: "ADD_MARKER",
+                    event: e
+                }});
+                document.dispatchEvent(event);
+                this.MapStateHandle.setState("OnClick", "NONE");
                 break;
             default:
                 break;
