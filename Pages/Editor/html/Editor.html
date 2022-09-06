@@ -55,6 +55,18 @@
         <!-- Start Editor stylesheet -->
         <link rel="stylesheet" href="/Pages/Editor/stylesheet/Editor.css" />
         <!-- End editor stylesheet -->
+        <!-- Required for importer and exporter -->
+        <script
+            id="importer_js"
+            src="/Pages/Editor/js/Importer.js"
+            type="module"
+        ></script>
+        <script
+            id="exporter_js"
+            src="/Pages/Editor/js/Exporter.js"
+            type="module"
+        ></script>
+        <!-- End required for importer and exporter -->
     </head>
     <!--The map that will be export is not directly edited but rather when a element is changed to the map a callback function adds or removes the element to a key:value dictonary
         which is then saved as the html with the embbeded map as js -->
@@ -76,5 +88,8 @@
                 type="module"
             ></script>
         </div>
+        <!-- Hidden map used for importer.js -->
+        <div hidden id="imap"></div>
+        
     </body>
 </html>

@@ -72,7 +72,7 @@ function deleteFeature(e)
 
 //listens for a finished import event containing the map and updates the map to it
 document.addEventListener("updateMap", (e) => {
-    updateMap(e.map_object);
+    updateMap(e.detail.map_object);
 });
 
 //listen for an exportTheMap event from a button click and dispatch an event to the exporter with the map
@@ -87,7 +87,11 @@ function updateMap(map) {
 
 function exportMap() {
     //custom event telling the exporter to export the map
-    let event = new CustomEvent("exportMap", { map_object: gmap });
+    let event = new CustomEvent("exportMap", {
+        detail:{
+            map_object: gmap 
+        }
+    });
     document.dispatchEvent(event);
 }
 
