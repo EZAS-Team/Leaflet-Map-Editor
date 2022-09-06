@@ -6,17 +6,15 @@ let gemap;
 document.addEventListener("exportMap", (e) => {
     gemap = e.detail.map_object;
     exportMap();
-    testGmap();
+    testGemap();
 });
 
 //gmap test
-function testGmap()
+function testGeap()
 {
-    console.log("Testing gemap");
     console.assert(gemap != undefined, "gemap is undefined");
     console.assert(gemap != null, "gemap is null");
     console.assert(gemap instanceof EZAS.MapFeature, "gemap is not an instance of MapFeature");
-    console.log("Success testing gemap");
 }
 
 //exports the map
