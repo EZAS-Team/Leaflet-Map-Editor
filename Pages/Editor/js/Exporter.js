@@ -9,8 +9,8 @@ document.addEventListener("exportMap", (e) => {
     testGemap();
 });
 
-//gmap test
-function testGeap()
+//gemap test
+function testGemap()
 {
     console.assert(gemap != undefined, "gemap is undefined");
     console.assert(gemap != null, "gemap is null");
