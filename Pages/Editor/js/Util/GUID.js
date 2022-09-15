@@ -14,7 +14,7 @@ class GUID {
         this.id = id;
     }
 
-    get() {
+    get get() {
         return this.id;
     }
 }

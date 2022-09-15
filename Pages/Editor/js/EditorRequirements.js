@@ -1,169 +1,206 @@
 "use strict";
+
+class Field {
+	constructor(type, propertyName, label, placeholder, defaultValue, options = undefined) {
+		this._type = type;
+        this._propertyName = propertyName;
+		this._label = label;
+		this._placeholder = placeholder;
+		this._defaultValue = defaultValue;
+		this._options = options;
+	}
+	get type() {
+		return this._type;
+	}
+    get propertyName() {
+        return this._propertyName;
+    }
+
+	get label() {
+		if (arguments.length !== 0) {
+			this._label = arguments[0];
+		}
+		return this._label;
+	}
+	get placeholder() {
+		if (arguments.length !== 0) {
+			this._placeholder = arguments[0];
+		}
+		return this._placeholder;
+	}
+	get defaultValue() {
+		if (arguments.length !== 0) {
+			this._defaultValue = arguments[0];
+		}
+		return this._defaultValue;
+	}
+	get options() {
+		if (this._options === undefined) {
+			throw new Error("Field does not have options");
+		}
+		if (arguments.length !== 0) {
+			this._options = arguments[0];
+		}
+		return this._options;
+	}
+}
+
+//some examples of how to use the Field class that is passed into the EditableField class
 const editableFieldOptions = {
-    string: {
-        type: "string",
-        label: (label = "Text") => {
-            return label;
-        },
-        placeholder: (placeholder = "Enter text here") => {
-            return placeholder;
-        },
-        default: (defaultValue = "") => {
-            return defaultValue;
-        },
-    },
-    number: {
-        type: "number",
-        label: (label = "Number") => {
-            return label;
-        },
-        placeholder: (placeholder = "Enter a number here") => {
-            return placeholder;
-        },
-        default: (defaultValue = 0) => {
-            return defaultValue;
-        },
-    },
-    dropdown: {
-        type: "dropdown",
-        label: (label = "Dropdown") => {
-            return label;
-        },
-        placeholder: (placeholder = "Select an option") => {
-            return placeholder;
-        },
-    },
+	string: new Field("string","Title", "Text Field", "Enter Text", ""),
+	number: new Field("number", "Count","Number Field", "Enter Number", 0),
+	dropdown: new Field("dropdown","Color", "Dropdown Field", "Select an Option", "", [
+		"Option 1",
+		"Option 2",
+		"Option 3",
+	]),
 };
 
 class EditableField {
-    constructor(
-        name = "",
-        type = "string",
-        options = editableFieldOptions[type],
-        value = options.default
-    ) {
-        if (typeof name !== "string" || name.length === 0) {
-            throw new Error("name must be a non-empty string");
-        }
-        if (
-            typeof type !== "string" ||
-            type.length === 0 ||
-            !(type in editableFieldOptions)
-        ) {
-            throw new Error("type must be a non-empty string");
-        }
-        this.name = name;
-        this.type = type;
-        this.options = options;
-        this.value = value;
-    }
+	constructor(guid = "", field = editableFieldOptions[0], value = undefined) {
+		if (typeof guid !== "string" || guid.length === 0) {
+			throw new Error("name must be a non-empty string");
+		}
+		this.guid = guid;
+		this.field = field;
+		if (value === undefined) {
+			this.value = field.defaultValue;
+		} else {
+			this.value = value;
+		}
+	}
 
-    get() {
-        return this.value;
-    }
+	get() {
+		return this.value;
+	}
 
-    set(value) {
-        this.value = value;
-    }
+	set(value) {
+		this.value = value;
+	}
 
-    toString() {
-        return this.name + ": " + this.value;
-    }
+	toString() {
+		return `${this.guid}-${this.field.name}:${this.value}`;
+	}
 
-    toJSON() {
-        return {
-            name: this.name,
-            type: this.type,
-            options: this.options,
-            value: this.value,
-        };
-    }
+	toJSON() {
+		return {
+			guid: this.guid,
+			field: this.field,
+			value: this.value,
+		};
+	}
+
+	//returns the html for the editable field
+	toHTML() {
+		let html = `
+        <div id="${this.field.name}" class="editable-field-${this.field.type}">
+            <label for="${this.field.name}">${this.field.label}</label>
+            <input 
+                type="${this.field.type}" 
+                name="${this.field.name}" 
+                placeholder="${this.field.placeholder}" 
+                value="${this.value}"
+                onchange="updateFeatureProperties("${this.guid}","${this.field.name}",${this.value})"
+            />
+        </div>`;
+		return html;
+	}
 }
 
 class PropertyEditor {
-    constructor() {
-        this.openEvent = new CustomEvent("openPropertyEditor", {
-            detail: super.feature,
-        });
-        this.updateEvent = new CustomEvent("updatePropertyEditor", {
-            detail: super.feature,
-        });
-        this.saveChangesEvent = new CustomEvent("saveChangesPropertyEditor", {
-            detail: super.feature,
-        });
-        this.editableFields = [];
-    }
-    addEditableField(editableField) {
-        if (typeof editableField !== "object" || editableField === null) {
-            throw new Error("editableField must be an EditableField object");
-        }
-        //add the editableField to the array
-        this.editableFields.push(editableField);
-    }
+	constructor(feature) {
+		if (typeof feature !== "object" || feature === null) {
+			throw new Error("feature must be an object");
+		}
+		this.openEvent = new CustomEvent("openPropertyEditor", {
+			detail: feature,
+		});
+		this.updateEvent = new CustomEvent("updatePropertyEditor", {
+			detail: feature,
+		});
+		this.saveChangesEvent = new CustomEvent("saveChangesPropertyEditor", {
+			detail: feature,
+		});
+		this.feature = feature;
+		this.editableFields = [];
+	}
+	addEditableField(editableField) {
+		if (typeof editableField !== "object" || editableField === null) {
+			throw new Error("editableField must be an EditableField object");
+		}
+		//add the editableField to the array
+		this.editableFields.push(editableField);
+	}
 
-    removeEditableField(editableField) {
-        if (typeof editableField !== "object" || editableField === null) {
-            throw new Error("editableField must be an EditableField object");
-        }
-        let editableFieldsLength = editableFields.length;
-        for (let i = 0; i < editableFieldsLength; i++) {
-            let currentEditableField = editableFields[i];
-            if (currentEditableField.name === editableField.name) {
-                //remove the editableField from the array
-                editableFields.splice(i, 1);
-            }
-        }
-    }
+	removeEditableField(editableField) {
+		if (typeof editableField !== "object" || editableField === null) {
+			throw new Error("editableField must be an EditableField object");
+		}
+		let editableFieldsLength = editableFields.length;
+		for (let i = 0; i < editableFieldsLength; i++) {
+			let currentEditableField = editableFields[i];
+			if (currentEditableField.name === editableField.name) {
+				//remove the editableField from the array
+				editableFields.splice(i, 1);
+			}
+		}
+	}
 
-    getEditableFields() {
-        return editableFields;
-    }
+	getEditableFields() {
+		return editableFields;
+	}
+
+	toHTML() {
+		let html = "";
+		let editableFieldsLength = this.editableFields.length;
+		for (let i = 0; i < editableFieldsLength; i++) {
+			let currentEditableField = this.editableFields[i];
+			html += currentEditableField.toHTML();
+		}
+		return html;
+	}
 }
 
 class FeaturePropertyEditor extends PropertyEditor {
-    constructor(feature, editableFields = []) {
-        super();
-        this.feature = feature;
-        this.propertyEditor = new PropertyEditor();
-        this.createFeaturePropertyEditor(editableFields);
-    }
+	constructor(feature = undefined, editableFields = []) {
+		super(feature);
+		this.feature = feature;
+		this.createFeaturePropertyEditor(editableFields);
+	}
 
-    createFeaturePropertyEditor(editableFields) {
-        //throw an error if the editableFields array is not an array of EditableField objects
-        if (typeof editableFields !== "object" || editableFields === null) {
-            throw new Error(
-                "editableFields must be an array of EditableField objects"
-            );
-        }
-        let editableFieldsLength = editableFields.length;
-        for (let i = 0; i < editableFieldsLength; i++) {
-            let currentEditableField = editableFields[i];
-            if (
-                typeof currentEditableField !== "object" ||
-                currentEditableField === null
-            ) {
-                throw new Error(
-                    "editableFields must be an array of EditableField objects"
-                );
-            }
-            this.propertyEditor.addEditableField(currentEditableField);
-        }
-    }
+	createFeaturePropertyEditor(editableFields) {
+		//throw an error if the editableFields array is not an array of EditableField objects
+		if (typeof editableFields !== "object" || editableFields === null) {
+			throw new Error(
+				"editableFields must be an array of EditableField objects"
+			);
+		}
+		let editableFieldsLength = editableFields.length;
+		for (let i = 0; i < editableFieldsLength; i++) {
+			let currentEditableField = editableFields[i];
+			if (
+				typeof currentEditableField !== "object" ||
+				currentEditableField === null
+			) {
+				throw new Error(
+					"editableFields must be an array of EditableField objects"
+				);
+			}
+			this.addEditableField(currentEditableField);
+		}
+	}
 
-    open() {
-        document.dispatchEvent(this.propertyEditor.openEvent, this.feature);
-    }
+	open() {
+		document.dispatchEvent(this.openEvent);
+	}
 
-    update() {
-        document.dispatchEvent(this.propertyEditor.updateEvent, this.feature);
-    }
+	update() {
+		document.dispatchEvent(this.updateEvent);
+	}
 
-    saveChanges() {
-        document.dispatchEvent(
-            this.propertyEditor.saveChangesEvent,
-            this.feature
-        );
-    }
+	saveChanges() {
+		document.dispatchEvent(this.saveChangesEvent, this.feature);
+	}
 }
 
-export { EditableField, PropertyEditor, FeaturePropertyEditor };
+export { EditableField, PropertyEditor, FeaturePropertyEditor, Field };

@@ -46,13 +46,15 @@ class MapFeature extends L.Map {
         document.addEventListener("mapStateChange", (e) => {
             let event = new customEvent("mapStateChange", {detail:e});
             this.eventTarget.dispatchEvent(event);
-        });
+        }, true); //capture the event so it can be stopped from bubbling up
         //allows for each map to be able to change states individually
-        this.eventTarget.addEventListener("mapStateChange", (e) => { this.MapStateHandle.setState(e.detail.action, e.detail.state); });
+        this.eventTarget.addEventListener("mapStateChange", (e) => { 
+            this.MapStateHandle.setState(e.detail.action, e.detail.state); 
+        }, true); //capture the event so that it can be stopped from bubbling up
+        
         this.addEventListener("click", (e) => {
             this.MapOnClick(e);
-        });
-        
+        }, false); //don't capture the event so that it can bubble up to the document
 
         // this.on("dblclick", (e) => {
         //     MapOnDoubleClick(e);

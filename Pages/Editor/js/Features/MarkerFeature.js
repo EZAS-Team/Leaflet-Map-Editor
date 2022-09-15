@@ -5,7 +5,8 @@ import { GUID, StateHandle } from "../Requirements.js";
 class MarkerFeature extends L.Marker {
     static initialStates = 
     {
-        "OnClick":"NONE",
+        "OnClick":"EDIT",
+        "OnClick_default":"EDIT",//default state for the OnClick event dont change this during runtime
         "OnAdd":"NONE",
         "OnRemove":"NONE",
         "OnDrag":"NONE",
@@ -29,10 +30,16 @@ class MarkerFeature extends L.Marker {
         super(latlng, options);
         this.eventTarget = new EventTarget();
         this.marker = this; //reference to the marker object (Self due to extending L.Marker)
-        this.guid = guid; //GUID object for the marker
+        this.guid = guid.get; //GUID object for the marker
         this.propertyEditor = new EditorRequirements.FeaturePropertyEditor(
             this.marker,
-            [new EditorRequirements.EditableField("Marker Name", "string")]
+            [
+                new EditorRequirements.EditableField(
+                    `${this.guid}`,
+                    new EditorRequirements.Field("string","title","Marker Title",`${this.guid}`,""),
+                    ""
+                )
+            ]
         );
         this.propertyEditor.open();
         //create the state handle for the marker
@@ -43,36 +50,53 @@ class MarkerFeature extends L.Marker {
         document.addEventListener("markerStateChange", (e) => {
             let event = new customEvent("markerStateChange", {detail:e});
             this.eventTarget.dispatchEvent(event); 
-        });
+        }, true);  //prevent the event from bubbling up
         //allows for each marker to be able to change states individually
-        this.eventTarget.addEventListener("markerStateChange", (e) => { this.stateHandle.setState(e.detail.action, e.detail.state); });
-        //create the events for the marker
-        this.eventTarget.addEventListener("click", (e) => { this.OnClick(); });
-        this.eventTarget.addEventListener("add", (e) => {this.OnAdd();})
+        this.eventTarget.addEventListener("markerStateChange", (e) => { 
+            this.stateHandle.setState(e.detail.action, e.detail.state); 
+        }, true); //prevent the event from bubbling up
 
+        //create the events for the marker
+        this.addEventListener("click", (e) => { this.OnClick(); }, true); //prevent the event from bubbling up
+        this.addEventListener("add", (e) => {this.OnAdd();}, true); //prevent the event from bubbling up
+    }
+
+    //Function to update a property of the marker
+    updateProperty(property, value)
+    {
+        if(!(property in this.marker))
+        {
+            console.error(`Property ${property} does not exist in the marker`);
+            return;
+        }
+        this[property] = value;
     }
 
     //Callback function for when a marker is clicked on called internally by the marker
     OnClick()
     {
+        console.debug(`Marker ${this.guid} OnClick event fired with marker has a state of ${this.stateHandle.getState("OnClick")}`);
         switch (this.stateHandle.getState("OnClick")) 
         {
             case "NONE":
                 break;
             case "EDIT":
-                this.propertyEditor.open();
+                this.propertyEditor.open(); //open the property editor
                 break;
             case "DELETE":
+                // Create a deleteme event to tell the editor to delete the marker
                 let event = new CustomEvent("DeleteMe", {detail:{"guid":this.guid}});
                 document.dispatchEvent(event);
                 break;
             default:
+                console.debug("Invalid State For Marker OnClick Event", this.stateHandle.getState("OnClick"));
                 break;
         }
     }
     //Callback function for when a marker is added to the map called internally by the marker
     OnAdd()
     {
+        console.debug(`Marker ${this.guid} OnAdd event fired with marker has a state of ${this.stateHandle.getState("OnAdd")}`);
         switch (this.stateHandle.getState("OnAdd")) {
             case "NONE":
                 break;

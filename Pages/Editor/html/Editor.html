@@ -71,25 +71,43 @@
     <!--The map that will be export is not directly edited but rather when a element is changed to the map a callback function adds or removes the element to a key:value dictonary
         which is then saved as the html with the embbeded map as js -->
     <body>
-        <!-- button that calls a export callback -->
-        <button id="export_button" onclick="exportMap()">Export</button>
-        <!-- button that calls a import callback -->
-        <button id="import_button" onclick="importMap()">Import</button>
-        <button
-            id="add_marker"
-            onclick="changeEditorState('Map','OnClick','ADD_MARKER')"
-        >
-            Add Marker
-        </button>
-        <div id="map">
-            <script
-                id="Editor_js"
-                src="/Pages/Editor/js/Editor.js"
-                type="module"
-            ></script>
+        <div class="flex-row-l-to-r">
+            <aside id="editor_buttons_panel">
+
+                <!-- button that calls a export callback -->
+                <button id="export_button" onclick="exportMap()">Export</button>
+                <!-- button that calls a import callback -->
+                <button id="import_button" onclick="importMap()">Import</button>
+                <!-- button that switches the state to add a marker -->
+                <button
+                id="add_marker_button"
+                onclick="changeEditorState('Map','OnClick','ADD_MARKER')"
+                >
+                    Add Marker
+                </button>
+            </aside>
+            <div id="map">
+                <script
+                    id="Editor_js"
+                    src="/Pages/Editor/js/Editor.js"
+                    type="module"
+                    ></script>
+            </div>
+            <!-- Hidden map used for importer.js -->
+            <div hidden id="imap"></div>
+            <!-- Property Side panel that opens and closes with an event -->
+            <aside id="property_editor">
+                <span id = "property_editor_buttons" class="flex-row-l-to-r">
+                    <button id="close_property_editor_button" onclick="closePropertyEditor()">
+                        Close
+                    </button>
+                </span>
+                <div id="property_editor_panel" class="property-editor-sidepanel-flex">
+                    <!--right side panel -->
+                    <div id="property_editor_content" class="property-editor-content-flex">
+                    </div>
+                </div>
+            </aside>
         </div>
-        <!-- Hidden map used for importer.js -->
-        <div hidden id="imap"></div>
-        
     </body>
 </html>

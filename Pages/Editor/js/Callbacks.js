@@ -24,3 +24,28 @@ function changeEditorState(name, action, newState) {
     }});
     document.dispatchEvent(event);
 }
+
+function closePropertyEditor()
+{
+    //dispatch event to the document to tell the Editor to close the properties editor
+    let event = new CustomEvent("closePropertyEditor");
+    document.dispatchEvent(event);
+}
+
+function updatePropertyEditor()
+{
+    //dispatch event to the document to tell the Editor to update the properties editor
+    let event = new CustomEvent("updatePropertyEditor");
+    document.dispatchEvent(event);
+}
+
+function updateFeatureProperties(guid, propertyName, propertyValue)
+{
+    //dispatch event to the document to tell the Editor to update the feature properties
+    let event = new CustomEvent("updateFeatureProperties", {detail:{
+        "guid": guid,
+        "propertyName": propertyName,
+        "propertyValue": propertyValue,
+    }});
+    document.dispatchEvent(event);
+}
