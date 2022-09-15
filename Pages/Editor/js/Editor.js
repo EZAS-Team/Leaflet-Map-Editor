@@ -36,14 +36,14 @@ document.addEventListener("editorStateChange", (e) => {
  */
 
 //listen for a doAction event and do the action NEVER CALLED directly
-document.addEventListener("doAction", (e) => { doAction(e); });
+document.addEventListener("doAction", (e) => { doAction(e.detail); });
 function doAction(e)
 {
-    switch(e.detail.action)
+    switch(e.action)
     {
         case "ADD_MARKER":
             //add the marker to the layer that dispatched the event
-            let marker = new EZAS.MarkerFeature(e.detail.event.latlng).addTo(e.detail.dispatcher);
+            let marker = new EZAS.MarkerFeature(e.event.latlng).addTo(e.dispatcher);
             MapFeatures.push(marker);//add the marker to the map features
             break;
         default:
@@ -53,7 +53,7 @@ function doAction(e)
 
 //listen for DeleteMe events and locate the feature with the guid and delete it from the map
 //NEVER CALLED DIRECTLY
-document.addEventListener("DeleteMe", (e)=>{deleteFeature(e);});
+document.addEventListener("DeleteMe", (e)=>{deleteFeature(e.detail);});
 //finds the feature with the given guid and removes it from the map and the MapFeatures array
 function deleteFeature(e)
 {
@@ -142,7 +142,7 @@ function updateFeatureProperties(e)
 {
     let obj = e.detail;
     let guid = obj.guid;
-    let feature = MapFeatures.find((f) => { return f.guid == guid; });
+    let feature = MapFeatures.find((f) => { return f.guid == this.guid; });
     if (feature === null)
     {
         throw new Error("Feature with guid: " + guid + " not found");

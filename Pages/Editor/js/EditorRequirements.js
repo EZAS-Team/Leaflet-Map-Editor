@@ -79,7 +79,7 @@ class EditableField {
 	}
 
 	toString() {
-		return `${this.guid}-${this.field.name}:${this.value}`;
+		return `${this.guid}-${this.field.propertyName}:${this.value}`;
 	}
 
 	toJSON() {
@@ -93,14 +93,14 @@ class EditableField {
 	//returns the html for the editable field
 	toHTML() {
 		let html = `
-        <div id="${this.field.name}" class="editable-field-${this.field.type}">
-            <label for="${this.field.name}">${this.field.label}</label>
+        <div id="${this.field.propertyName}" class="editable-field-${this.field.type}">
+            <label for="${this.field.propertyName}">${this.field.label}</label>
             <input 
                 type="${this.field.type}" 
-                name="${this.field.name}" 
+                name="${this.field.propertyName}" 
                 placeholder="${this.field.placeholder}" 
                 value="${this.value}"
-                onchange="updateFeatureProperties("${this.guid}","${this.field.name}",${this.value})"
+                onchange="updateFeatureProperty(${this.guid},${this.field.propertyName},this.value)"
             />
         </div>`;
 		return html;
