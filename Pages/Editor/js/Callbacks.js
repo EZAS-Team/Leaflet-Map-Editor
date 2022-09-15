@@ -39,7 +39,7 @@ function updatePropertyEditor()
     document.dispatchEvent(event);
 }
 
-function updateFeatureProperties(guid, propertyName, propertyValue)
+function updateFeatureProperty(guid, propertyName, propertyValue)
 {
     //dispatch event to the document to tell the Editor to update the feature properties
     let event = new CustomEvent("updateFeatureProperties", {detail:{
