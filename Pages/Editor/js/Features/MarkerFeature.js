@@ -26,17 +26,19 @@ class MarkerFeature extends L.Marker {
         "OnContextMenu":"NONE",
         "OnPreClick":"NONE",
     };
+
     constructor(latlng, options, guid = new GUID()) {
         super(latlng, options);
         this.eventTarget = new EventTarget();
         this.marker = this; //reference to the marker object (Self due to extending L.Marker)
         this.guid = guid.get; //GUID object for the marker
+        this.titleField = new EditorRequirements.Field("string","title","Marker Title",`${this.guid}`,"");
         this.propertyEditor = new EditorRequirements.FeaturePropertyEditor(
             this.marker,
             [
                 new EditorRequirements.EditableField(
                     `${this.guid}`,
-                    new EditorRequirements.Field("string","title","Marker Title",`${this.guid}`,""),
+                    this.titleField,
                     ""
                 )
             ]
@@ -61,15 +63,16 @@ class MarkerFeature extends L.Marker {
         this.addEventListener("add", (e) => {this.OnAdd();}, true); //prevent the event from bubbling up
     }
 
-    //Function to update a property of the marker
+    //Function to update a property of the marker in both the mapo and the property editor
     updateProperty(property, value)
     {
-        if(!(property in this.marker))
+        console.debug(`Marker ${this.guid} updateProperty event fired with property ${property} and value ${value}`);
+        if(!(property in this.options))//check if the property exists
         {
-            console.error(`Property ${property} does not exist in the marker`);
-            return;
+            throw(`Property ${property} does not exist in Marker`);
         }
-        this[property] = value;
+        this.options[property] = value; //update the property value of the marker
+        this.propertyEditor.setEditableFieldValue(property, value); //update the property value in the property editor
     }
 
     //Callback function for when a marker is clicked on called internally by the marker

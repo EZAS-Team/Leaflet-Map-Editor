@@ -137,15 +137,13 @@ function closePropertyEditor()
 };
 
 //updates a given property of a given guid with a given value
-document.addEventListener("updateFeatureProperties", (e) => {updateFeatureProperties(e);},true);
+document.addEventListener("updateFeatureProperties", (e) => {updateFeatureProperties(e.detail);},true);
 function updateFeatureProperties(e)
 {
-    let obj = e.detail;
-    let guid = obj.guid;
-    let feature = MapFeatures.find((f) => { return f.guid == this.guid; });
+    let feature = MapFeatures.find((f) => { return f.guid == e.guid; });
     if (feature === null)
     {
-        throw new Error("Feature with guid: " + guid + " not found");
+        throw new Error("Feature with guid: " + e.guid + " not found");
     }
-    feature.updateProperty(obj.propertyName, obj.propertyValue);
+    feature.updateProperty(e.propertyName, e.propertyValue);
 };

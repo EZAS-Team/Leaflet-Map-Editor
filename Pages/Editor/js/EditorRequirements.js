@@ -70,6 +70,11 @@ class EditableField {
 		}
 	}
 
+	get propertyName()
+	{
+		return this.field.propertyName;
+	}
+
 	get() {
 		return this.value;
 	}
@@ -93,14 +98,18 @@ class EditableField {
 	//returns the html for the editable field
 	toHTML() {
 		let html = `
-        <div id="${this.field.propertyName}" class="editable-field-${this.field.type}">
-            <label for="${this.field.propertyName}">${this.field.label}</label>
+        <div id="${this.field.propertyName}_div" class="editable-field-${this.field.type}">
+            <label id="${this.field.propertyName}_label" for="${this.field.propertyName}">${this.field.label}</label>
             <input 
+				id="${this.field.propertyName}_input"
                 type="${this.field.type}" 
                 name="${this.field.propertyName}" 
                 placeholder="${this.field.placeholder}" 
                 value="${this.value}"
-                onchange="updateFeatureProperty(${this.guid},${this.field.propertyName},this.value)"
+                onchange="updateFeatureProperty('${this.guid}',
+				'${this.field.propertyName}',
+				document.getElementById('${this.field.propertyName}_input').value)"
+				)"
             />
         </div>`;
 		return html;
@@ -115,12 +124,6 @@ class PropertyEditor {
 		this.openEvent = new CustomEvent("openPropertyEditor", {
 			detail: feature,
 		});
-		this.updateEvent = new CustomEvent("updatePropertyEditor", {
-			detail: feature,
-		});
-		this.saveChangesEvent = new CustomEvent("saveChangesPropertyEditor", {
-			detail: feature,
-		});
 		this.feature = feature;
 		this.editableFields = [];
 	}
@@ -132,22 +135,45 @@ class PropertyEditor {
 		this.editableFields.push(editableField);
 	}
 
-	removeEditableField(editableField) {
-		if (typeof editableField !== "object" || editableField === null) {
-			throw new Error("editableField must be an EditableField object");
+	//removes the first editable field with the propertyname from the array and returns it
+	//if the editable field is not found, returns undefined
+	removeEditableField(propertyName) {
+		if (typeof propertyName !== "string" || editableField === "") {
+			throw new Error("propertyName must be a non-empty string");
 		}
-		let editableFieldsLength = editableFields.length;
+		let editableFieldsLength = this.editableFields.length;
 		for (let i = 0; i < editableFieldsLength; i++) {
-			let currentEditableField = editableFields[i];
-			if (currentEditableField.name === editableField.name) {
+			let currentEditableField = this.editableFields[i];
+			if (currentEditableField.propertyName === propertyName) {
 				//remove the editableField from the array
-				editableFields.splice(i, 1);
+				return this.editableFields.splice(i, 1);
+			}
+		}
+		return undefined;
+	}
+
+	//sets the value of the editable field with the given propertyName
+	setEditableFieldValue(propertyName, value)
+	{
+		//throw an error if the field name is not a string or is empty
+		if(typeof propertyName !== "string" || propertyName.length === 0)
+		{
+			throw new Error("propertyName must be a non-empty string");
+		}
+
+		//find the editable field with the given name
+		let editableFieldsLength = this.editableFields.length;
+		for (let i = 0; i < editableFieldsLength; i++) {
+			let currentEditableField = this.editableFields[i];
+			if (currentEditableField.propertyName === propertyName) {
+				//set the value of the editable field
+				this.editableFields[i].set(value);
 			}
 		}
 	}
 
 	getEditableFields() {
-		return editableFields;
+		return this.editableFields;
 	}
 
 	toHTML() {
@@ -192,14 +218,6 @@ class FeaturePropertyEditor extends PropertyEditor {
 
 	open() {
 		document.dispatchEvent(this.openEvent);
-	}
-
-	update() {
-		document.dispatchEvent(this.updateEvent);
-	}
-
-	saveChanges() {
-		document.dispatchEvent(this.saveChangesEvent, this.feature);
 	}
 }
 
