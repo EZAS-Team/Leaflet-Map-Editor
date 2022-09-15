@@ -41,9 +41,17 @@ function doAction(e)
 {
     switch(e.action)
     {
-        case "ADD_MARKER":
-            //add the marker to the layer that dispatched the event
-            let marker = new EZAS.MarkerFeature(e.event.latlng).addTo(e.dispatcher);
+        //Icons need to be selected before the marker is added to the map
+        //this is because the marker needs to know what icon to use
+        //future updates may allow for the icon to be changed after the marker is added
+        //by copying the marker and recreating it with the new icon
+        case "ADD_MARKER": 
+            //get the selected marker icon type from the marker icon selector
+            let markerType = document.getElementById("marker_type_select").value;
+            //get the Icon object from the marker icon selector
+            let selectedIcon = EZAS.MarkerFeature.icons[markerType];
+            //add the marker to the layer that dispatched the event this should be the map in most cases
+            let marker = new EZAS.MarkerFeature(e.event.latlng, {icon:selectedIcon}).addTo(e.dispatcher);
             MapFeatures.push(marker);//add the marker to the map features
             break;
         default:
@@ -145,5 +153,10 @@ function updateFeatureProperties(e)
     {
         throw new Error("Feature with guid: " + e.guid + " not found");
     }
-    feature.updateProperty(e.propertyName, e.propertyValue);
+    //if the event has a fn property then call the function with the value
+    if (e.fn !== undefined)
+    {
+        feature.updateProperty(e.propertyName, e.propertyValue, e.fn);
+    }
+    feature.updateProperty(e.propertyName, e.propertyValue, e.fn);
 };

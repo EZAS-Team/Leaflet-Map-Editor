@@ -1,20 +1,24 @@
 "use strict";
 
+//generic class for fields
+//getters are also set functions if an argument is provided
+//value is stored in the EditableField object
 class Field {
-	constructor(type, propertyName, label, placeholder, defaultValue, options = undefined) {
+	constructor(type, propertyName, label, placeholder, defaultValue, choices = undefined) {
 		this._type = type;
         this._propertyName = propertyName;
 		this._label = label;
 		this._placeholder = placeholder;
 		this._defaultValue = defaultValue;
-		this._options = options;
+		this._choices = choices;
 	}
+
 	get type() {
 		return this._type;
 	}
     get propertyName() {
-        return this._propertyName;
-    }
+		return this._propertyName;
+	}
 
 	get label() {
 		if (arguments.length !== 0) {
@@ -34,18 +38,21 @@ class Field {
 		}
 		return this._defaultValue;
 	}
-	get options() {
-		if (this._options === undefined) {
-			throw new Error("Field does not have options");
+	get choices() {
+		if (this._choices === undefined) {
+			throw new Error("Field does not have choices");
 		}
 		if (arguments.length !== 0) {
-			this._options = arguments[0];
+			this._choices = arguments[0];
 		}
-		return this._options;
+		return this._choices;
 	}
+	
 }
 
 //some examples of how to use the Field class that is passed into the EditableField class
+//not to be used except for the first element which is the default field
+//if none are given
 const editableFieldOptions = {
 	string: new Field("string","Title", "Text Field", "Enter Text", ""),
 	number: new Field("number", "Count","Number Field", "Enter Number", 0),
@@ -56,18 +63,16 @@ const editableFieldOptions = {
 	]),
 };
 
+//generic class for editable fields
 class EditableField {
-	constructor(guid = "", field = editableFieldOptions[0], value = undefined) {
+	constructor(guid = "", field = editableFieldOptions[0], value = undefined, fn = (v)=>{return v;}) {
 		if (typeof guid !== "string" || guid.length === 0) {
 			throw new Error("name must be a non-empty string");
 		}
 		this.guid = guid;
 		this.field = field;
-		if (value === undefined) {
-			this.value = field.defaultValue;
-		} else {
-			this.value = value;
-		}
+		this.value = (value === undefined)? field.defaultValue : value;
+		this.fn = fn;
 	}
 
 	get propertyName()
@@ -79,8 +84,11 @@ class EditableField {
 		return this.value;
 	}
 
-	set(value) {
-		this.value = value;
+	//sets the value of the editable field
+	//if a function is provided, the function is called with the value as an argument
+	//and the return value is used as the new value
+	set(value, fn = (v)=>{return v;}) {
+		this.value = fn(value);
 	}
 
 	toString() {
@@ -97,25 +105,54 @@ class EditableField {
 
 	//returns the html for the editable field
 	toHTML() {
-		let html = `
-        <div id="${this.field.propertyName}_div" class="editable-field-${this.field.type}">
-            <label id="${this.field.propertyName}_label" for="${this.field.propertyName}">${this.field.label}</label>
-            <input 
-				id="${this.field.propertyName}_input"
-                type="${this.field.type}" 
-                name="${this.field.propertyName}" 
-                placeholder="${this.field.placeholder}" 
-                value="${this.value}"
-                onchange="updateFeatureProperty('${this.guid}',
-				'${this.field.propertyName}',
-				document.getElementById('${this.field.propertyName}_input').value)"
-				)"
-            />
-        </div>`;
+		let html = "";
+		switch (this.field.type)
+		{
+			case 'string':
+			case 'number':
+				html += `
+					<div id="${this.field.propertyName}_div" class="editable-field-${this.field.type}">
+						<label id="${this.field.propertyName}_label" for="${this.field.propertyName}">${this.field.label}</label>
+						<input 
+							id="${this.field.propertyName}_input"
+							type="${this.field.type}" 
+							name="${this.field.propertyName}" 
+							placeholder="${this.field.placeholder}" 
+							value="${this.value}"
+							onchange="updateFeatureProperty('${this.guid}',
+							'${this.field.propertyName}',
+							document.getElementById('${this.field.propertyName}_input').value)"
+							)"
+						/>
+					</div>`;
+				break;
+			case 'dropdown':
+				html += `
+					<div id="${this.field.propertyName}_div" class="editable-field-${this.field.type}">
+						<label id="${this.field.propertyName}_label" for="${this.field.propertyName}">${this.field.label}</label>
+						<select 
+							id="${this.field.propertyName}_select"
+							name="${this.field.propertyName}"
+							onchange="updateFeatureProperty('${this.guid}',
+							'${this.field.propertyName}',
+							document.getElementById('${this.field.propertyName}_select').value)"
+							)"
+						>`;
+				let choiceList = this.field.choices;
+				for (let i = 0; i < choiceList.length; i++) {
+					html += `<option value="${choiceList[i]}">${choiceList[i]}</option>`;
+				}
+				html += `</select></div>`;
+				break;
+			default:
+				html =`<p>Invalid Field Type Given</p>`;
+				break;
+		}
 		return html;
 	}
 }
 
+//generic class for creating a list of editable fields
 class PropertyEditor {
 	constructor(feature) {
 		if (typeof feature !== "object" || feature === null) {
@@ -153,7 +190,9 @@ class PropertyEditor {
 	}
 
 	//sets the value of the editable field with the given propertyName
-	setEditableFieldValue(propertyName, value)
+	//if a function is provided, the function is called with the value as an argument
+	//and the return value is used as the new value
+	setEditableFieldValue(propertyName, value, fn = (v)=>{return v;}) {
 	{
 		//throw an error if the field name is not a string or is empty
 		if(typeof propertyName !== "string" || propertyName.length === 0)
@@ -166,9 +205,12 @@ class PropertyEditor {
 		for (let i = 0; i < editableFieldsLength; i++) {
 			let currentEditableField = this.editableFields[i];
 			if (currentEditableField.propertyName === propertyName) {
-				//set the value of the editable field
-				this.editableFields[i].set(value);
+				//set the value of the editable field using the function if provided
+				this.editableFields[i].set(value, fn);
+				return true; //return true if the editable field was found and the value was set
 			}
+		}
+		return false; //return false if the editable field was not found
 		}
 	}
 

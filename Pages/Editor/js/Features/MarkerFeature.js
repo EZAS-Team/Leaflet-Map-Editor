@@ -8,6 +8,7 @@ class MarkerFeature extends L.Marker {
         "OnClick":"EDIT",
         "OnClick_default":"EDIT",//default state for the OnClick event dont change this during runtime
         "OnAdd":"NONE",
+        "OnAdd_default":"OPEN",//default state for the OnAdd event dont change this during runtime
         "OnRemove":"NONE",
         "OnDrag":"NONE",
         "OnDragStart":"NONE",
@@ -25,6 +26,52 @@ class MarkerFeature extends L.Marker {
         "OnMouseOut":"NONE",
         "OnContextMenu":"NONE",
         "OnPreClick":"NONE",
+        "IconType":"DEFAULT-BLUE",
+        "IconType_default":"DEFAULT-BLUE",
+    };
+
+    static icons =
+    {
+        "DEFAULT-BLUE": L.icon({
+            iconUrl: '../../../Resources/Features/Marker/Icons/default-blue.png',
+            iconSize:    [25, 41],
+            iconAnchor:  [12, 41],
+            popupAnchor: [1, -34],
+            tooltipAnchor: [16, -28],
+            shadowSize:  [41, 41]
+        }),
+        "DEFAULT-RED": L.icon({
+            iconUrl: '../../../Resources/Features/Marker/Icons/default-red.png',
+            iconSize:    [25, 41],
+            iconAnchor:  [12, 41],
+            popupAnchor: [1, -34],
+            tooltipAnchor: [16, -28],
+            shadowSize:  [41, 41]
+        }),
+        "DEFAULT-GREEN": L.icon({
+            iconUrl: '../../../Resources/Features/Marker/Icons/default-green.png',
+            iconSize:    [25, 41],
+            iconAnchor:  [12, 41],
+            popupAnchor: [1, -34],
+            tooltipAnchor: [16, -28],
+            shadowSize:  [41, 41]
+        }),
+        "DEFAULT-PURPLE": L.icon({
+            iconUrl: '../../../Resources/Features/Marker/Icons/default-purple.png',
+            iconSize:    [25, 41],
+            iconAnchor:  [12, 41],
+            popupAnchor: [1, -34],
+            tooltipAnchor: [16, -28],
+            shadowSize:  [41, 41]
+        }),
+        "DEFAULT-YELLOW": L.icon({
+            iconUrl: '../../../Resources/Features/Marker/Icons/default-yellow.png',
+            iconSize:    [25, 41],
+            iconAnchor:  [12, 41],
+            popupAnchor: [1, -34],
+            tooltipAnchor: [16, -28],
+            shadowSize:  [41, 41]
+        }),
     };
 
     constructor(latlng, options, guid = new GUID()) {
@@ -32,18 +79,53 @@ class MarkerFeature extends L.Marker {
         this.eventTarget = new EventTarget();
         this.marker = this; //reference to the marker object (Self due to extending L.Marker)
         this.guid = guid.get; //GUID object for the marker
-        this.titleField = new EditorRequirements.Field("string","title","Marker Title",`${this.guid}`,"");
-        this.propertyEditor = new EditorRequirements.FeaturePropertyEditor(
-            this.marker,
-            [
-                new EditorRequirements.EditableField(
+        //create the fields that can be edited in the property editor for the marker
+        //cant be static because guid is required and unique for each marker
+        this.editableFieldObjects =
+        [
+            new EditorRequirements.EditableField(
+                `${this.guid}`,
+                new EditorRequirements.Field(
+                    "string",
+                    "title",
+                    "Marker Title",
                     `${this.guid}`,
-                    this.titleField,
                     ""
-                )
-            ]
+                ),
+                ""
+            ),
+            new EditorRequirements.EditableField(
+                `${this.guid}`,
+                new EditorRequirements.Field(
+                    "string",
+                    "description",
+                    "Marker Description",
+                    `${this.guid}`,
+                    ""
+                ),
+                ""
+            ),
+
+            // the marker type dropdown is discluded because it is not editable
+            // until a feature is implemented to copy and recreate with the new icon
+            // new EditorRequirements.EditableField(
+            //     `${this.guid}`,
+            //     new EditorRequirements.Field(
+            //         "dropdown",
+            //         "icon",
+            //         "Marker Icon",
+            //         `${this.guid}`,
+            //         MarkerFeature.icons["default-blue"],
+            //         Object.keys(MarkerFeature.icons)
+            //     ),
+            //     ""
+            // ),
+        ];
+        this.propertyEditor = new EditorRequirements.FeaturePropertyEditor(
+            this,
+            this.editableFieldObjects
         );
-        this.propertyEditor.open();
+        this.propertyEditor.open(); //open the property editor
         //create the state handle for the marker
         this.stateHandle = new StateHandle(MarkerFeature.initialStates);
         //listen for a marker state change event and change the state
@@ -69,10 +151,29 @@ class MarkerFeature extends L.Marker {
         console.debug(`Marker ${this.guid} updateProperty event fired with property ${property} and value ${value}`);
         if(!(property in this.options))//check if the property exists
         {
-            throw(`Property ${property} does not exist in Marker`);
+            //warn of a non-easy exportable property
+            console.warn(`Marker ${this.guid} updateProperty event fired with property ${property} that does not exist in standard leaflet.
+                It will be added to the marker object but requires custom importing and exporting to be used.
+                This is not recommended.`);
+            //throw(`Property ${property} does not exist in Marker`);
         }
-        this.options[property] = value; //update the property value of the marker
+        //swtich for actions based on the type of property's value
+        let propertyValue = this.options[property];
+        if(propertyValue instanceof L.Icon)
+        {
+            return;
+            this.options[property] = MarkerFeature.icons[value];
+        }
+        else if(propertyValue instanceof L.LatLng)
+        {
+            this.options[property]=this.SetLatLng(value);
+        }
+        else
+        {
+            this.options[property] = value; //update the property value of the marker
+        }
         this.propertyEditor.setEditableFieldValue(property, value); //update the property value in the property editor
+                
     }
 
     //Callback function for when a marker is clicked on called internally by the marker
@@ -92,7 +193,7 @@ class MarkerFeature extends L.Marker {
                 document.dispatchEvent(event);
                 break;
             default:
-                console.debug("Invalid State For Marker OnClick Event", this.stateHandle.getState("OnClick"));
+                console.error("Invalid State For Marker OnClick Event", this.stateHandle.getState("OnClick"));
                 break;
         }
     }
@@ -102,11 +203,15 @@ class MarkerFeature extends L.Marker {
         console.debug(`Marker ${this.guid} OnAdd event fired with marker has a state of ${this.stateHandle.getState("OnAdd")}`);
         switch (this.stateHandle.getState("OnAdd")) {
             case "NONE":
+            case "OPEN":
+                this.propertyEditor.open(); //open the property editor
                 break;
             default:
+                console.error(`Marker ${this.guid} OnAdd State is Invalid or Unknown: `, this.stateHandle.getState("OnAdd"));
                 break;
         }
     }
+
 }
 export { MarkerFeature };
 export default MarkerFeature;
