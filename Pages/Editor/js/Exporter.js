@@ -68,7 +68,7 @@ document.addEventListener("exportMap", (e) => {
     //testGemap();
 });
 
-//gmap test
+
 function testGemap()
 {
     console.assert(gemap != undefined, "gemap is undefined");

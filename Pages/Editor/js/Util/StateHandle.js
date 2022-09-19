@@ -2,6 +2,7 @@
 class StateHandle {
     constructor(initialStates) {
         this.states = initialStates;
+        this.initialStates = initialStates;
     }
     getState(name) {
         return this.states[name];
@@ -11,8 +12,10 @@ class StateHandle {
     }
     resetState(name) {
         if (this.states[name + "_default"] === undefined) {
-            this.states[name] = this.states[name].initialStates;
+            //set the state to the initial state if there is no default state
+            this.states[name] = this.initialstates[name];
         } else {
+            //set the state to the default state if there is one
             this.states[name] = this.states[name + "_default"];
         }
     }
