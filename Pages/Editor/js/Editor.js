@@ -19,13 +19,29 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 //Add the gmap to the MapFeatures array
 MapFeatures.push(gmap);
 
+//dispatches the events to each feature in the MapFeatures array
+function changeStates(eventListenerName, instanceType, action, state)
+{
+    MapFeatures.forEach((f) => {
+        if (f instanceof instanceType)
+        {
+            f.eventTarget.dispatchEvent(new CustomEvent(eventListenerName, {detail:{action:action, state:state}}));
+        }
+    });
+}
+
 //listen for a state change event and change the state
 document.addEventListener("editorStateChange", (e) => {
     switch(e.detail.name)
     {
-        case "Map":
+        case "Map": //update the map state
             gmap.eventTarget.dispatchEvent(new CustomEvent("mapStateChange", {detail:{ action: e.detail.action, state: e.detail.state }}));
         break;
+        case "Marker": //update all the marker states
+            changeStates("markerStateChange",EZAS.MarkerFeature,e.detail.action, e.detail.state);
+        break;
+        case "Features": //updates all the features states
+            document.dispatchEvent(new CustomEvent("featuresStateChange", {detail:{ action: e.detail.action, state: e.detail.state }}));
         default:
             break;
     }
@@ -74,7 +90,11 @@ function deleteFeature(e)
         //remove the feature from the MapFeatures array
         MapFeatures.splice(MapFeatures.indexOf(feature), 1);
     }
-};
+    //reset to rest of the features to the default state
+    MapFeatures.forEach((f) => {
+        f.resetState("OnClick");
+    });
+}
 
 /**
  * Events for the importer and exporter

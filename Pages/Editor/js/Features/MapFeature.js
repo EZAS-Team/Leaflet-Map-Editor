@@ -37,11 +37,11 @@ class MapFeature extends L.Map {
             OnPopupClose: "NONE",
             OnPreclick: "NONE",
         };
-    constructor(id, options) {
+    constructor(id, options, guid = new GUID()) {
         super(id, options);
-        this.guid = new GUID();
+        this.guid = guid.get;
         this.eventTarget = new EventTarget();
-        this.MapStateHandle = new StateHandle(MapFeature.initialStates);
+        this.stateHandle = new StateHandle(MapFeature.initialStates);
         //listen for a map state change event set to the and change the state of all the map states
         document.addEventListener("mapStateChange", (e) => {
             let event = new customEvent("mapStateChange", {detail:e});
@@ -49,11 +49,11 @@ class MapFeature extends L.Map {
         }, true); //capture the event so it can be stopped from bubbling up
         //allows for each map to be able to change states individually
         this.eventTarget.addEventListener("mapStateChange", (e) => { 
-            this.MapStateHandle.setState(e.detail.action, e.detail.state); 
+            this.stateHandle.setState(e.detail.action, e.detail.state); 
         }, true); //capture the event so that it can be stopped from bubbling up
         
         this.addEventListener("click", (e) => {
-            this.MapOnClick(e);
+            this.OnClick(e);
         }, false); //don't capture the event so that it can bubble up to the document
 
         // this.on("dblclick", (e) => {
@@ -125,8 +125,15 @@ class MapFeature extends L.Map {
         this.self = this;
     }
 
-    MapOnClick(e) {
-        switch (this.MapStateHandle.getState("OnClick")) {
+    //resets the named state in the state handle to the default state
+    resetState(name)
+    {
+        console.debug(`Resetting ${this.guid} Map state ${name} to back to default state from ${this.stateHandle.getState(name)}`);
+        this.stateHandle.resetState(name);
+    }
+
+    OnClick(e) {
+        switch (this.stateHandle.getState("OnClick")) {
             case "NONE":
                 break;
             case "ADD_MARKER":
@@ -139,7 +146,7 @@ class MapFeature extends L.Map {
                     event: e
                 }});
                 document.dispatchEvent(event);
-                this.MapStateHandle.setState("OnClick", "NONE");
+                this.stateHandle.setState("OnClick", "NONE");
                 break;
             default:
                 break;

@@ -131,18 +131,24 @@ class MarkerFeature extends L.Marker {
         //listen for a marker state change event and change the state
         //this allows for all the marker states to be changed at the same time when dispatched
         //to the document. dispatches an event to itself to ensure that the event doesn't get acted on 2 times
+        
         document.addEventListener("markerStateChange", (e) => {
-            let event = new customEvent("markerStateChange", {detail:e});
+            let event = new CustomEvent("markerStateChange", {detail:e});
             this.eventTarget.dispatchEvent(event); 
         }, true);  //prevent the event from bubbling up
         //allows for each marker to be able to change states individually
         this.eventTarget.addEventListener("markerStateChange", (e) => { 
             this.stateHandle.setState(e.detail.action, e.detail.state); 
         }, true); //prevent the event from bubbling up
-
         //create the events for the marker
         this.addEventListener("click", (e) => { this.OnClick(); }, true); //prevent the event from bubbling up
         this.addEventListener("add", (e) => {this.OnAdd();}, true); //prevent the event from bubbling up
+    }
+    //resets the named state in the state handle to the default state
+    resetState(name)
+    {
+        console.debug(`Resetting ${this.guid} Marker state ${name} to back to default state from ${this.stateHandle.getState(name)}`);
+        this.stateHandle.resetState(name);
     }
 
     //Function to update a property of the marker in both the mapo and the property editor
@@ -188,6 +194,8 @@ class MarkerFeature extends L.Marker {
                 this.propertyEditor.open(); //open the property editor
                 break;
             case "DELETE":
+                //close the property editor
+                this.propertyEditor.close();
                 // Create a deleteme event to tell the editor to delete the marker
                 let event = new CustomEvent("DeleteMe", {detail:{"guid":this.guid}});
                 document.dispatchEvent(event);
