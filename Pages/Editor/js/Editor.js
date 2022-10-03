@@ -73,6 +73,7 @@ function doAction(e)
         default:
             break;
     }
+    gmap.updateFeatureArray(MapFeatures); //update the feature array copy contained in the map object
 };
 
 //listen for DeleteMe events and locate the feature with the guid and delete it from the map
@@ -94,6 +95,7 @@ function deleteFeature(e)
     MapFeatures.forEach((f) => {
         f.resetState("OnClick");
     });
+    gmap.updateFeatureArray(MapFeatures); //update the feature array copy contained in the map object
 }
 
 /**
@@ -107,13 +109,20 @@ document.addEventListener("updateMap", (e) => {
 //update the map
 function updateMap(map) {
     //unload the map
-    gmap.remove();
-    //empty the map features array
-    MapFeatures = [];
+    console.debug("Unloading map if it exists ...");
+    if(gmap)
+    {
+        console.debug("Map exists, turning off ...");
+        gmap = gmap.off();
+        console.debug("Map exists, removing map ...");
+        gmap = gmap.remove();
+    }
     //set the map to the new map
+    console.debug("Setting map to passed map ...");
     gmap = map;
-    //add the new map to the map features array
-    MapFeatures.push(gmap);
+    //Set the editor map features array to the new map features array
+    console.debug("Updating editor's map features array to passed map object feature array...");
+    MapFeatures = map.mapFeatures;
 };
 
 //listen for an exportTheMap event from a button click and dispatch an event to the exporter with the map
@@ -121,12 +130,15 @@ document.addEventListener("exportTheMap", (e) => {
     exportMap();
 });
 function exportMap() {
+    //update the map features array in the map object
+    gmap.updateFeatureArray(MapFeatures);
     //custom event telling the exporter to export the map
     let event = new CustomEvent("exportMap", {
         detail:{
             map_object: gmap 
         }
     });
+    //dispatch the event to the exporter
     document.dispatchEvent(event);
 };
 

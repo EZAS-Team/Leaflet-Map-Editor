@@ -42,6 +42,7 @@ class MapFeature extends L.Map {
         this.guid = guid.get;
         this.eventTarget = new EventTarget();
         this.stateHandle = new StateHandle(MapFeature.initialStates);
+        this.featureArray = [];
         //listen for a map state change event set to the and change the state of all the map states
         document.addEventListener("mapStateChange", (e) => {
             let event = new customEvent("mapStateChange", {detail:e});
@@ -123,6 +124,15 @@ class MapFeature extends L.Map {
         //     MapOnPreclick(e);
         // });
         this.self = this;
+    }
+
+    //This function sets the objects feature array to the passed in array of features
+    //it does not update the map with the new features
+    //It is used to maintain a copy of the feature array used by the editor
+    updateFeatureArray(featureArray)
+    {
+        console.debug(`Updating ${this.guid} Map feature array with ${featureArray}`);
+        this.featureArray = featureArray;
     }
 
     //resets the named state in the state handle to the default state
