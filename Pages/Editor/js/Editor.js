@@ -19,13 +19,29 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 //Add the gmap to the MapFeatures array
 MapFeatures.push(gmap);
 
+//dispatches the events to each feature in the MapFeatures array
+function changeStates(eventListenerName, instanceType, action, state)
+{
+    MapFeatures.forEach((f) => {
+        if (f instanceof instanceType)
+        {
+            f.eventTarget.dispatchEvent(new CustomEvent(eventListenerName, {detail:{action:action, state:state}}));
+        }
+    });
+}
+
 //listen for a state change event and change the state
 document.addEventListener("editorStateChange", (e) => {
     switch(e.detail.name)
     {
-        case "Map":
+        case "Map": //update the map state
             gmap.eventTarget.dispatchEvent(new CustomEvent("mapStateChange", {detail:{ action: e.detail.action, state: e.detail.state }}));
         break;
+        case "Marker": //update all the marker states
+            changeStates("markerStateChange",EZAS.MarkerFeature,e.detail.action, e.detail.state);
+        break;
+        case "Features": //updates all the features states
+            document.dispatchEvent(new CustomEvent("featuresStateChange", {detail:{ action: e.detail.action, state: e.detail.state }}));
         default:
             break;
     }
@@ -57,6 +73,7 @@ function doAction(e)
         default:
             break;
     }
+    gmap.updateFeatureArray(MapFeatures); //update the feature array copy contained in the map object
 };
 
 //listen for DeleteMe events and locate the feature with the guid and delete it from the map
@@ -74,7 +91,12 @@ function deleteFeature(e)
         //remove the feature from the MapFeatures array
         MapFeatures.splice(MapFeatures.indexOf(feature), 1);
     }
-};
+    //reset to rest of the features to the default state
+    MapFeatures.forEach((f) => {
+        f.resetState("OnClick");
+    });
+    gmap.updateFeatureArray(MapFeatures); //update the feature array copy contained in the map object
+}
 
 /**
  * Events for the importer and exporter
@@ -87,13 +109,20 @@ document.addEventListener("updateMap", (e) => {
 //update the map
 function updateMap(map) {
     //unload the map
-    gmap.remove();
-    //empty the map features array
-    MapFeatures = [];
+    console.debug("Unloading map if it exists ...");
+    if(gmap)
+    {
+        console.debug("Map exists, turning off ...");
+        gmap = gmap.off();
+        console.debug("Map exists, removing map ...");
+        gmap = gmap.remove();
+    }
     //set the map to the new map
+    console.debug("Setting map to passed map ...");
     gmap = map;
-    //add the new map to the map features array
-    MapFeatures.push(gmap);
+    //Set the editor map features array to the new map features array
+    console.debug("Updating editor's map features array to passed map object feature array...");
+    MapFeatures = map.mapFeatures;
 };
 
 //listen for an exportTheMap event from a button click and dispatch an event to the exporter with the map
@@ -101,12 +130,15 @@ document.addEventListener("exportTheMap", (e) => {
     exportMap();
 });
 function exportMap() {
+    //update the map features array in the map object
+    gmap.updateFeatureArray(MapFeatures);
     //custom event telling the exporter to export the map
     let event = new CustomEvent("exportMap", {
         detail:{
             map_object: gmap 
         }
     });
+    //dispatch the event to the exporter
     document.dispatchEvent(event);
 };
 

@@ -125,6 +125,21 @@ function exportCSVFile(headers, items, fileTitle) {
     }
 }
 
+function markersToFile(content, gemap){
+    let i;
+    let numberOfMarkers;
+    numberOfMarkers = gemap.getMarkers().length;
+    console.log(numberOfMarkers);
+    //content += "        L.marker([51.5, -0.09]).addTo(map);
+    for( i = 0; i < numberOfMarkers; i++){
+        content += "        L.marker([" + gemap.getMarkers()[i].getLatLng().lat.toString();
+        content += ", " + gemap.getMarkers()[i].getLatLng().lng.toString();
+        content += "]).addTo(map);\n";
+    }
+
+    return content;
+}
+
 //exports the map
 function exportMap(gemap) {
     var itemsFormatted = [];
@@ -135,28 +150,66 @@ function exportMap(gemap) {
     console.log("Preparing export file");
     var exportFileName = prompt("Filename for map");
     var headers = {
-        Lat: 'Latitude'.replace(/,/g, ''),
-        Long: "Longitude"
+        Person: 'Person'.replace(/,/g, ''),
+        Place: 'Place',
+        Latitude: 'Latitude',
+        Longitide: 'Longitude',
+        Location: 'Location type',
+        Precision: 'Precision',
+        Certainty: 'Certainty'
 
     };
 
     gemap.getMarkers().forEach((item) => {
         console.log(item.getLatLng().lat.toString());
         itemsFormatted.push({
-            Lat: item.getLatLng().lat.toString().replace(/,/g, ''),
-            Long: item.getLatLng().lng.toString()
+            Person: 'Doodlebob'.replace(/,/g, ''),
+            Place: 'The bat cave',
+            Latitude: item.getLatLng().lat.toString(),
+            Longitude: item.getLatLng().lng.toString(),
+            Location: 'Cave like',
+            Precision: 'Can\'t confirm nor deny',
+            Certainty: 'Somewhat certain'
+
         });
     });
 
     exportCSVFile(headers, itemsFormatted, exportFileName);
-    var mapElement = document.getElementById('map').innerHTML;
-    var mapFileName = "map.html";
+    var mapElement = document.getElementById("map").innerHTML;
+    mapElement = mapElement.substring(96);
+
+    var content = "<!DOCTYPE html>\n<html>\n    <head id=\"head\">";
+    content += "<!-- Start of remove required for leaflet -->\n";
+    content += "    <link rel=\"stylesheet\" href=\"https://unpkg.com/leaflet@1.8.0/dist/leaflet.css\" integrity=\"sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==\" crossorigin=\"\" />"
+    content += "     <!-- Make sure you put this AFTER Leaflet's CSS -->\n";
+    content += "    <script\n";
+    content += "        src=\"https://unpkg.com/leaflet@1.8.0/dist/leaflet.js\"\n";
+    content += "        integrity=\"sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ==\"\n";
+    content += "        crossorigin=\"\">\n";
+    content += "    </script><!-- End of remote required for leaflet -->\n";
+    content += "    </head>\n";
+    content += "    <body>\n";
+    //content += mapElement;
+    content += "\n";
+    content += "    <div id=\"map\" style=\"width: 1000px; height: 600px\"></div>\n";
+    content += "    <script>\n";
+    content += "        var map = L.map(\'map\').setView([51.505, -0.09], 13);\n\n";
+    content += "        L.tileLayer(\'https://tile.openstreetmap.org/{z}/{x}/{y}.png\', {\n";
+    content += "            maxZoom: 19,\n";
+    content += "            attribution: \'&copy; OpenStreetMap\'\n";
+    content += "            }).addTo(map);\n\n";
+    content = markersToFile(content, gemap);
+    content += "\n  </script>\n"
+    //content += "        L.marker([51.5, -0.09]).addTo(map);\n</script>\n"
+    content += "    </body>\n</html>"
+    console.log(Object.values(gemap.getMap()));
+
+    //Same process as .csv export
     var element = document.createElement('a');
-    element.setAttribute('href', 'data:text/html, ' + mapElement);
-    element.setAttribute('download', mapFileName);
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+    element.setAttribute('download', exportFileName + '.html');
     element.style.display = 'none';
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
-
 }

@@ -161,6 +161,7 @@ class PropertyEditor {
 		this.openEvent = new CustomEvent("openPropertyEditor", {
 			detail: feature,
 		});
+		this.closeEvent = new CustomEvent("closePropertyEditor");
 		this.feature = feature;
 		this.editableFields = [];
 	}
@@ -260,6 +261,9 @@ class FeaturePropertyEditor extends PropertyEditor {
 
 	open() {
 		document.dispatchEvent(this.openEvent);
+	}
+	close() {
+		document.dispatchEvent(this.closeEvent);
 	}
 }
 
