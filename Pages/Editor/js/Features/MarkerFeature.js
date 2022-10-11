@@ -105,7 +105,32 @@ class MarkerFeature extends L.Marker {
                 ),
                 ""
             ),
-
+            new EditorRequirements.EditableField(
+				`${this.guid}`,
+				new EditorRequirements.Field(
+					"number",
+					"lat",
+					"Latitude",
+					`${this.getLatLng().lat}`
+				),
+				this.getLatLng().lat,
+				(value) => {
+					return this.getLatLng().lat;
+				}
+			),
+			new EditorRequirements.EditableField(
+				`${this.guid}`,
+				new EditorRequirements.Field(
+					"number",
+					"lng",
+					"Longitude",
+					`${this.getLatLng().lng}`
+				),
+				this.getLatLng().lng,
+				(value) => {
+					return this.getLatLng().lng;
+				}
+			),
             // the marker type dropdown is discluded because it is not editable
             // until a feature is implemented to copy and recreate with the new icon
             // new EditorRequirements.EditableField(
@@ -131,7 +156,6 @@ class MarkerFeature extends L.Marker {
         //listen for a marker state change event and change the state
         //this allows for all the marker states to be changed at the same time when dispatched
         //to the document. dispatches an event to itself to ensure that the event doesn't get acted on 2 times
-        
         document.addEventListener("markerStateChange", (e) => {
             let event = new CustomEvent("markerStateChange", {detail:e});
             this.eventTarget.dispatchEvent(event); 
@@ -158,28 +182,32 @@ class MarkerFeature extends L.Marker {
         if(!(property in this.options))//check if the property exists
         {
             //warn of a non-easy exportable property
-            console.warn(`Marker ${this.guid} updateProperty event fired with property ${property} that does not exist in standard leaflet.
-                It will be added to the marker object but requires custom importing and exporting to be used.
-                This is not recommended.`);
+            console.warn(`Marker ${this.guid} updateProperty event fired with property ${property} that may require custom importing and exporting to be used.`);
             //throw(`Property ${property} does not exist in Marker`);
         }
-        //swtich for actions based on the type of property's value
-        let propertyValue = this.options[property];
-        if(propertyValue instanceof L.Icon)
+        //switch for actions based on the type of property's value
+		//this is used to update the marker's objects property on the map
+		switch(property)
         {
-            return;
-            this.options[property] = MarkerFeature.icons[value];
+            case "latlng":
+                this.setLatLng(value);
+                break;
+            case "lat":
+                this.setLatLng([value, this.getLatLng().lng]);
+            break;
+            case "lng":
+                this.setLatLng([this.getLatLng().lat, value]);
+                break;
+            case "icon":
+                this.setIcon(MarkerFeature.icons[value]);
+                break;
+            default:
+                this.options[property] = value;
+                break;
         }
-        else if(propertyValue instanceof L.LatLng)
-        {
-            this.options[property]=this.SetLatLng(value);
-        }
-        else
-        {
-            this.options[property] = value; //update the property value of the marker
-        }
-        this.propertyEditor.setEditableFieldValue(property, value); //update the property value in the property editor
-                
+        //update the property editor information
+		this.propertyEditor.setEditableFieldValue(property, value); //update the property value in the property editor
+	
     }
 
     //Callback function for when a marker is clicked on called internally by the marker
