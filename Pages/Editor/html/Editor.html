@@ -73,18 +73,19 @@
     <body>
         <div class="flex-row-l-to-r">
             <aside id="editor_buttons_panel">
-
-                <!-- button that calls a export callback -->
-                <button id="export_button" onclick="exportMap()">Export</button>
-                <!-- button that calls a import callback -->
-                <button id="import_button" onclick="importMap()">Import</button>
-                <!-- button that switches the state to add a marker -->
-                <button
-                id="delete_button"
-                onclick="changeEditorState('Features','OnClick','DELETE')"
-                >
-                Delete Feature
-                </button>
+                <div id="general_buttons">
+                    <!-- button that calls a export callback -->
+                    <button id="export_button" onclick="exportMap()">Export</button>
+                    <!-- button that calls a import callback -->
+                    <button id="import_button" onclick="importMap()">Import</button>
+                    <!-- button that switches the state to add a marker -->
+                    <button
+                    id="delete_button"
+                    onclick="changeEditorState('Features','OnClick','DELETE')"
+                    >
+                    Delete Feature
+                    </button>
+                </div>
                 <div id="marker_buttons">
                     
                     <button
@@ -97,11 +98,11 @@
                     <select 
                     id="marker_type_select"
                     >
-                        <option selected value="DEFAULT-BLUE">Blue</option>
-                        <option value="DEFAULT-RED">Red</option>
-                        <option value="DEFAULT-GREEN">Green</option>
-                        <option value="DEFAULT-PURPLE">Purple</option>
-                        <option value="DEFAULT-YELLOW">Yellow</option>
+                        <option value="DEFAULT-BLUE" selected>DEFAULT-BLUE</option>
+                        <option value="DEFAULT-RED">DEFAULT-RED</option>
+                        <option value="DEFAULT-GREEN">DEFAULT-GREEN</option>
+                        <option value="DEFAULT-PURPLE">DEFAULT-PURPLE</option>
+                        <option value="DEFAULT-YELLOW">DEFAULT-YELLOW</option>
                     </select>
                 </div>
                 <div id="circle_buttons">
@@ -113,7 +114,7 @@
                     Add Circle
                     </button>
                     <label for="circle_radius_input">Radius (meters)</label>
-                    <input type="number" id="circle_radius_input" placeholder=1000></input>
+                    <input type="number" id="circle_radius_input" placeholder=1000 value=1000></input>
                 </div>
             </aside>
             <div id="map">

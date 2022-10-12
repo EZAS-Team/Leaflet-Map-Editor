@@ -118,6 +118,7 @@ class CircleFeature extends L.Circle {
 		this.eventTarget.addEventListener(
 			"circleStateChange",
 			(e) => {
+                console.debug(`Circle ${this.guid} state change event: ${e.detail.action} ${e.detail.state}`);
 				this.stateHandle.setState(e.detail.action, e.detail.state);
 			},
 			true
@@ -143,7 +144,7 @@ class CircleFeature extends L.Circle {
 		console.debug(
 			`Resetting ${
 				this.guid
-			} Circle state ${name} to back to default state from ${this.stateHandle.getState(
+			} Circle state ${name} back to default state from ${this.stateHandle.getState(
 				name
 			)}`
 		);

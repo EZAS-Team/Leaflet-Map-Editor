@@ -137,9 +137,14 @@ class EditableField {
 							'${this.field.propertyName}',
 							document.getElementById('${this.field.propertyName}_select').value)"
 							)"
+							
 						>`;
 				let choiceList = this.field.choices;
 				for (let i = 0; i < choiceList.length; i++) {
+					if (choiceList[i] === this.value) {
+						html += `<option value="${choiceList[i]}" selected>${choiceList[i]}</option>`;
+						continue;
+					}
 					html += `<option value="${choiceList[i]}">${choiceList[i]}</option>`;
 				}
 				html += `</select></div>`;

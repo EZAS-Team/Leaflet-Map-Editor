@@ -32,6 +32,10 @@ function changeStates(eventListenerName, instanceType, action, state)
 
 //listen for a state change event and change the state
 document.addEventListener("editorStateChange", (e) => {
+    console.debug(`State change event received: ${e.detail.state}, ${e.detail.action}`);
+    MapFeatures.forEach((f) => {
+        f.resetState("OnClick");
+    });
     switch(e.detail.name)
     {
         case "Map": //update the map state
@@ -63,6 +67,9 @@ document.addEventListener("doAction", (e) => { doAction(e.detail); });
 function doAction(e)
 {
     let options = e.options
+    MapFeatures.forEach((f) => {
+        f.resetState("OnClick");
+    });
     switch(e.action)
     {
         //Icons need to be selected before the marker is added to the map
@@ -79,7 +86,9 @@ function doAction(e)
                 selectedIcon = e.options.icon;
             }
             //add the marker to the layer that dispatched the event this should be the map in most cases
-            options.icon = selectedIcon;
+            e.options.icon = selectedIcon;
+            let options = e.options;
+            options.iconType = markerType;
             let marker = new EZAS.MarkerFeature(e.event.latlng, e.options).addTo(e.dispatcher);
             MapFeatures.push(marker);//add the marker to the map features
             console.debug("Added marker to map");
@@ -110,6 +119,9 @@ document.addEventListener("DeleteMe", (e)=>{deleteFeature(e.detail);});
 function deleteFeature(e)
 {
     //find the feature with the guid
+    MapFeatures.forEach((f) => {
+        f.resetState("OnClick");
+    });
     let feature = MapFeatures.find((f) => { return f.guid == e.guid; });
     if (feature != null) 
     {
@@ -119,9 +131,6 @@ function deleteFeature(e)
         MapFeatures.splice(MapFeatures.indexOf(feature), 1);
     }
     //reset to rest of the features to the default state
-    MapFeatures.forEach((f) => {
-        f.resetState("OnClick");
-    });
     gmap.updateFeatureArray(MapFeatures); //update the feature array copy contained in the map object
 }
 
