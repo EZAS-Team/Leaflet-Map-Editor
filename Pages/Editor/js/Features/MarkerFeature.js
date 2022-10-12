@@ -25,9 +25,7 @@ class MarkerFeature extends L.Marker {
         "OnMouseOver":"NONE",
         "OnMouseOut":"NONE",
         "OnContextMenu":"NONE",
-        "OnPreClick":"NONE",
-        "IconType":"DEFAULT-BLUE",
-        "IconType_default":"DEFAULT-BLUE",
+        "OnPreClick":"NONE"
     };
 
     static icons =
@@ -78,6 +76,7 @@ class MarkerFeature extends L.Marker {
         super(latlng, options);
         this.eventTarget = new EventTarget();
         this.iconType = options.iconType;
+        console.debug(`Marker ${this.guid} constructor fired with options: `, options);
         this.guid = guid.get; //GUID object for the marker
         //create the fields that can be edited in the property editor for the marker
         //cant be static because guid is required and unique for each marker
@@ -88,7 +87,7 @@ class MarkerFeature extends L.Marker {
                 new EditorRequirements.Field(
                     "string",
                     "title",
-                    "Marker Title",
+                    "Title",
                     `${this.guid}`,
                     ""
                 ),
@@ -99,7 +98,7 @@ class MarkerFeature extends L.Marker {
                 new EditorRequirements.Field(
                     "string",
                     "description",
-                    "Marker Description",
+                    "Description",
                     `${this.guid}`,
                     ""
                 ),
@@ -136,15 +135,16 @@ class MarkerFeature extends L.Marker {
                 new EditorRequirements.Field(
                     "dropdown",
                     "icon",
-                    "Marker Icon",
+                    "Icon",
                     `${this.iconType}`,
-                    this.iconType,
+                    '',
                     Object.keys(MarkerFeature.icons)
                 ),
                 this.iconType,
                 (value) => {
                     //return the key of icon in icons for where the iconurl matches the given value iconurl
-                    return Object.keys(MarkerFeature.icons).find(key => MarkerFeature.icons[key].options.iconUrl === value.iconUrl); 
+                    console.debug(`Icon value in property editor set to: ${value}`);
+                    return value;
                 }
            ),
         ];
@@ -204,7 +204,6 @@ class MarkerFeature extends L.Marker {
                 break;
             case "icon":
                 this.setIcon(MarkerFeature.icons[value]);
-                //this.options['iconType'] = value;
                 this.options['iconType'] = value;
                 break;
             default:

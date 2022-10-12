@@ -87,7 +87,8 @@ function doAction(e)
             }
             //add the marker to the layer that dispatched the event this should be the map in most cases
             e.options.icon = selectedIcon;
-            e.options.iconType = markerType;
+            let options = e.options;
+            options.iconType = markerType;
             let marker = new EZAS.MarkerFeature(e.event.latlng, e.options).addTo(e.dispatcher);
             MapFeatures.push(marker);//add the marker to the map features
             console.debug("Added marker to map");
