@@ -28,8 +28,15 @@
     /*multiply the screen width by .8  and convert to px*/
     width: 800px;
     height: 800px;
+    padding-left: 700px;
 }
-
+#export_button {
+    border-radius: 8px;
+    background-color: #d34d4d;
+}
+body{
+    background-color: #8bbd78;
+}
 /* Property Editor Styling */
 
 /* align the aside with id property_editor to the right*/
