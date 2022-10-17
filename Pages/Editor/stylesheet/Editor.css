@@ -26,10 +26,46 @@
 /* width and height are required */
 #map {
     /*multiply the screen width by .8  and convert to px*/
+    top: 80px;
     width: 800px;
     height: 800px;
+    padding-left: 700px;
+}
+#export_button {
+    position: fixed;
+   
+    font-size: 25px;
+    top: 840px;
+}
+#add_marker_button{
+    position: fixed;
+    top:340px;
+    left:10px;
+    font-size: 20px;
+    /*top: 1000px;
+    //left:20px;
+    */
+}
+#marker_type_select{
+    position:fixed;
+    top:380px;
+    left:10px;
+}
+#import_button{
+    position:fixed;
+    top:800px;
+    font-size: 25px;
+
+}
+#delete_marker_button{
+    position:fixed;
+    top:420px;
+    font-size: 20px;
 }
 
+body{
+    background-color: #8bbd78;
+}
 /* Property Editor Styling */
 
 /* align the aside with id property_editor to the right*/
