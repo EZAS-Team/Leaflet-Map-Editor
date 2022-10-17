@@ -143,22 +143,28 @@ class MapFeature extends L.Map {
     }
 
     OnClick(e) {
-        switch (this.stateHandle.getState("OnClick")) {
+        console.debug(`Map ${this.guid} OnClick event fired`);
+        let mapState = this.stateHandle.getState("OnClick");
+        switch (mapState) {
             case "NONE":
                 break;
+            //below cases are the states implemetned by the editor
             case "ADD_MARKER":
+            case "ADD_CIRCLE":
                 //dispatch a doAction event to add a marker to the map
                 let event = new CustomEvent("doAction", {detail:
                 {
                     guid: this.guid,
                     dispatcher: this,
-                    action: "ADD_MARKER",
+                    action: mapState,
+                    options: {},
                     event: e
                 }});
                 document.dispatchEvent(event);
                 this.stateHandle.setState("OnClick", "NONE");
                 break;
             default:
+                console.error(`Map ${this.guid} OnClick event fired with unknown state ${currentState}`);
                 break;
         }
     }
