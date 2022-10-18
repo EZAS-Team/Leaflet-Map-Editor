@@ -227,11 +227,7 @@ class MarkerFeature extends L.Marker {
                 this.propertyEditor.open(); //open the property editor
                 break;
             case "DELETE":
-                //close the property editor
-                this.propertyEditor.close();
-                // Create a deleteme event to tell the editor to delete the marker
-                let event = new CustomEvent("DeleteMe", {detail:{"guid":this.guid}});
-                document.dispatchEvent(event);
+                this.remove(); //remove the marker from the map
                 break;
             default:
                 console.error("Invalid State For Marker OnClick Event", this.stateHandle.getState("OnClick"));
@@ -251,6 +247,16 @@ class MarkerFeature extends L.Marker {
                 console.error(`Marker ${this.guid} OnAdd State is Invalid or Unknown: `, this.stateHandle.getState("OnAdd"));
                 break;
         }
+    }
+
+    //function to remove the marker from the map
+    remove()
+    {
+        //close the property editor
+        this.propertyEditor.close();
+        // Create a deleteme event to tell the editor to delete the marker
+        let event = new CustomEvent("DeleteMe", {detail:{"guid":this.guid}});
+        document.dispatchEvent(event);
     }
 
 }
