@@ -32,6 +32,10 @@ function changeStates(eventListenerName, instanceType, action, state)
 
 //listen for a state change event and change the state
 document.addEventListener("editorStateChange", (e) => {
+    console.debug(`State change event received: ${e.detail.state}, ${e.detail.action}`);
+    MapFeatures.forEach((f) => {
+        f.resetState("OnClick");
+    });
     switch(e.detail.name)
     {
         case "Map": //update the map state
@@ -40,9 +44,15 @@ document.addEventListener("editorStateChange", (e) => {
         case "Marker": //update all the marker states
             changeStates("markerStateChange",EZAS.MarkerFeature,e.detail.action, e.detail.state);
         break;
+        case "Circle": //update all the circle states
+            changeStates("circleStateChange",EZAS.CircleFeature,e.detail.action, e.detail.state);
+        break;
         case "Features": //updates all the features states
-            document.dispatchEvent(new CustomEvent("featuresStateChange", {detail:{ action: e.detail.action, state: e.detail.state }}));
+            changeStates("markerStateChange",EZAS.MarkerFeature,e.detail.action, e.detail.state);
+            changeStates("circleStateChange",EZAS.CircleFeature,e.detail.action, e.detail.state);
+        break;
         default:
+            console.error(`Unknown Editor State Change Event with Name ${e.detail.name}, Action ${e.detail.action}, State ${e.detail.state}`);
             break;
     }
 });
@@ -52,9 +62,14 @@ document.addEventListener("editorStateChange", (e) => {
  */
 
 //listen for a doAction event and do the action NEVER CALLED directly
+//used for map click events
 document.addEventListener("doAction", (e) => { doAction(e.detail); });
 function doAction(e)
 {
+    let options = e.options
+    MapFeatures.forEach((f) => {
+        f.resetState("OnClick");
+    });
     switch(e.action)
     {
         //Icons need to be selected before the marker is added to the map
@@ -66,11 +81,32 @@ function doAction(e)
             let markerType = document.getElementById("marker_type_select").value;
             //get the Icon object from the marker icon selector
             let selectedIcon = EZAS.MarkerFeature.icons[markerType];
+            if (e.options.icon)
+            {
+                selectedIcon = e.options.icon;
+            }
             //add the marker to the layer that dispatched the event this should be the map in most cases
-            let marker = new EZAS.MarkerFeature(e.event.latlng, {icon:selectedIcon}).addTo(e.dispatcher);
+            e.options.icon = selectedIcon;
+            let options = e.options;
+            options.iconType = markerType;
+            let marker = new EZAS.MarkerFeature(e.event.latlng, e.options).addTo(e.dispatcher);
             MapFeatures.push(marker);//add the marker to the map features
+            console.debug("Added marker to map");
+            break;
+        case "ADD_CIRCLE":
+            //get the circle radius from the circle radius number input
+            let radius = document.getElementById("circle_radius_input").value;
+            if(e.options.radius)
+            {
+                radius = e.options.radius;
+            }
+            e.options.radius = radius;
+            let circle = new EZAS.CircleFeature(e.event.latlng, e.options).addTo(e.dispatcher);
+            MapFeatures.push(circle);//add the circle to the map features
+            console.debug("Added circle to map");
             break;
         default:
+            console.error(`Action ${e.action} not implemented`);
             break;
     }
     gmap.updateFeatureArray(MapFeatures); //update the feature array copy contained in the map object
@@ -83,6 +119,9 @@ document.addEventListener("DeleteMe", (e)=>{deleteFeature(e.detail);});
 function deleteFeature(e)
 {
     //find the feature with the guid
+    MapFeatures.forEach((f) => {
+        f.resetState("OnClick");
+    });
     let feature = MapFeatures.find((f) => { return f.guid == e.guid; });
     if (feature != null) 
     {
@@ -92,9 +131,6 @@ function deleteFeature(e)
         MapFeatures.splice(MapFeatures.indexOf(feature), 1);
     }
     //reset to rest of the features to the default state
-    MapFeatures.forEach((f) => {
-        f.resetState("OnClick");
-    });
     gmap.updateFeatureArray(MapFeatures); //update the feature array copy contained in the map object
 }
 
