@@ -34,17 +34,17 @@ class PsuedoMapInteract
 
     //called with a lat and lng, a options object, and a action string
     psuedoMapClick(latlng, options, action) {
-        if (!(action in PsuedoInteract.validActions)) {
+        if (!(action in PsuedoMapInteract.validActions)) {
             throw new Error("Invalid action: " + action);
         }
         this.updateMapObject(); //update the map object
         let event = new CustomEvent("doAction", {detail:
         {
-            guid: guid, //map guid
+            guid: this._map.guid, //map guid
             dispatcher: this._map, //map object
             action: action, //action to perform
             options: options,//options to pass to the action
-            event: {latlng: latlng} //sudo click event
+            event: {latlng: latlng} //psuedo click event
         }});
         document.dispatchEvent(event);
     }
