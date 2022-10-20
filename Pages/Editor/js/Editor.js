@@ -126,7 +126,7 @@ function deleteFeature(e)
     if (feature != null) 
     {
         //remove the feature from the map it is on
-        feature.remove();
+        gmap.removeLayer(feature);
         //remove the feature from the MapFeatures array
         MapFeatures.splice(MapFeatures.indexOf(feature), 1);
     }
