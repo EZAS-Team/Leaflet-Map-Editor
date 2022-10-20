@@ -12,7 +12,9 @@ function importMap() {
     //dispach event to the window that an import has occured and the map should be imported
     
     //the map that is built by the importer based on JSON and dispatched to the editor when the import is done
-    let gimap = new EZAS.MapFeature("imap", {});
-    let event = new CustomEvent("updateMap", {detail:{map_object: gimap }});
-    document.dispatchEvent(event);
+    // let gimap = new EZAS.MapFeature("imap", {});
+    // let event = new CustomEvent("updateMap", {detail:{map_object: gimap }});
+    // document.dispatchEvent(event);
+    let PsuedoPoker = new EZAS.PsuedoMapInteract();
+    PsuedoPoker.psuedoMapClick({lat: 0, lng: 0}, {title: "test", description:"test"}, "ADD_MARKER");
 }

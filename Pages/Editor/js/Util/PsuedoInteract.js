@@ -2,20 +2,20 @@
 //Class to interact with a map object
 class PsuedoMapInteract
 {
-    static validActions =
-    [
-        "ADD_MARKER",
-        "ADD_CIRCLE",
-        // "ADD_POLYLINE",
-        // "ADD_POLYGON",
-        // "ADD_RECTANGLE"
-    ];
     constructor()
     {
         //get the map object from the editor
         this.eventTarget = new EventTarget();
         this.updateMapObject(); //get the map object from the editor
-        document.addEventListener("returnMap",(e)=>{retriveMapObject(e);}, true);
+        document.addEventListener("returnMap",(e)=>{this.retriveMapObject(e);}, true);
+        this.validActions =
+        [
+            "ADD_MARKER",
+            "ADD_CIRCLE",
+            // "ADD_POLYLINE",
+            // "ADD_POLYGON",
+            // "ADD_RECTANGLE"
+        ];
     }
 
     //internal function not to be called by user
@@ -34,7 +34,9 @@ class PsuedoMapInteract
 
     //called with a lat and lng, a options object, and a action string
     psuedoMapClick(latlng, options, action) {
-        if (!(action in PsuedoMapInteract.validActions)) {
+        //check if the action is in the valid actions array
+        if (!(this.validActions.includes(action)))
+        { 
             throw new Error("Invalid action: " + action);
         }
         this.updateMapObject(); //update the map object
