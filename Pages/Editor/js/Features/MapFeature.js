@@ -107,8 +107,12 @@ class MapFeature extends L.Map {
         console.debug(`Clearing ${this.guid} Map`);
         //call the remove function on each feature in the feature array
         this.featureArray.forEach((feature) => {
-            console.debug(`==>Removing ${feature.guid} from ${this.guid} Map`);
-            feature.remove();
+            if (feature.guid != this.guid)
+            {
+                console.debug(`==>Removing ${feature.guid} from ${this.guid} Map`);
+                feature.remove();
+
+            }
         }
         );
         //clear the feature array
