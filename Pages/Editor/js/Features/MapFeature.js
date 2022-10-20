@@ -43,6 +43,7 @@ class MapFeature extends L.Map {
         this.eventTarget = new EventTarget();
         this.stateHandle = new StateHandle(MapFeature.initialStates);
         this.featureArray = [];
+        this.featuresAdded = 0;
         //listen for a map state change event set to the and change the state of all the map states
         document.addEventListener("mapStateChange", (e) => {
             let event = new customEvent("mapStateChange", {detail:e});
@@ -95,6 +96,7 @@ class MapFeature extends L.Map {
                 }});
                 document.dispatchEvent(event);
                 this.stateHandle.setState("OnClick", "NONE");
+                this.featuresAdded++;
                 break;
             default:
                 console.error(`Map ${this.guid} OnClick event fired with unknown state ${currentState}`);
@@ -106,18 +108,24 @@ class MapFeature extends L.Map {
     {
         console.debug(`Clearing ${this.guid} Map`);
         //call the remove function on each feature in the feature array
-        this.featureArray.forEach((feature) => {
-            if (feature.guid != this.guid)
+        console.debug(`FeatureArray ${this.featureArray}`);
+        let featureGuids = [];
+        for(let i = 1; i < this.featureArray.length; i++)
+        {
+            if(this.featureArray[i] != null && this.featureArray[i].guid != this.guid)
             {
-                console.debug(`==>Removing ${feature.guid} from ${this.guid} Map`);
-                feature.remove();
-
+                featureGuids.push(this.featureArray[i].guid);
             }
         }
-        );
-        //clear the feature array
-        this.featureArray = [];
+        console.debug(`FeatureGuids ${featureGuids}`);
+        for(let i = 0; i < featureGuids.length; i++)
+        {
+            console.debug(`Removing feature ${featureGuids[i]}`);
+            let event = new CustomEvent("DeleteMe", {detail: {guid:featureGuids[i]}});
+            document.dispatchEvent(event);
+        }
         console.debug(`Cleared ${this.guid} Map`);
+        this.featuresAdded = 0;
     }
 }
 
