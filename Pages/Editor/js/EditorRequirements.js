@@ -65,14 +65,14 @@ const editableFieldOptions = {
 
 //generic class for editable fields
 class EditableField {
-	constructor(guid = "", field = editableFieldOptions[0], value = undefined, fn = (v)=>{return v;}) {
+	constructor(guid = "", field = editableFieldOptions[0], value = undefined, propertyEditorSetfn = (v)=>{return v;}) {
 		if (typeof guid !== "string" || guid.length === 0) {
 			throw new Error("name must be a non-empty string");
 		}
 		this.guid = guid;
 		this.field = field;
 		this.value = (value === undefined)? field.defaultValue : value;
-		this.fn = fn;
+		this.fn = propertyEditorSetfn;
 	}
 
 	get propertyName()
@@ -87,8 +87,8 @@ class EditableField {
 	//sets the value of the editable field
 	//if a function is provided, the function is called with the value as an argument
 	//and the return value is used as the new value
-	set(value, fn = (v)=>{return v;}) {
-		this.value = fn(value);
+	set(value, propertyEditorSetfn = this.fn) {
+		this.value = propertyEditorSetfn(value);
 	}
 
 	toString() {
@@ -103,7 +103,7 @@ class EditableField {
 		};
 	}
 
-	//returns the html for the editable field
+	//returns the html for the property editor for the editable field
 	toHTML() {
 		let html = "";
 		switch (this.field.type)
@@ -137,9 +137,14 @@ class EditableField {
 							'${this.field.propertyName}',
 							document.getElementById('${this.field.propertyName}_select').value)"
 							)"
+							
 						>`;
 				let choiceList = this.field.choices;
 				for (let i = 0; i < choiceList.length; i++) {
+					if (choiceList[i] === this.value) {
+						html += `<option value="${choiceList[i]}" selected>${choiceList[i]}</option>`;
+						continue;
+					}
 					html += `<option value="${choiceList[i]}">${choiceList[i]}</option>`;
 				}
 				html += `</select></div>`;
@@ -193,7 +198,7 @@ class PropertyEditor {
 	//sets the value of the editable field with the given propertyName
 	//if a function is provided, the function is called with the value as an argument
 	//and the return value is used as the new value
-	setEditableFieldValue(propertyName, value, fn = (v)=>{return v;}) {
+	setEditableFieldValue(propertyName, value, getfn = undefined) {
 	{
 		//throw an error if the field name is not a string or is empty
 		if(typeof propertyName !== "string" || propertyName.length === 0)
@@ -207,7 +212,14 @@ class PropertyEditor {
 			let currentEditableField = this.editableFields[i];
 			if (currentEditableField.propertyName === propertyName) {
 				//set the value of the editable field using the function if provided
-				this.editableFields[i].set(value, fn);
+				if(!(getfn === undefined))
+				{
+					this.editableFields[i].set(value, getfn); //set the value of the editable field for viewing
+				}
+				else
+				{
+					this.editableFields[i].set(value); //set the value of the editable field for viewing
+				} //use the editable field's default function
 				return true; //return true if the editable field was found and the value was set
 			}
 		}
@@ -219,6 +231,7 @@ class PropertyEditor {
 		return this.editableFields;
 	}
 
+	//returns the html for the property editor
 	toHTML() {
 		let html = "";
 		let editableFieldsLength = this.editableFields.length;
