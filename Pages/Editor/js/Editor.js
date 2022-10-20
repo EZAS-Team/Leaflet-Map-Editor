@@ -87,7 +87,6 @@ function doAction(e)
             }
             //add the marker to the layer that dispatched the event this should be the map in most cases
             e.options.icon = selectedIcon;
-            let options = e.options;
             options.iconType = markerType;
             let marker = new EZAS.MarkerFeature(e.event.latlng, e.options).addTo(e.dispatcher);
             MapFeatures.push(marker);//add the marker to the map features
@@ -130,6 +129,7 @@ function deleteFeature(e)
         //remove the feature from the MapFeatures array
         MapFeatures.splice(MapFeatures.indexOf(feature), 1);
     }
+
     //reset to rest of the features to the default state
     gmap.updateFeatureArray(MapFeatures); //update the feature array copy contained in the map object
 }
@@ -146,7 +146,6 @@ document.addEventListener("clearMap", (e) => {
 function clearMap() {
     //unload the map
     gmap.updateFeatureArray(MapFeatures);
-    console.debug("Clearing map if it exists ...");
     if(gmap)
     {
         console.debug("Clearing map");
