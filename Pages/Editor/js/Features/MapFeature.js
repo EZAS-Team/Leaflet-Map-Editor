@@ -106,17 +106,20 @@ class MapFeature extends L.Map {
     {
         console.debug(`Clearing ${this.guid} Map`);
         //call the remove function on each feature in the feature array
-        this.featureArray.forEach((feature) => {
-            if (feature.guid != this.guid)
-            {
-                console.debug(`==>Removing ${feature.guid} from ${this.guid} Map`);
+        console.debug(`FeatureArray ${this.featureArray}`);
+        for(let i = 0; i <= this.featureArray.length; i++)
+        {
+            let feature = this.featureArray[i];
+            console.debug(`Feature ${this.featureArray[i]}`);
+            if(!(feature instanceof MapFeature))
+            {   
+                console.debug(`==>Removing ${feature.guid}: ${feature.constructor.name} from ${this.guid} Map`);
+                //print the type of feature being removed
                 feature.remove();
-
             }
         }
-        );
         //clear the feature array
-        this.featureArray = [];
+        //this.featureArray = [];
         console.debug(`Cleared ${this.guid} Map`);
     }
 }

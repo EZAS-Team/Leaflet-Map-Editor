@@ -145,13 +145,14 @@ document.addEventListener("clearMap", (e) => {
 //clear the map
 function clearMap() {
     //unload the map
+    gmap.updateFeatureArray(MapFeatures);
     console.debug("Clearing map if it exists ...");
     if(gmap)
     {
         console.debug("Clearing map");
         gmap.clear();
-        MapFeatures = gmap.featureArray; //update the MapFeatures array
     }
+    //MapFeatures = gmap.featureArray; //update the MapFeatures array
     console.debug("Map cleared");
 };
 
