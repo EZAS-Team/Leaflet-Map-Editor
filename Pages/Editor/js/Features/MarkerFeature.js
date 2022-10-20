@@ -74,13 +74,15 @@ class MarkerFeature extends L.Marker {
 
     constructor(latlng, options, guid = new GUID()) {
         super(latlng, options);
-        this.options = options;
         this.eventTarget = new EventTarget();
         this.iconType = options.iconType;
-        console.debug(`Marker ${this.guid} constructor fired with options: `, options);
         this.guid = guid.get; //GUID object for the marker
+        console.debug(`Marker ${this.guid} constructor fired with options: `, options);
         //create the fields that can be edited in the property editor for the marker
         //cant be static because guid is required and unique for each marker
+        if (options.title == undefined) options.title = "Marker";
+        if (options.description == undefined) options.description = "";
+
         this.editableFieldObjects =
         [
             new EditorRequirements.EditableField(
@@ -89,10 +91,10 @@ class MarkerFeature extends L.Marker {
                     "string",
                     "title",
                     "Title",
-                    `${this.options.title}`,
-                    ""
+                    "Title",
+                    `${options.title}`,
                 ),
-                `${this.options.title}`
+                ""
             ),
             new EditorRequirements.EditableField(
                 `${this.guid}`,
@@ -100,10 +102,10 @@ class MarkerFeature extends L.Marker {
                     "string",
                     "description",
                     "Description",
-                    `${this.options.description}`,
-                    ""
+                    "Description",
+                    `${options.description}`,    
                 ),
-                `${this.options.description}`
+                ""
             ),
             new EditorRequirements.EditableField(
 				`${this.guid}`,

@@ -25,14 +25,28 @@ function csvToArray(str, delimiter = ",") {
     return arr;
   }
 
+  function clearMap(){
+    let event = new CustomEvent("clearMap");
+    document.dispatchEvent(event);
+  }
+
 //import the map and then tell the editor that it needs to update the map
 function importMap() {
-
+    clearMap();
     //the map that is built by the importer based on JSON and dispatched to the editor when the import is done
-    let imap = testMapParser();
+    let clicker = new EZAS.PsuedoMapInteract();
+    clicker.psuedoMapClick({lat:0.0, lng:0.0}, {title:"test", description:"test", radius:1000}, "ADD_CIRCLE");
 
-    let event = new CustomEvent("updateMap", { detail: { map_object: imap } });
-    document.dispatchEvent(event);
+    //for header in header{
+
+    //}
+
+
+
+    //let imap = testMapParser();
+
+    //let event = new CustomEvent("updateMap", { detail: { map_object: imap } });
+    //document.dispatchEvent(event);
 
     // Previous version of importmap(). Keeping for now in case it is needed later for some reason.
     // let gimap = new EZAS.MapFeature("imap", {});
