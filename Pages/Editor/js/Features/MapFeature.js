@@ -56,73 +56,6 @@ class MapFeature extends L.Map {
         this.addEventListener("click", (e) => {
             this.OnClick(e);
         }, false); //don't capture the event so that it can bubble up to the document
-
-        // this.on("dblclick", (e) => {
-        //     MapOnDoubleClick(e);
-        // });
-        // this.on("mousemove", (e) => {
-        //     MapOnMouseMove(e);
-        // });
-        // this.on("mousedown", (e) => {
-        //     MapOnMouseDown(e);
-        // });
-        // this.on("mouseup", (e) => {
-        //     MapOnMouseUp(e);
-        // });
-        // this.on("mouseover", (e) => {
-        //     MapOnMouseOver(e);
-        // });
-        // this.on("mouseout", (e) => {
-        //     MapOnMouseOut(e);
-        // });
-        // this.on("contextmenu", (e) => {
-        //     MapOnContextMenu(e);
-        // });
-        // this.on("drag", (e) => {
-        //     MapOnDrag(e);
-        // });
-        // this.on("dragend", (e) => {
-        //     MapOnDragEnd(e);
-        // });
-        // this.on("dragstart", (e) => {
-        //     MapOnDragStart(e);
-        // });
-        // this.on("zoom", (e) => {
-        //     MapOnZoom(e);
-        // });
-        // this.on("zoomend", (e) => {
-        //     MapOnZoomEnd(e);
-        // });
-        // this.on("zoomstart", (e) => {
-        //     MapOnZoomStart(e);
-        // });
-        // this.on("viewreset", (e) => {
-        //     MapOnViewReset(e);
-        // });
-        // this.on("moveend", (e) => {
-        //     MapOnMoveEnd(e);
-        // });
-        // this.on("movestart", (e) => {
-        //     MapOnMoveStart(e);
-        // });
-        // this.on("move", (e) => {
-        //     MapOnMove(e);
-        // });
-        // this.on("add", (e) => {
-        //     MapOnAdd(e);
-        // });
-        // this.on("remove", (e) => {
-        //     MapOnRemove(e);
-        // });
-        // this.on("popupopen", (e) => {
-        //     MapOnPopupOpen(e);
-        // });
-        // this.on("popupclose", (e) => {
-        //     MapOnPopupClose(e);
-        // });
-        // this.on("preclick", (e) => {
-        //     MapOnPreclick(e);
-        // });
         this.self = this;
     }
 
@@ -167,6 +100,20 @@ class MapFeature extends L.Map {
                 console.error(`Map ${this.guid} OnClick event fired with unknown state ${currentState}`);
                 break;
         }
+    }
+
+    clear()
+    {
+        console.debug(`Clearing ${this.guid} Map`);
+        //call the remove function on each feature in the feature array
+        this.featureArray.forEach((feature) => {
+            console.debug(`==>Removing ${feature.guid} from ${this.guid} Map`);
+            feature.remove();
+        }
+        );
+        //clear the feature array
+        this.featureArray = [];
+        console.debug(`Cleared ${this.guid} Map`);
     }
 }
 

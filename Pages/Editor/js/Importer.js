@@ -140,4 +140,5 @@ function parseMapFromJSON(mapJson) {
       }
   });
   return newMap;
+
 }

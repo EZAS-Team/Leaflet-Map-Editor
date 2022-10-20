@@ -198,13 +198,7 @@ class CircleFeature extends L.Circle {
 				this.propertyEditor.open(); //open the property editor
 				break;
 			case "DELETE":
-				//close the property editor
-				this.propertyEditor.close();
-				// Create a deleteme event to tell the editor to delete the circle
-				let event = new CustomEvent("DeleteMe", {
-					detail: { guid: this.guid },
-				});
-				document.dispatchEvent(event);
+				this.remove(); //remove the circle from the map
 				break;
 			default:
 				console.error(
@@ -235,6 +229,17 @@ class CircleFeature extends L.Circle {
 				);
 				break;
 		}
+	}
+
+	remove()
+	{
+		//close the property editor
+		this.propertyEditor.close();
+		// Create a deleteme event to tell the editor to delete the circle
+		let event = new CustomEvent("DeleteMe", {
+			detail: { guid: this.guid },
+		});
+		document.dispatchEvent(event);
 	}
 }
 

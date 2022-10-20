@@ -139,26 +139,20 @@ function deleteFeature(e)
  */
 
 //listens for a finished import event containing the map and updates the map to it
-document.addEventListener("updateMap", (e) => {
-    updateMap(e.detail.map_object);
+document.addEventListener("clearMap", (e) => {
+    clearMap();
 });
-//update the map
-function updateMap(map) {
+//clear the map
+function clearMap() {
     //unload the map
-    console.debug("Unloading map if it exists ...");
+    console.debug("Clearing map if it exists ...");
     if(gmap)
     {
-        console.debug("Map exists, turning off ...");
-        gmap = gmap.off();
-        console.debug("Map exists, removing map ...");
-        gmap = gmap.remove();
+        console.debug("Clearing map");
+        gmap.clear();
+        MapFeatures = gmap.featureArray; //update the MapFeatures array
     }
-    //set the map to the new map
-    console.debug("Setting map to passed map ...");
-    gmap = map;
-    //Set the editor map features array to the new map features array
-    console.debug("Updating editor's map features array to passed map object feature array...");
-    MapFeatures = map.mapFeatures;
+    console.debug("Map cleared");
 };
 
 //listen for an exportTheMap event from a button click and dispatch an event to the exporter with the map
@@ -216,7 +210,7 @@ function closePropertyEditor()
 document.addEventListener("updateFeatureProperties", (e) => {updateFeatureProperties(e.detail);},true);
 function updateFeatureProperties(e)
 {
-    let feature = MapFeatures.find((f) => { return f.guid == e.guid; });
+    let feature = MapFeatures.find((f) => { return f.guid === e.guid; });
     if (feature === null)
     {
         throw new Error("Feature with guid: " + e.guid + " not found");
@@ -228,3 +222,18 @@ function updateFeatureProperties(e)
     }
     feature.updateProperty(e.propertyName, e.propertyValue, e.fn);
 };
+
+
+//event listener that when called dispatches an event to the document with the map object
+document.addEventListener("getMap", (e) => {getMap();},true);
+function getMap()
+{
+    //custom event telling the exporter to export the map
+    let event = new CustomEvent("returnMap", {
+        detail:{
+            map_object: gmap 
+        }
+    });
+    //dispatch the event to the exporter
+    document.dispatchEvent(event);
+}
