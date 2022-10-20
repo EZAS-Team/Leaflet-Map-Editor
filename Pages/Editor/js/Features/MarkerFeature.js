@@ -91,6 +91,7 @@ class MarkerFeature extends L.Marker {
                     "string",
                     "title",
                     "Title",
+                    "Title",
                     `${options.title}`,
                 ),
                 ""
@@ -100,6 +101,7 @@ class MarkerFeature extends L.Marker {
                 new EditorRequirements.Field(
                     "string",
                     "description",
+                    "Description",
                     "Description",
                     `${options.description}`,    
                 ),

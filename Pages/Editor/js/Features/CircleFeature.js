@@ -43,8 +43,8 @@ class CircleFeature extends L.Circle {
 					"string",
 					"title",
 					"Title",
+					"Title",
 					`${options.title}`,
-					""
 				),
 				""
 			),
@@ -54,8 +54,8 @@ class CircleFeature extends L.Circle {
 					"string",
 					"description",
 					"Description",
+					"Description",
 					`${options.description}`,
-					""
 				),
 				""
 			),

@@ -124,18 +124,6 @@ class MapFeature extends L.Map {
             let event = new CustomEvent("DeleteMe", {detail: {guid:featureGuids[i]}});
             document.dispatchEvent(event);
         }
-            // let feature = this.featureArray[i];
-            // console.debug(`Feature ${this.featureArray[i]}`);
-            // if(!(feature.guid === this.guid))
-            // {   
-            //     console.debug(`==>Removing ${feature.guid}: ${feature.constructor.name} from ${this.guid} Map`);
-            //     //print the type of feature being removed
-            //     feature.stateHandle.setState("OnClick","DELETE");
-            //     feature.OnClick();
-            // }
-        // }
-        //clear the feature array
-        //this.featureArray = [];
         console.debug(`Cleared ${this.guid} Map`);
         this.featuresAdded = 0;
     }
