@@ -29,10 +29,12 @@ function csvToArray(str, delimiter = ",") {
 function importMap() {
 
     //the map that is built by the importer based on JSON and dispatched to the editor when the import is done
-    let imap = testMapParser();
+    let clicker = new EZAS.PsuedoMapInteract();
+    clicker.psuedoMapClick({lat:0.0, lng:0.0}, {title:"test", description:"test", radius:1000}, "ADD_CIRCLE");
+    //let imap = testMapParser();
 
-    let event = new CustomEvent("updateMap", { detail: { map_object: imap } });
-    document.dispatchEvent(event);
+    //let event = new CustomEvent("updateMap", { detail: { map_object: imap } });
+    //document.dispatchEvent(event);
 
     // Previous version of importmap(). Keeping for now in case it is needed later for some reason.
     // let gimap = new EZAS.MapFeature("imap", {});
