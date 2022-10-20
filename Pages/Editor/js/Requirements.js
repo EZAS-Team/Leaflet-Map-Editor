@@ -1,5 +1,6 @@
 "use strict";
-import Debug from "./Util/Debug.js";
+//import Debug from "./Util/Debug.js";
+import { PsuedoMapInteract } from "./Util/PsuedoInteract.js";
 import GUID from "./Util/GUID.js";
 import StateHandle from "./Util/StateHandle.js";
 
@@ -12,7 +13,7 @@ import RectangleFeature from "./Features/RectangleFeature.js";
 
 export {
     GUID,
-    Debug,
+    //Debug,
     StateHandle,
     MapFeature,
     MarkerFeature,
@@ -20,4 +21,5 @@ export {
     PolygonFeature,
     CircleFeature,
     RectangleFeature,
+    PsuedoMapInteract
 };
