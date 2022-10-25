@@ -129,7 +129,7 @@ function markersToFile(content, gemap){
     let i;
     let numberOfMarkers;
     numberOfMarkers = gemap.getMarkers().length;
-    console.log(numberOfMarkers);
+    //console.log(numberOfMarkers);
     //content += "        L.marker([51.5, -0.09]).addTo(map);
     for( i = 0; i < numberOfMarkers; i++){
         content += "        L.marker([" + gemap.getMarkers()[i].getLatLng().lat.toString();
@@ -147,7 +147,7 @@ function exportMap(gemap) {
     gemap.parseExportInfo();
     let test = JSON.parse(gemap.getExportInfo());
     //console.log(test);
-    console.log("Preparing export file");
+    //console.log("Preparing export file");
     var exportFileName = prompt("Filename for map");
     var headers = {
         Person: 'Person'.replace(/,/g, ''),
@@ -160,8 +160,11 @@ function exportMap(gemap) {
 
     };
 
+    let keys = Object.keys(gemap.featuresArray[0]);
+    console.log(keys);
+
     gemap.getMarkers().forEach((item) => {
-        console.log(item.getLatLng().lat.toString());
+        //console.log(item.getLatLng().lat.toString());
         itemsFormatted.push({
             Person: 'Doodlebob'.replace(/,/g, ''),
             Place: 'The bat cave',
@@ -202,7 +205,6 @@ function exportMap(gemap) {
     content += "\n  </script>\n"
     //content += "        L.marker([51.5, -0.09]).addTo(map);\n</script>\n"
     content += "    </body>\n</html>"
-    console.log(Object.values(gemap.getMap()));
 
     //Same process as .csv export
     var element = document.createElement('a');
