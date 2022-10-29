@@ -96,10 +96,21 @@ class MarkerFeature extends L.Marker {
             new EditorRequirements.EditableField(
                 `${this.guid}`,
                 new EditorRequirements.Field(
-                    "string",
+                    "stringBox",
                     "description",
                     "Description",
                     `${this.guid}`,
+                    ""
+                ),
+                ""
+            ),
+            new EditorRequirements.EditableField(
+                `${this.guid}`,
+                new EditorRequirements.Field(
+                    "string",
+                    "imageURL",
+                    "imageURL",
+                    ``,
                     ""
                 ),
                 ""
