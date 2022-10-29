@@ -151,6 +151,7 @@ class MapFeature extends L.Map {
             //below cases are the states implemetned by the editor
             case "ADD_MARKER":
             case "ADD_CIRCLE":
+            case "ADD_RECTANGLE":
                 //dispatch a doAction event to add a marker to the map
                 let event = new CustomEvent("doAction", {detail:
                 {
