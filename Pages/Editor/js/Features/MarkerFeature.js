@@ -76,10 +76,13 @@ class MarkerFeature extends L.Marker {
         super(latlng, options);
         this.eventTarget = new EventTarget();
         this.iconType = options.iconType;
-        console.debug(`Marker ${this.guid} constructor fired with options: `, options);
         this.guid = guid.get; //GUID object for the marker
+        console.debug(`Marker ${this.guid} constructor fired with options: `, options);
         //create the fields that can be edited in the property editor for the marker
         //cant be static because guid is required and unique for each marker
+        if (options.title == undefined) options.title = "Marker";
+        if (options.description == undefined) options.description = "";
+
         this.editableFieldObjects =
         [
             new EditorRequirements.EditableField(
@@ -88,8 +91,8 @@ class MarkerFeature extends L.Marker {
                     "string",
                     "title",
                     "Title",
-                    `${this.guid}`,
-                    ""
+                    "Title",
+                    `${options.title}`,
                 ),
                 ""
             ),
@@ -99,8 +102,8 @@ class MarkerFeature extends L.Marker {
                     "stringBox",
                     "description",
                     "Description",
-                    `${this.guid}`,
-                    ""
+                    "Description",
+                    `${options.description}`,    
                 ),
                 ""
             ),
@@ -238,11 +241,7 @@ class MarkerFeature extends L.Marker {
                 this.propertyEditor.open(); //open the property editor
                 break;
             case "DELETE":
-                //close the property editor
-                this.propertyEditor.close();
-                // Create a deleteme event to tell the editor to delete the marker
-                let event = new CustomEvent("DeleteMe", {detail:{"guid":this.guid}});
-                document.dispatchEvent(event);
+                this.remove(); //remove the marker from the map
                 break;
             default:
                 console.error("Invalid State For Marker OnClick Event", this.stateHandle.getState("OnClick"));
@@ -262,6 +261,16 @@ class MarkerFeature extends L.Marker {
                 console.error(`Marker ${this.guid} OnAdd State is Invalid or Unknown: `, this.stateHandle.getState("OnAdd"));
                 break;
         }
+    }
+
+    //function to remove the marker from the map
+    remove()
+    {
+        //close the property editor
+        this.propertyEditor.close();
+        // Create a deleteme event to tell the editor to delete the marker
+        let event = new CustomEvent("DeleteMe", {detail:{"guid":this.guid}});
+        document.dispatchEvent(event);
     }
 
 }
