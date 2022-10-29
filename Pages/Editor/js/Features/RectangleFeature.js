@@ -33,6 +33,9 @@ class RectangleFeature extends L.Rectangle {
 		this.eventTarget = new EventTarget();
 		this.rectangle = this; //reference to the rectangle object (Self due to extending L.rectangle)
 		this.guid = guid.get; //GUID object for the rectangle
+        console.debug(`Rectangle ${this.guid} constructor fired with options: `, options);
+        if (options.title == undefined) options.title = "Rectangle";
+		if (options.description == undefined) options.description = "";
 		//create the fields that can be edited in the property editor for the rectangle
 		//cant be static because guid is required and unique for each rectangle
 		this.editableFieldObjects = [
@@ -42,8 +45,8 @@ class RectangleFeature extends L.Rectangle {
 					"string",
 					"title",
 					"Title",
-					`${this.guid}`,
-					""
+                    "Title",
+					`${this.options.title}`
 				),
 				""
 			),
@@ -53,8 +56,8 @@ class RectangleFeature extends L.Rectangle {
 					"stringBox",
 					"description",
 					"Description",
-					`${this.guid}`,
-					""
+                    "Description",
+					`${this.options.description}`,
 				),
 				""
 			),
@@ -64,7 +67,7 @@ class RectangleFeature extends L.Rectangle {
 					"number",
 					"bounds1lat",
 					"Bounds 1 Latitude",
-					'',
+					"Bounds 1 Latitude",
 					`${this.bounds[0].lat}`,
 				),
 				this.bounds[0].lat,
@@ -75,7 +78,7 @@ class RectangleFeature extends L.Rectangle {
 					"number",
 					"bounds1lng",
 					"Bounds 1 Longitude",
-					'',
+                    "Bounds 1 Longitude",
 					`${this.bounds[0].lng}`,
 				),
 				this.bounds[0].lng,
@@ -86,7 +89,7 @@ class RectangleFeature extends L.Rectangle {
 					"number",
 					"bounds2lat",
 					"Bounds 2 Latitude",
-					'',
+                    "Bounds 2 Latitude",
 					`${this.bounds[1].lat}`,
 				),
 				this.bounds[1].lat,
@@ -97,7 +100,7 @@ class RectangleFeature extends L.Rectangle {
 					"number",
 					"bounds2lng",
 					"Bounds 2 longitude",
-					'',
+                    "Bounds 2 longitude",
 					`${this.bounds[1].lng}`,
 				),
 				this.bounds[1].lng,
@@ -198,6 +201,9 @@ class RectangleFeature extends L.Rectangle {
             case "bounds2lng":
                 this.setBounds([this.bounds[0], [this.bounds[1].lat, value]]);
                 this.bounds[1].lng = value;
+                break;
+            case "description":
+				this.options.description = value;
                 break;
 			default:
 				this.options[property] = value;

@@ -220,6 +220,9 @@ class MarkerFeature extends L.Marker {
                 this.setIcon(MarkerFeature.icons[value]);
                 this.options['iconType'] = value;
                 break;
+            case "description":
+                    this.options.description = value;
+                    break;
             default:
                 this.options[property] = value;
                 break;

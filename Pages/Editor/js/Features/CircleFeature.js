@@ -32,6 +32,7 @@ class CircleFeature extends L.Circle {
 		this.eventTarget = new EventTarget();
 		this.circle = this; //reference to the circle object (Self due to extending L.circle)
 		this.guid = guid.get; //GUID object for the circle
+        console.debug(`Circle ${this.guid} constructor fired with options: `, options);
 		if (options.title == undefined) options.title = "Circle";
 		if (options.description == undefined) options.description = "";
 		//create the fields that can be edited in the property editor for the circle
@@ -176,6 +177,9 @@ class CircleFeature extends L.Circle {
 			case "radius":
 				this.setRadius(value);
 				break;
+			case "description":
+				this.options.description = value;
+                break;
 			default:
 				this.options[property] = value;
 				break;

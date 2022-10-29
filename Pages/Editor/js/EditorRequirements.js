@@ -123,7 +123,7 @@ class EditableField {
 							)"
 							rows="4"
 							cols="50"
-						></textarea>
+						>${this.value}</textarea>
 					</div>`;
 				break;
 			case 'string':
