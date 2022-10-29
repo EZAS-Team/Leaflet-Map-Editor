@@ -51,7 +51,7 @@ class CircleFeature extends L.Circle {
 			new EditorRequirements.EditableField(
 				`${this.guid}`,
 				new EditorRequirements.Field(
-					"string",
+					"stringBox",
 					"description",
 					"Description",
 					"Description",
