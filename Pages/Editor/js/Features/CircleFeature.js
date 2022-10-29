@@ -32,6 +32,8 @@ class CircleFeature extends L.Circle {
 		this.eventTarget = new EventTarget();
 		this.circle = this; //reference to the circle object (Self due to extending L.circle)
 		this.guid = guid.get; //GUID object for the circle
+		if (options.title == undefined) options.title = "Circle";
+		if (options.description == undefined) options.description = "";
 		//create the fields that can be edited in the property editor for the circle
 		//cant be static because guid is required and unique for each circle
 		this.editableFieldObjects = [
@@ -41,8 +43,8 @@ class CircleFeature extends L.Circle {
 					"string",
 					"title",
 					"Title",
-					`${this.guid}`,
-					""
+					"Title",
+					`${options.title}`,
 				),
 				""
 			),
@@ -52,8 +54,8 @@ class CircleFeature extends L.Circle {
 					"string",
 					"description",
 					"Description",
-					`${this.guid}`,
-					""
+					"Description",
+					`${options.description}`,
 				),
 				""
 			),
@@ -198,13 +200,7 @@ class CircleFeature extends L.Circle {
 				this.propertyEditor.open(); //open the property editor
 				break;
 			case "DELETE":
-				//close the property editor
-				this.propertyEditor.close();
-				// Create a deleteme event to tell the editor to delete the circle
-				let event = new CustomEvent("DeleteMe", {
-					detail: { guid: this.guid },
-				});
-				document.dispatchEvent(event);
+				this.remove(); //remove the circle from the map
 				break;
 			default:
 				console.error(
@@ -235,6 +231,17 @@ class CircleFeature extends L.Circle {
 				);
 				break;
 		}
+	}
+
+	remove()
+	{
+		//close the property editor
+		this.propertyEditor.close();
+		// Create a deleteme event to tell the editor to delete the circle
+		let event = new CustomEvent("DeleteMe", {
+			detail: { guid: this.guid },
+		});
+		document.dispatchEvent(event);
 	}
 }
 
