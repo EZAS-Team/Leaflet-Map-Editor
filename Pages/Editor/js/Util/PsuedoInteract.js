@@ -12,9 +12,9 @@ class PsuedoMapInteract
         [
             "ADD_MARKER",
             "ADD_CIRCLE",
+            "ADD_RECTANGLE"
             // "ADD_POLYLINE",
             // "ADD_POLYGON",
-            // "ADD_RECTANGLE"
         ];
     }
 
