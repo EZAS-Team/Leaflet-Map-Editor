@@ -43,6 +43,7 @@ class MapFeature extends L.Map {
         this.eventTarget = new EventTarget();
         this.stateHandle = new StateHandle(MapFeature.initialStates);
         this.featureArray = [];
+        this.featuresAdded = 0;
         //listen for a map state change event set to the and change the state of all the map states
         document.addEventListener("mapStateChange", (e) => {
             let event = new customEvent("mapStateChange", {detail:e});
@@ -56,73 +57,6 @@ class MapFeature extends L.Map {
         this.addEventListener("click", (e) => {
             this.OnClick(e);
         }, false); //don't capture the event so that it can bubble up to the document
-
-        // this.on("dblclick", (e) => {
-        //     MapOnDoubleClick(e);
-        // });
-        // this.on("mousemove", (e) => {
-        //     MapOnMouseMove(e);
-        // });
-        // this.on("mousedown", (e) => {
-        //     MapOnMouseDown(e);
-        // });
-        // this.on("mouseup", (e) => {
-        //     MapOnMouseUp(e);
-        // });
-        // this.on("mouseover", (e) => {
-        //     MapOnMouseOver(e);
-        // });
-        // this.on("mouseout", (e) => {
-        //     MapOnMouseOut(e);
-        // });
-        // this.on("contextmenu", (e) => {
-        //     MapOnContextMenu(e);
-        // });
-        // this.on("drag", (e) => {
-        //     MapOnDrag(e);
-        // });
-        // this.on("dragend", (e) => {
-        //     MapOnDragEnd(e);
-        // });
-        // this.on("dragstart", (e) => {
-        //     MapOnDragStart(e);
-        // });
-        // this.on("zoom", (e) => {
-        //     MapOnZoom(e);
-        // });
-        // this.on("zoomend", (e) => {
-        //     MapOnZoomEnd(e);
-        // });
-        // this.on("zoomstart", (e) => {
-        //     MapOnZoomStart(e);
-        // });
-        // this.on("viewreset", (e) => {
-        //     MapOnViewReset(e);
-        // });
-        // this.on("moveend", (e) => {
-        //     MapOnMoveEnd(e);
-        // });
-        // this.on("movestart", (e) => {
-        //     MapOnMoveStart(e);
-        // });
-        // this.on("move", (e) => {
-        //     MapOnMove(e);
-        // });
-        // this.on("add", (e) => {
-        //     MapOnAdd(e);
-        // });
-        // this.on("remove", (e) => {
-        //     MapOnRemove(e);
-        // });
-        // this.on("popupopen", (e) => {
-        //     MapOnPopupOpen(e);
-        // });
-        // this.on("popupclose", (e) => {
-        //     MapOnPopupClose(e);
-        // });
-        // this.on("preclick", (e) => {
-        //     MapOnPreclick(e);
-        // });
         this.self = this;
     }
 
@@ -151,6 +85,7 @@ class MapFeature extends L.Map {
             //below cases are the states implemetned by the editor
             case "ADD_MARKER":
             case "ADD_CIRCLE":
+            case "ADD_RECTANGLE":
                 //dispatch a doAction event to add a marker to the map
                 let event = new CustomEvent("doAction", {detail:
                 {
@@ -162,11 +97,36 @@ class MapFeature extends L.Map {
                 }});
                 document.dispatchEvent(event);
                 this.stateHandle.setState("OnClick", "NONE");
+                this.featuresAdded++;
                 break;
             default:
                 console.error(`Map ${this.guid} OnClick event fired with unknown state ${currentState}`);
                 break;
         }
+    }
+
+    clear()
+    {
+        console.debug(`Clearing ${this.guid} Map`);
+        //call the remove function on each feature in the feature array
+        console.debug(`FeatureArray ${this.featureArray}`);
+        let featureGuids = [];
+        for(let i = 1; i < this.featureArray.length; i++)
+        {
+            if(this.featureArray[i] != null && this.featureArray[i].guid != this.guid)
+            {
+                featureGuids.push(this.featureArray[i].guid);
+            }
+        }
+        console.debug(`FeatureGuids ${featureGuids}`);
+        for(let i = 0; i < featureGuids.length; i++)
+        {
+            console.debug(`Removing feature ${featureGuids[i]}`);
+            let event = new CustomEvent("DeleteMe", {detail: {guid:featureGuids[i]}});
+            document.dispatchEvent(event);
+        }
+        console.debug(`Cleared ${this.guid} Map`);
+        this.featuresAdded = 0;
     }
 }
 
