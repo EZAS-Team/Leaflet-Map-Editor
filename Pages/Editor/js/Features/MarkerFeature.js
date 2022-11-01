@@ -99,11 +99,22 @@ class MarkerFeature extends L.Marker {
             new EditorRequirements.EditableField(
                 `${this.guid}`,
                 new EditorRequirements.Field(
-                    "string",
+                    "stringBox",
                     "description",
                     "Description",
                     "Description",
                     `${options.description}`,    
+                ),
+                ""
+            ),
+            new EditorRequirements.EditableField(
+                `${this.guid}`,
+                new EditorRequirements.Field(
+                    "string",
+                    "imageURL",
+                    "imageURL",
+                    ``,
+                    ""
                 ),
                 ""
             ),
@@ -209,6 +220,9 @@ class MarkerFeature extends L.Marker {
                 this.setIcon(MarkerFeature.icons[value]);
                 this.options['iconType'] = value;
                 break;
+            case "description":
+                    this.options.description = value;
+                    break;
             default:
                 this.options[property] = value;
                 break;

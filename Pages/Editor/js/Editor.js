@@ -47,9 +47,13 @@ document.addEventListener("editorStateChange", (e) => {
         case "Circle": //update all the circle states
             changeStates("circleStateChange",EZAS.CircleFeature,e.detail.action, e.detail.state);
         break;
+        case "Rectangle": //update all the rectangle states
+            changeStates("rectangleStateChange",EZAS.RectangleFeature,e.detail.action, e.detail.state);
+        break;
         case "Features": //updates all the features states
             changeStates("markerStateChange",EZAS.MarkerFeature,e.detail.action, e.detail.state);
             changeStates("circleStateChange",EZAS.CircleFeature,e.detail.action, e.detail.state);
+            changeStates("rectangleStateChange",EZAS.RectangleFeature,e.detail.action, e.detail.state);
         break;
         default:
             console.error(`Unknown Editor State Change Event with Name ${e.detail.name}, Action ${e.detail.action}, State ${e.detail.state}`);
@@ -103,6 +107,14 @@ function doAction(e)
             let circle = new EZAS.CircleFeature(e.event.latlng, e.options).addTo(e.dispatcher);
             MapFeatures.push(circle);//add the circle to the map features
             console.debug("Added circle to map");
+            break;
+        case "ADD_RECTANGLE":
+            let rectangleHeightAndWidth = .01;
+            let bounds1 = e.event.latlng;
+            let bounds2 = new L.latLng(bounds1.lat + rectangleHeightAndWidth, bounds1.lng + rectangleHeightAndWidth);
+            let rectangle = new EZAS.RectangleFeature([bounds1,bounds2], e.options).addTo(e.dispatcher);
+            MapFeatures.push(rectangle);//add the rectangle to the map features
+            console.debug("Added rectangle to map");
             break;
         default:
             console.error(`Action ${e.action} not implemented`);
