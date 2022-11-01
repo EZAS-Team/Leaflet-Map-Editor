@@ -35,40 +35,32 @@ function importMap() {
     clearMap();
     //the map that is built by the importer based on JSON and dispatched to the editor when the import is done
     let clicker = new EZAS.PsuedoMapInteract();
-    clicker.psuedoMapClick({lat:0.0, lng:0.0}, {title:"test", description:"test", radius:1000}, "ADD_CIRCLE");
 
     //for header in header{
 
     //}
 
-
-
-    //let imap = testMapParser();
-
-    //let event = new CustomEvent("updateMap", { detail: { map_object: imap } });
-    //document.dispatchEvent(event);
-
     // Previous version of importmap(). Keeping for now in case it is needed later for some reason.
-    // let gimap = new EZAS.MapFeature("imap", {});
-    // var input = document.createElement('input');
-    // input.type = 'file';
-    // input.onchange = e => {
-    //     var file = e.target.files[0];
-    //     var reader = new FileReader();
-    //     reader.onload = function (e){
-    //         var text = e.target.result;
-    //         var data = csvToArray(text);
-    //         JSON.stringify(data);
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.onchange = e => {
+        var file = e.target.files[0];
+        var reader = new FileReader();
+        reader.onload = function (e){
+            var text = e.target.result;
+            var data = csvToArray(text);
+            JSON.stringify(data);
             
-    //         for (var i in data){
-    //           var row = data[i];
-    //           var marker = new google.maps.Marker({});
-    //           var position = new google.maps.Latlng(row.Latitiude, row.Longitude);
-    //         }
-    //     }
-    //     reader.readAsText(file);
-    // }
-    // input.click();
+            for (var i in data){
+              var row = data[i];
+              //console.log(row);
+              
+              clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:row.Place}, "ADD_MARKER");
+            }
+        }
+        reader.readAsText(file);
+    }
+    input.click();
 }
 
 function testMapParser() {
