@@ -108,6 +108,24 @@ class EditableField {
 		let html = "";
 		switch (this.field.type)
 		{
+			case 'stringBox':
+				html += `
+					<div id="${this.field.propertyName}_div" class="editable-field-${this.field.type}">
+						<label id="${this.field.propertyName}_label" for="${this.field.propertyName}">${this.field.label}</label>
+						<textarea
+							id="${this.field.propertyName}_input"
+							name="${this.field.propertyName}" 
+							placeholder="${this.field.placeholder}" 
+							value="${this.value}"
+							onchange="updateFeatureProperty('${this.guid}',
+							'${this.field.propertyName}',
+							document.getElementById('${this.field.propertyName}_input').value)"
+							)"
+							rows="4"
+							cols="50"
+						>${this.value}</textarea>
+					</div>`;
+				break;
 			case 'string':
 			case 'number':
 				html += `
