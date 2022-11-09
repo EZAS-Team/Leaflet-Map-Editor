@@ -15,6 +15,7 @@ function csvToArray(str, delimiter = ",") {
 
     const arr = rows.map(function (row) {
       const values = row.split(delimiter);
+      //console.log(values);
       const el = headers.reduce(function (object, header, index) {
         object[header] = values[index];
         return object;
@@ -90,6 +91,7 @@ function importMap() {
     // This loads in the selected file and performs pseudoclicks based on the info in the file
     var input = document.createElement('input');
     input.type = 'file';
+    input.accept = ".csv";
     input.onchange = e => {
         var file = e.target.files[0];
         var reader = new FileReader();
@@ -100,7 +102,6 @@ function importMap() {
 
             for (var i in data){
               var row = data[i];
-              //console.log(row);
 
               //this is to dynamically create the description by adding any headers and values that are not predefined to it
               fullDescription = "Place: " + String(row.Place);
@@ -118,9 +119,6 @@ function importMap() {
               switch (colorstr){
                 case "red":
                     iconColor = redIcon;
-                    break;
-                case "blue":
-                    iconColor = blueIcon;
                     break;
                 case "green":
                     iconColor = greenIcon;
@@ -145,9 +143,11 @@ function importMap() {
                     clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:row.Place, radius:row.Radius}, "ADD_CIRCLE");
                     break;
                 case "rectangle":
-                    // let boundCoords = [{lat:row.Bound1Lat, lng:row.Bound1Lng}]; //, {lat:row.Bound2Lat, lng:row.Bound2Lng}
-                    // console.log(boundCoords);
-                    // clicker.psuedoMapClick({bounds:boundCoords}, {title:row.Person, description:row.Place}, "ADD_RECTANGLE");
+                    let bound1Coords = new L.latLng(row.Bound1Lat, row.Bound1Lng);
+                    let bound2Coords = new L.latLng(row.Bound2Lat, row.Bound2Lng);
+                    let boundCoords = [bound1Coords, bound2Coords];
+                    //console.log(boundCoords);
+                    //clicker.psuedoMapClick({bound1Coords}, {title:row.Person, description:row.Place}, "ADD_RECTANGLE");
                     break;
                 default:
                     clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:fullDescription, icon:iconColor}, "ADD_MARKER");
