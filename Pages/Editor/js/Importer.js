@@ -9,9 +9,9 @@ document.addEventListener("importTheMap", (e) => {
 //function that converts a csv file into an array
 function csvToArray(str, delimiter = ",") {
 
-    const headers = str.slice(0, str.indexOf("\n")).split(delimiter);
+    const headers = str.slice(0, str.indexOf("\r\n")).split(delimiter);
 
-    const rows = str.slice(str.indexOf("\n") + 1).split("\n");
+    const rows = str.slice(str.indexOf("\n") + 1).split("\r\n");
 
     const arr = rows.map(function (row) {
       const values = row.split(delimiter);
@@ -22,6 +22,7 @@ function csvToArray(str, delimiter = ",") {
       return el;
     });
 
+    arr.splice((arr.length - 1), 1);
     return arr;
   }
 
@@ -35,12 +36,56 @@ function importMap() {
     clearMap();
     //the map that is built by the importer based on JSON and dispatched to the editor when the import is done
     let clicker = new EZAS.PsuedoMapInteract();
+    let iconColor;
+    let fullDescription;
 
-    //for header in header{
+    //these are the colors for the icons since it would not change properly when given the color as an option below
+    let purpleIcon = new L.icon({
+        iconUrl: '../../../Resources/Features/Marker/Icons/default-purple.png',
+        iconSize:    [25, 41],
+        iconAnchor:  [12, 41],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize:  [41, 41]
+    })
 
-    //}
+    let blueIcon = new L.icon({
+        iconUrl: '../../../Resources/Features/Marker/Icons/default-blue.png',
+        iconSize:    [25, 41],
+        iconAnchor:  [12, 41],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize:  [41, 41]
+    })
 
-    // Previous version of importmap(). Keeping for now in case it is needed later for some reason.
+    let redIcon = new L.icon({
+        iconUrl: '../../../Resources/Features/Marker/Icons/default-red.png',
+        iconSize:    [25, 41],
+        iconAnchor:  [12, 41],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize:  [41, 41]
+    })
+
+    let greenIcon = new L.icon({
+        iconUrl: '../../../Resources/Features/Marker/Icons/default-green.png',
+        iconSize:    [25, 41],
+        iconAnchor:  [12, 41],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize:  [41, 41]
+    })
+
+    let yellowIcon = new L.icon({
+        iconUrl: '../../../Resources/Features/Marker/Icons/default-yellow.png',
+        iconSize:    [25, 41],
+        iconAnchor:  [12, 41],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize:  [41, 41]
+    })
+
+    // This loads in the selected file and performs pseudoclicks based on the info in the file
     var input = document.createElement('input');
     input.type = 'file';
     input.onchange = e => {
@@ -51,11 +96,51 @@ function importMap() {
             var data = csvToArray(text);
             JSON.stringify(data);
             
+            console.log(data);
+
             for (var i in data){
               var row = data[i];
-              //console.log(row);
+              console.log(row);
               
-              clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:row.Place}, "ADD_MARKER");
+              //switch to change the color of the icon
+              let colorstr = String(row.Color).toLowerCase();
+              switch (colorstr){
+                case "red":
+                    iconColor = redIcon;
+                    break;
+                case "blue":
+                    iconColor = blueIcon;
+                    break;
+                case "green":
+                    iconColor = greenIcon;
+                    break;
+                case "yellow":
+                    iconColor = yellowIcon;
+                    break;
+                case "purple":
+                    iconColor = purpleIcon;
+                    break;
+                default:
+                    iconColor = blueIcon;
+              }
+
+              //switch to change the feature type and do a pseudo click for that specific feature type
+              let featureTypeStr = String(row.FeatureType).toLowerCase();
+              switch (featureTypeStr){
+                case "marker":
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:row.Place, icon:iconColor}, "ADD_MARKER");
+                    break;
+                case "circle":
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:row.Place, radius:row.Radius}, "ADD_CIRCLE");
+                    break;
+                case "rectangle":
+                    // let boundCoords = [{lat:row.Bound1Lat, lng:row.Bound1Lng}]; //, {lat:row.Bound2Lat, lng:row.Bound2Lng}
+                    // console.log(boundCoords);
+                    // clicker.psuedoMapClick({bounds:boundCoords}, {title:row.Person, description:row.Place}, "ADD_RECTANGLE");
+                    break;
+                default:
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:row.Place, icon:iconColor}, "ADD_MARKER");
+              }
             }
         }
         reader.readAsText(file);
