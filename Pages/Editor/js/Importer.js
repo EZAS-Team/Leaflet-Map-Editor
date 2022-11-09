@@ -26,6 +26,7 @@ function csvToArray(str, delimiter = ",") {
     return arr;
   }
 
+  //function that sends an event to clear the map before importing
   function clearMap(){
     let event = new CustomEvent("clearMap");
     document.dispatchEvent(event);
@@ -36,6 +37,7 @@ function importMap() {
     clearMap();
     //the map that is built by the importer based on JSON and dispatched to the editor when the import is done
     let clicker = new EZAS.PsuedoMapInteract();
+    let listOfHeaders = ["Person", "Place", "Latitude", "Longitude", "FeatureType", "Color", "Radius", "Bound1Lat", "Bound1Lng", "Bound2Lat", "Bound2Lng"];   
     let iconColor;
     let fullDescription;
 
@@ -95,13 +97,22 @@ function importMap() {
             var text = e.target.result;
             var data = csvToArray(text);
             JSON.stringify(data);
-            
-            console.log(data);
 
             for (var i in data){
               var row = data[i];
-              console.log(row);
+              //console.log(row);
+
+              //this is to dynamically create the description by adding any headers and values that are not predefined to it
+              fullDescription = "Place: " + String(row.Place);
+              let keys = Object.keys(row);
               
+              for (var j in keys){
+                let keyHeader = String(keys[j]);
+                if(!listOfHeaders.includes(keys[j])){
+                    fullDescription += "\n" + keys[j] + ": " + row[keyHeader];
+                }
+              }
+
               //switch to change the color of the icon
               let colorstr = String(row.Color).toLowerCase();
               switch (colorstr){
@@ -128,7 +139,7 @@ function importMap() {
               let featureTypeStr = String(row.FeatureType).toLowerCase();
               switch (featureTypeStr){
                 case "marker":
-                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:row.Place, icon:iconColor}, "ADD_MARKER");
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:fullDescription, icon:iconColor}, "ADD_MARKER");
                     break;
                 case "circle":
                     clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:row.Place, radius:row.Radius}, "ADD_CIRCLE");
@@ -139,7 +150,7 @@ function importMap() {
                     // clicker.psuedoMapClick({bounds:boundCoords}, {title:row.Person, description:row.Place}, "ADD_RECTANGLE");
                     break;
                 default:
-                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:row.Place, icon:iconColor}, "ADD_MARKER");
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:fullDescription, icon:iconColor}, "ADD_MARKER");
               }
             }
         }
