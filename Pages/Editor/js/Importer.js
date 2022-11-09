@@ -140,7 +140,7 @@ function importMap() {
                     clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:fullDescription, icon:iconColor}, "ADD_MARKER");
                     break;
                 case "circle":
-                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:row.Place, radius:row.Radius}, "ADD_CIRCLE");
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:fullDescription, radius:row.Radius}, "ADD_CIRCLE");
                     break;
                 case "rectangle":
                     let bound1Coords = new L.latLng(row.Bound1Lat, row.Bound1Lng);
