@@ -6,13 +6,21 @@ document.addEventListener("importTheMap", (e) => {
     importMap();
 });
 
-//function that converts a csv file into an array
 function csvToArray(str, delimiter = ",") {
 
-    const headers = str.slice(0, str.indexOf("\n")).split(delimiter);
+    // slice from start of text to the first \n index
+    // use split to create an array from string by delimiter
+    const headers = str.slice(0, str.indexOf("\r\n")).split(delimiter);
 
-    const rows = str.slice(str.indexOf("\n") + 1).split("\n");
+    // slice from \n index + 1 to the end of the text
+    // use split to create an array of each csv value row
+    const rows = str.slice(str.indexOf("\n") + 1).split("\r\n");
 
+    // Map the rows
+    // split values from each row into an array
+    // use headers.reduce to create an object
+    // object properties derived from headers:values
+    // the object passed as an element of the array
     const arr = rows.map(function (row) {
       const values = row.split(delimiter);
       const el = headers.reduce(function (object, header, index) {
@@ -22,9 +30,65 @@ function csvToArray(str, delimiter = ",") {
       return el;
     });
 
+    arr.splice((arr.length - 1), 1);
     return arr;
   }
 
+//function that converts a csv file into an array
+// function csvToObject(str) {
+    
+//     // slice from start of text to the first \n index
+//     // use split to create an array from string by delimiter
+//     const headers = csvStringToArray(str.slice(0, str.indexOf("\r\n")));
+
+//     // slice from \n index + 1 to the end of the text
+//     // use split to create an array of each csv value row
+//     const rows = str.slice(str.indexOf("\n") + 1).split("\r\n");
+
+//     // Map the rows
+//     // split values from each row into an array
+//     // use headers.reduce to create an object
+//     // object properties derived from headers:values
+//     // the object passed as an element of the array
+//     const arr = rows.map(function (row) {
+//       const values = csvStringToArray(row);
+//       const el = headers.reduce(function (object, header, index) {
+//         object[header] = values[index];
+//         return object;
+//       }, {});
+//       return el;
+//     });
+
+//     arr.splice((arr.length - 1), 1);
+//     return arr;
+//   }
+
+//   const csvStringToArray = (data) => {
+//     const re = /(,|\r?\n|\r|^)(?:"([^"]*(?:""[^"]*)*)"|([^,\r\n]*))/gi
+//     const result = [[]]
+//     let matches
+//     while ((matches = re.exec(data))) {
+//       if (matches[1].length && matches[1] !== ',') result.push([])
+//       result[result.length - 1].push(
+//         matches[2] !== undefined ? matches[2].replace(/""/g, '"') : matches[3]
+//       )
+//     }
+//     return result
+//   }
+
+//   function replaceNull(array, defaultValue)
+// {
+//     for(let i = 0; i < array.length; i++)
+//     {
+//         if(array[i] == null)
+//         {
+//             array[i] = defaultValue;
+//         }
+//     }
+//     return array;
+// }
+
+  //function that sends an event to clear the map before importing
   function clearMap(){
     let event = new CustomEvent("clearMap");
     document.dispatchEvent(event);
@@ -35,40 +99,140 @@ function importMap() {
     clearMap();
     //the map that is built by the importer based on JSON and dispatched to the editor when the import is done
     let clicker = new EZAS.PsuedoMapInteract();
-    clicker.psuedoMapClick({lat:0.0, lng:0.0}, {title:"test", description:"test", radius:1000}, "ADD_CIRCLE");
+    let listOfHeaders = ["Title", "Description", "Latitude", "Longitude", "FeatureType", "Color", "Radius", "Bound1Lat", "Bound1Lng", "Bound2Lat", "Bound2Lng"];   
+    let iconColor;
+    let iconName;
+    let hexStrokeColor;
+    let fullDescription;
+    let genDescription;
+    let providedDescription;
 
-    //for header in header{
+    //these are the colors for the icons since it would not change properly when given the color as an option below
+    let purpleIcon = new L.icon({
+        iconUrl: '../../../Resources/Features/Marker/Icons/default-purple.png',
+        iconSize:    [25, 41],
+        iconAnchor:  [12, 41],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize:  [41, 41]
+    })
 
-    //}
+    let blueIcon = new L.icon({
+        iconUrl: '../../../Resources/Features/Marker/Icons/default-blue.png',
+        iconSize:    [25, 41],
+        iconAnchor:  [12, 41],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize:  [41, 41]
+    })
 
+    let redIcon = new L.icon({
+        iconUrl: '../../../Resources/Features/Marker/Icons/default-red.png',
+        iconSize:    [25, 41],
+        iconAnchor:  [12, 41],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize:  [41, 41]
+    })
 
+    let greenIcon = new L.icon({
+        iconUrl: '../../../Resources/Features/Marker/Icons/default-green.png',
+        iconSize:    [25, 41],
+        iconAnchor:  [12, 41],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize:  [41, 41]
+    })
 
-    //let imap = testMapParser();
+    let yellowIcon = new L.icon({
+        iconUrl: '../../../Resources/Features/Marker/Icons/default-yellow.png',
+        iconSize:    [25, 41],
+        iconAnchor:  [12, 41],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize:  [41, 41]
+    })
 
-    //let event = new CustomEvent("updateMap", { detail: { map_object: imap } });
-    //document.dispatchEvent(event);
+    // This loads in the selected file and performs pseudoclicks based on the info in the file
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.accept = ".csv";
+    input.onchange = e => {
+        var file = e.target.files[0];
+        var reader = new FileReader();
+        reader.onload = function (e){
+            var text = e.target.result;
+            var data = csvToArray(text);
+            JSON.stringify(data);
 
-    // Previous version of importmap(). Keeping for now in case it is needed later for some reason.
-    // let gimap = new EZAS.MapFeature("imap", {});
-    // var input = document.createElement('input');
-    // input.type = 'file';
-    // input.onchange = e => {
-    //     var file = e.target.files[0];
-    //     var reader = new FileReader();
-    //     reader.onload = function (e){
-    //         var text = e.target.result;
-    //         var data = csvToArray(text);
-    //         JSON.stringify(data);
-            
-    //         for (var i in data){
-    //           var row = data[i];
-    //           var marker = new google.maps.Marker({});
-    //           var position = new google.maps.Latlng(row.Latitiude, row.Longitude);
-    //         }
-    //     }
-    //     reader.readAsText(file);
-    // }
-    // input.click();
+            for (var i in data){
+              var row = data[i];
+
+              //this is to dynamically create the description by adding any headers and values that are not predefined to it
+              fullDescription = "";
+              genDescription = "";
+              providedDescription = "";
+              let keys = Object.keys(row);
+              
+              for (let key in keys){
+                let keyHeader = String(keys[key]);
+                if(keyHeader=="Description")
+                {
+                    providedDescription = String(row[keyHeader]) + "\n";
+                }
+                if(!listOfHeaders.includes(keyHeader)){
+                    genDescription += keyHeader + ": " + row[keyHeader] + "\n";
+                }
+              }
+              fullDescription = providedDescription + genDescription;
+              //switch to change the color of the icon
+              let colorstr = String(row.Color).toLowerCase();
+              switch (colorstr){
+                case "red":
+                    iconColor = redIcon;
+                    iconName = "DEFAULT-RED";
+                    hexStrokeColor = "#ff0000";
+                    break;
+                case "green":
+                    iconColor = greenIcon;
+                    hexStrokeColor = "#00ff00";
+                    break;
+                case "yellow":
+                    iconColor = yellowIcon;
+                    hexStrokeColor = "#FFFF00";
+                    break;
+                case "purple":
+                    iconColor = purpleIcon;
+                    hexStrokeColor = "#A020F0";
+                    break;
+                default:
+                    iconColor = blueIcon;
+                    hexStrokeColor = "#3388FF";
+              }
+
+              //switch to change the feature type and do a pseudo click for that specific feature type
+              let featureTypeStr = String(row.FeatureType).toLowerCase();
+              switch (featureTypeStr){
+                case "marker":
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Title, description:fullDescription, icon:iconColor, iconType:iconName}, "ADD_MARKER");
+                    break;
+                case "circle":
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Title, description:fullDescription, radius:row.Radius, color:hexStrokeColor}, "ADD_CIRCLE");
+                    break;
+                case "rectangle":
+                    let bound1Coords = new L.latLng(row.Bound1Lat, row.Bound1Lng);
+                    let bound2Coords = new L.latLng(row.Bound2Lat, row.Bound2Lng);
+                    let boundCoords = [bound1Coords, bound2Coords];
+                    clicker.psuedoMapClick({bound1Coords}, {bounds:boundCoords, title:row.Title, description:fullDescription, color:hexStrokeColor}, "ADD_RECTANGLE");
+                    break;
+                default:
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Title, description:fullDescription, icon:iconColor}, "ADD_MARKER");
+              }
+            }
+        }
+        reader.readAsText(file);
+    }
+    input.click();
 }
 
 function testMapParser() {

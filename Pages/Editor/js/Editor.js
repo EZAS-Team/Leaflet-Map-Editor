@@ -91,7 +91,11 @@ function doAction(e)
             }
             //add the marker to the layer that dispatched the event this should be the map in most cases
             e.options.icon = selectedIcon;
-            options.iconType = markerType;
+            if (e.options.iconType)
+            {
+                markerType = e.options.iconType;
+            }
+            e.options.iconType = markerType;
             let marker = new EZAS.MarkerFeature(e.event.latlng, e.options).addTo(e.dispatcher);
             MapFeatures.push(marker);//add the marker to the map features
             console.debug("Added marker to map");
@@ -110,8 +114,17 @@ function doAction(e)
             break;
         case "ADD_RECTANGLE":
             let rectangleHeightAndWidth = .01;
-            let bounds1 = e.event.latlng;
-            let bounds2 = new L.latLng(bounds1.lat + rectangleHeightAndWidth, bounds1.lng + rectangleHeightAndWidth);
+            let bounds1;
+            let bounds2;
+            if(e.options.bounds)
+            {
+                bounds1 = e.options.bounds[0];
+                bounds2 = e.options.bounds[1];
+            }
+            else{
+                bounds1 = e.event.latlng;
+                bounds2 = new L.latLng((bounds1.lat + rectangleHeightAndWidth), (bounds1.lng + rectangleHeightAndWidth));
+            }
             let rectangle = new EZAS.RectangleFeature([bounds1,bounds2], e.options).addTo(e.dispatcher);
             MapFeatures.push(rectangle);//add the rectangle to the map features
             console.debug("Added rectangle to map");

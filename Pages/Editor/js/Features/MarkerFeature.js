@@ -80,8 +80,9 @@ class MarkerFeature extends L.Marker {
         console.debug(`Marker ${this.guid} constructor fired with options: `, options);
         //create the fields that can be edited in the property editor for the marker
         //cant be static because guid is required and unique for each marker
-        if (options.title == undefined) options.title = "Marker";
+        if (options.title == undefined) options.title = `Marker: ${this.guid}`;
         if (options.description == undefined) options.description = "";
+        if (options.imageURL == undefined) options.imageURL = "";
 
         this.editableFieldObjects =
         [
@@ -94,7 +95,7 @@ class MarkerFeature extends L.Marker {
                     "Title",
                     `${options.title}`,
                 ),
-                ""
+                `${options.title}`,
             ),
             new EditorRequirements.EditableField(
                 `${this.guid}`,
@@ -105,7 +106,7 @@ class MarkerFeature extends L.Marker {
                     "Description",
                     `${options.description}`,    
                 ),
-                ""
+                `${options.description}`,
             ),
             new EditorRequirements.EditableField(
                 `${this.guid}`,
@@ -113,10 +114,10 @@ class MarkerFeature extends L.Marker {
                     "string",
                     "imageURL",
                     "imageURL",
-                    ``,
-                    ""
+                    "imageURL",
+                    `${options.imageURL}`,
                 ),
-                ""
+                `${options.imageURL}`,
             ),
             new EditorRequirements.EditableField(
 				`${this.guid}`,
@@ -124,7 +125,8 @@ class MarkerFeature extends L.Marker {
 					"number",
 					"lat",
 					"Latitude",
-					`${this.getLatLng().lat}`
+                    "Latitude",
+					this.getLatLng().lat
 				),
 				this.getLatLng().lat,
 				(value) => {
@@ -137,7 +139,8 @@ class MarkerFeature extends L.Marker {
 					"number",
 					"lng",
 					"Longitude",
-					`${this.getLatLng().lng}`
+                    "Longitude",
+					this.getLatLng().lng
 				),
 				this.getLatLng().lng,
 				(value) => {
@@ -150,8 +153,8 @@ class MarkerFeature extends L.Marker {
                     "dropdown",
                     "icon",
                     "Icon",
-                    `${this.iconType}`,
                     '',
+                    `${this.iconType}`,
                     Object.keys(MarkerFeature.icons)
                 ),
                 this.iconType,
