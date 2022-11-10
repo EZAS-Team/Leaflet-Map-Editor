@@ -112,6 +112,11 @@ function doAction(e)
             let rectangleHeightAndWidth = .01;
             let bounds1 = e.event.latlng;
             let bounds2 = new L.latLng(bounds1.lat + rectangleHeightAndWidth, bounds1.lng + rectangleHeightAndWidth);
+            if(e.options.bounds)
+            {
+                bounds1 = e.options.bounds[0];
+                bounds2 = e.options.bounds[1];
+            }
             let rectangle = new EZAS.RectangleFeature([bounds1,bounds2], e.options).addTo(e.dispatcher);
             MapFeatures.push(rectangle);//add the rectangle to the map features
             console.debug("Added rectangle to map");
