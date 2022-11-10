@@ -153,8 +153,8 @@ class MarkerFeature extends L.Marker {
                     "dropdown",
                     "icon",
                     "Icon",
-                    `${this.iconType}`,
                     '',
+                    `${this.iconType}`,
                     Object.keys(MarkerFeature.icons)
                 ),
                 this.iconType,

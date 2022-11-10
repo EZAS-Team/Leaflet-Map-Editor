@@ -6,16 +6,23 @@ document.addEventListener("importTheMap", (e) => {
     importMap();
 });
 
-//function that converts a csv file into an array
 function csvToArray(str, delimiter = ",") {
 
+    // slice from start of text to the first \n index
+    // use split to create an array from string by delimiter
     const headers = str.slice(0, str.indexOf("\r\n")).split(delimiter);
 
+    // slice from \n index + 1 to the end of the text
+    // use split to create an array of each csv value row
     const rows = str.slice(str.indexOf("\n") + 1).split("\r\n");
 
+    // Map the rows
+    // split values from each row into an array
+    // use headers.reduce to create an object
+    // object properties derived from headers:values
+    // the object passed as an element of the array
     const arr = rows.map(function (row) {
       const values = row.split(delimiter);
-      //console.log(values);
       const el = headers.reduce(function (object, header, index) {
         object[header] = values[index];
         return object;
@@ -26,6 +33,60 @@ function csvToArray(str, delimiter = ",") {
     arr.splice((arr.length - 1), 1);
     return arr;
   }
+
+//function that converts a csv file into an array
+// function csvToObject(str) {
+    
+//     // slice from start of text to the first \n index
+//     // use split to create an array from string by delimiter
+//     const headers = csvStringToArray(str.slice(0, str.indexOf("\r\n")));
+
+//     // slice from \n index + 1 to the end of the text
+//     // use split to create an array of each csv value row
+//     const rows = str.slice(str.indexOf("\n") + 1).split("\r\n");
+
+//     // Map the rows
+//     // split values from each row into an array
+//     // use headers.reduce to create an object
+//     // object properties derived from headers:values
+//     // the object passed as an element of the array
+//     const arr = rows.map(function (row) {
+//       const values = csvStringToArray(row);
+//       const el = headers.reduce(function (object, header, index) {
+//         object[header] = values[index];
+//         return object;
+//       }, {});
+//       return el;
+//     });
+
+//     arr.splice((arr.length - 1), 1);
+//     return arr;
+//   }
+
+//   const csvStringToArray = (data) => {
+//     const re = /(,|\r?\n|\r|^)(?:"([^"]*(?:""[^"]*)*)"|([^,\r\n]*))/gi
+//     const result = [[]]
+//     let matches
+//     while ((matches = re.exec(data))) {
+//       if (matches[1].length && matches[1] !== ',') result.push([])
+//       result[result.length - 1].push(
+//         matches[2] !== undefined ? matches[2].replace(/""/g, '"') : matches[3]
+//       )
+//     }
+//     return result
+//   }
+
+//   function replaceNull(array, defaultValue)
+// {
+//     for(let i = 0; i < array.length; i++)
+//     {
+//         if(array[i] == null)
+//         {
+//             array[i] = defaultValue;
+//         }
+//     }
+//     return array;
+// }
 
   //function that sends an event to clear the map before importing
   function clearMap(){
@@ -38,10 +99,13 @@ function importMap() {
     clearMap();
     //the map that is built by the importer based on JSON and dispatched to the editor when the import is done
     let clicker = new EZAS.PsuedoMapInteract();
-    let listOfHeaders = ["Person", "Place", "Latitude", "Longitude", "FeatureType", "Color", "Radius", "Bound1Lat", "Bound1Lng", "Bound2Lat", "Bound2Lng"];   
+    let listOfHeaders = ["Title", "Description", "Latitude", "Longitude", "FeatureType", "Color", "Radius", "Bound1Lat", "Bound1Lng", "Bound2Lat", "Bound2Lng"];   
     let iconColor;
+    let iconName;
     let hexStrokeColor;
     let fullDescription;
+    let genDescription;
+    let providedDescription;
 
     //these are the colors for the icons since it would not change properly when given the color as an option below
     let purpleIcon = new L.icon({
@@ -105,54 +169,64 @@ function importMap() {
               var row = data[i];
 
               //this is to dynamically create the description by adding any headers and values that are not predefined to it
-              fullDescription = "Place: " + String(row.Place);
+              fullDescription = "";
+              genDescription = "";
+              providedDescription = "";
               let keys = Object.keys(row);
               
-              for (var j in keys){
-                let keyHeader = String(keys[j]);
-                if(!listOfHeaders.includes(keys[j])){
-                    fullDescription += "\n" + keys[j] + ": " + row[keyHeader];
+              for (let key in keys){
+                let keyHeader = String(keys[key]);
+                if(keyHeader=="Description")
+                {
+                    providedDescription = String(row[keyHeader]) + "\n";
+                }
+                if(!listOfHeaders.includes(keyHeader)){
+                    genDescription += keyHeader + ": " + row[keyHeader] + "\n";
                 }
               }
-
+              fullDescription = providedDescription + genDescription;
               //switch to change the color of the icon
               let colorstr = String(row.Color).toLowerCase();
               switch (colorstr){
                 case "red":
                     iconColor = redIcon;
+                    iconName = "DEFAULT-RED";
                     hexStrokeColor = "#ff0000";
                     break;
                 case "green":
                     iconColor = greenIcon;
+                    hexStrokeColor = "#00ff00";
                     break;
                 case "yellow":
                     iconColor = yellowIcon;
+                    hexStrokeColor = "#FFFF00";
                     break;
                 case "purple":
                     iconColor = purpleIcon;
+                    hexStrokeColor = "#A020F0";
                     break;
                 default:
                     iconColor = blueIcon;
+                    hexStrokeColor = "#3388FF";
               }
 
               //switch to change the feature type and do a pseudo click for that specific feature type
               let featureTypeStr = String(row.FeatureType).toLowerCase();
               switch (featureTypeStr){
                 case "marker":
-                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:fullDescription, icon:iconColor}, "ADD_MARKER");
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Title, description:fullDescription, icon:iconColor, iconType:iconName}, "ADD_MARKER");
                     break;
                 case "circle":
-                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:fullDescription, radius:row.Radius, color:hexStrokeColor}, "ADD_CIRCLE");
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Title, description:fullDescription, radius:row.Radius, color:hexStrokeColor}, "ADD_CIRCLE");
                     break;
                 case "rectangle":
                     let bound1Coords = new L.latLng(row.Bound1Lat, row.Bound1Lng);
                     let bound2Coords = new L.latLng(row.Bound2Lat, row.Bound2Lng);
                     let boundCoords = [bound1Coords, bound2Coords];
-                    //console.log(boundCoords);
-                    clicker.psuedoMapClick({boundCoords}, {title:row.Person, description:row.Place}, "ADD_RECTANGLE");
+                    clicker.psuedoMapClick({bound1Coords}, {bounds:boundCoords, title:row.Title, description:fullDescription, color:hexStrokeColor}, "ADD_RECTANGLE");
                     break;
                 default:
-                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:fullDescription, icon:iconColor}, "ADD_MARKER");
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Title, description:fullDescription, icon:iconColor}, "ADD_MARKER");
               }
             }
         }
