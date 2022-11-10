@@ -6,6 +6,7 @@ document.addEventListener("importTheMap", (e) => {
     importMap();
 });
 
+//function to convert csv into an array
 function csvToArray(str, delimiter = ",") {
 
     // slice from start of text to the first \n index
@@ -195,18 +196,22 @@ function importMap() {
                     break;
                 case "green":
                     iconColor = greenIcon;
+                    iconName = "DEFAULT-GREEN";
                     hexStrokeColor = "#00ff00";
                     break;
                 case "yellow":
                     iconColor = yellowIcon;
+                    iconName = "DEFAULT-YELLOW";
                     hexStrokeColor = "#FFFF00";
                     break;
                 case "purple":
                     iconColor = purpleIcon;
+                    iconName = "DEFAULT-PURPLE";
                     hexStrokeColor = "#A020F0";
                     break;
                 default:
                     iconColor = blueIcon;
+                    iconName = "DEFAULT-BLUE";
                     hexStrokeColor = "#3388FF";
               }
 
@@ -226,7 +231,7 @@ function importMap() {
                     clicker.psuedoMapClick({bound1Coords}, {bounds:boundCoords, title:row.Title, description:fullDescription, color:hexStrokeColor}, "ADD_RECTANGLE");
                     break;
                 default:
-                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Title, description:fullDescription, icon:iconColor}, "ADD_MARKER");
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Title, description:fullDescription, icon:iconColor, iconType:iconName}, "ADD_MARKER");
               }
             }
         }
