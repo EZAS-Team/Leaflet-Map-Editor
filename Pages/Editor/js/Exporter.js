@@ -140,41 +140,126 @@ function markersToFile(content, gemap){
     return content;
 }
 
+function parseDescription(description){
+    let descArray = description.split('\n');
+    let result = '"';
+    let i;
+
+    for(i = 0; i < descArray.length; i++){
+        descArray[i].trim();
+        if(i == descArray.length - 1){
+            if(descArray[i].length > 0){
+                result += descArray[i].substring(0, descArray[i].indexOf(':'));
+                result += ':';
+                result += descArray[i].substring(descArray[i].indexOf(':') + 2, descArray[i].length);
+                result += '"';
+            }
+            else{
+                result = result.substring(0, result.length -1);
+                result += '"';
+            }
+        }
+        else{
+            result += descArray[i].substring(0, descArray[i].indexOf(':'));
+            result += ':';
+            result += descArray[i].substring(descArray[i].indexOf(':') + 2, descArray[i].length);
+            result += ';';
+        }
+
+    }
+
+    console.log(result);
+    /*
+    let result = '';
+    let temp = '';
+    result += '"';
+    result += description.substring(0, description.indexOf(':'));
+    temp = description.substring(description.indexOf(':'), description.length - 1);
+    result += temp.substring(0, temp.indexOf('\n'));
+    result += ';';
+    temp = temp.substring(temp.indexOf('\n'), temp.length -1);
+    console.log(temp);
+    */
+
+    return result;
+    
+}
+
 //exports the map
 function exportMap(gemap) {
     var itemsFormatted = [];
     gemap.getMarkersFromMap();
     gemap.parseExportInfo();
     let test = JSON.parse(gemap.getExportInfo());
-    //console.log(test);
-    //console.log("Preparing export file");
+    console.log(gemap.getMap().featureArray.length);
     var exportFileName = prompt("Filename for map");
     var headers = {
-        Person: 'Person'.replace(/,/g, ''),
-        Place: 'Place',
+        Title: 'Title'.replace(/,/g, ''),
+        Description: 'Description',
         Latitude: 'Latitude',
-        Longitide: 'Longitude',
-        Location: 'Location type',
-        Precision: 'Precision',
-        Certainty: 'Certainty'
+        Longitude: 'Longitude',
+        FeatureType: 'FeatureType',
+        Color: 'Color',
+        Radius: 'Radius',
+        Bound1Lat: 'Bound1Lat',
+        Bound1Lng: 'Bound1Lng',
+        Bound2Lat: 'Bound2Lat',
+        Bound2Lng: 'Bound2Lng'
 
     };
 
-    let keys = Object.keys(gemap.featuresArray[0]);
+    let keys = Object.keys(gemap.getMap().featureArray.length);
     console.log(keys);
+    let filler = '';
 
-    gemap.getMarkers().forEach((item) => {
+    gemap.getMap().featureArray.forEach((item) => {
         //console.log(item.getLatLng().lat.toString());
-        itemsFormatted.push({
-            Person: 'Doodlebob'.replace(/,/g, ''),
-            Place: 'The bat cave',
-            Latitude: item.getLatLng().lat.toString(),
-            Longitude: item.getLatLng().lng.toString(),
-            Location: 'Cave like',
-            Precision: 'Can\'t confirm nor deny',
-            Certainty: 'Somewhat certain'
-
-        });
+        if(item instanceof EZAS.MarkerFeature){
+            console.log(parseDescription(item.options.description));
+            itemsFormatted.push({
+                Title: item.options.title.replace(/,/g, ''),
+                Description: parseDescription(item.options.description),
+                Latitude: item.getLatLng().lat.toString(),
+                Longitude: item.getLatLng().lng.toString(),
+                FeatureType: 'Marker',
+                Color: item.options.iconType,
+                Radius: filler,
+                Bound1Lat: filler,
+                Bound1Lng: filler,
+                Bound2Lat: filler,
+                Bound2Lng: filler
+            });
+        }
+        else if(item instanceof EZAS.CircleFeature){
+            console.log("This is a circle");
+            console.log(item.options.title);
+            console.log(item.options.description);
+            console.log(item.options.radius);
+            console.log(item.getLatLng().lat.toString());
+            console.log(item.getLatLng().lng.toString());
+            itemsFormatted.push({
+                Title: item.options.title.replace(/,/g, ''),
+                Description: parseDescription(item.options.description),
+                Latitude: item.getLatLng().lat.toString(),
+                Longitude: item.getLatLng().lng.toString(),
+                FeatureType: 'Circle',
+                Color: filler,
+                Radius: item.options.radius,
+                Bound1Lat: filler,
+                Bound1Lng: filler,
+                Bound2Lat: filler,
+                Bound2Lng: filler
+            });
+        }
+        else if(item instanceof EZAS.MapFeature){
+            console.log("This is the map");
+        }
+        else if(item instanceof EZAS.RectangleFeature){
+            console.log("This is a rectangle");
+        }
+        else{
+            console.log("Unknown feature");
+        }
     });
 
     exportCSVFile(headers, itemsFormatted, exportFileName);
