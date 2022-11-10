@@ -157,6 +157,7 @@ function importMap() {
     let fullDescription;
     let genDescription;
     let providedDescription;
+    let quoteCheckStr;
 
     //these are the colors for the icons since it would not change properly when given the color as an option below
     let purpleIcon = EZAS.MarkerFeature.icons["DEFAULT-PURPLE"];
@@ -179,6 +180,18 @@ function importMap() {
 
             for (var i in data){
               var row = data[i];
+            
+              let heads = Object.keys(row);
+              for(let head in heads){
+                let checkHead = String(heads[head]);
+                while(checkHead.includes("\"\"")){
+                    checkHead.replace("\"\"", "\"");
+                }
+                let checkValue = String(row[checkHead]);
+                while(checkValue.includes("\"\"")){
+                    checkValue.replace("\"\"", "\"");
+                }
+              }
 
               //this is to dynamically create the description by adding any headers and values that are not predefined to it
               fullDescription = "";
