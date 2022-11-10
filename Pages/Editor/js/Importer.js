@@ -9,12 +9,13 @@ document.addEventListener("importTheMap", (e) => {
 //function that converts a csv file into an array
 function csvToArray(str, delimiter = ",") {
 
-    const headers = str.slice(0, str.indexOf("\n")).split(delimiter);
+    const headers = str.slice(0, str.indexOf("\r\n")).split(delimiter);
 
-    const rows = str.slice(str.indexOf("\n") + 1).split("\n");
+    const rows = str.slice(str.indexOf("\n") + 1).split("\r\n");
 
     const arr = rows.map(function (row) {
       const values = row.split(delimiter);
+      //console.log(values);
       const el = headers.reduce(function (object, header, index) {
         object[header] = values[index];
         return object;
@@ -22,9 +23,11 @@ function csvToArray(str, delimiter = ",") {
       return el;
     });
 
+    arr.splice((arr.length - 1), 1);
     return arr;
   }
 
+  //function that sends an event to clear the map before importing
   function clearMap(){
     let event = new CustomEvent("clearMap");
     document.dispatchEvent(event);
@@ -35,40 +38,125 @@ function importMap() {
     clearMap();
     //the map that is built by the importer based on JSON and dispatched to the editor when the import is done
     let clicker = new EZAS.PsuedoMapInteract();
-    clicker.psuedoMapClick({lat:0.0, lng:0.0}, {title:"test", description:"test", radius:1000}, "ADD_CIRCLE");
+    let listOfHeaders = ["Person", "Place", "Latitude", "Longitude", "FeatureType", "Color", "Radius", "Bound1Lat", "Bound1Lng", "Bound2Lat", "Bound2Lng"];   
+    let iconColor;
+    let fullDescription;
 
-    //for header in header{
+    //these are the colors for the icons since it would not change properly when given the color as an option below
+    let purpleIcon = new L.icon({
+        iconUrl: '../../../Resources/Features/Marker/Icons/default-purple.png',
+        iconSize:    [25, 41],
+        iconAnchor:  [12, 41],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize:  [41, 41]
+    })
 
-    //}
+    let blueIcon = new L.icon({
+        iconUrl: '../../../Resources/Features/Marker/Icons/default-blue.png',
+        iconSize:    [25, 41],
+        iconAnchor:  [12, 41],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize:  [41, 41]
+    })
 
+    let redIcon = new L.icon({
+        iconUrl: '../../../Resources/Features/Marker/Icons/default-red.png',
+        iconSize:    [25, 41],
+        iconAnchor:  [12, 41],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize:  [41, 41]
+    })
 
+    let greenIcon = new L.icon({
+        iconUrl: '../../../Resources/Features/Marker/Icons/default-green.png',
+        iconSize:    [25, 41],
+        iconAnchor:  [12, 41],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize:  [41, 41]
+    })
 
-    //let imap = testMapParser();
+    let yellowIcon = new L.icon({
+        iconUrl: '../../../Resources/Features/Marker/Icons/default-yellow.png',
+        iconSize:    [25, 41],
+        iconAnchor:  [12, 41],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize:  [41, 41]
+    })
 
-    //let event = new CustomEvent("updateMap", { detail: { map_object: imap } });
-    //document.dispatchEvent(event);
+    // This loads in the selected file and performs pseudoclicks based on the info in the file
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.accept = ".csv";
+    input.onchange = e => {
+        var file = e.target.files[0];
+        var reader = new FileReader();
+        reader.onload = function (e){
+            var text = e.target.result;
+            var data = csvToArray(text);
+            JSON.stringify(data);
 
-    // Previous version of importmap(). Keeping for now in case it is needed later for some reason.
-    // let gimap = new EZAS.MapFeature("imap", {});
-    // var input = document.createElement('input');
-    // input.type = 'file';
-    // input.onchange = e => {
-    //     var file = e.target.files[0];
-    //     var reader = new FileReader();
-    //     reader.onload = function (e){
-    //         var text = e.target.result;
-    //         var data = csvToArray(text);
-    //         JSON.stringify(data);
-            
-    //         for (var i in data){
-    //           var row = data[i];
-    //           var marker = new google.maps.Marker({});
-    //           var position = new google.maps.Latlng(row.Latitiude, row.Longitude);
-    //         }
-    //     }
-    //     reader.readAsText(file);
-    // }
-    // input.click();
+            for (var i in data){
+              var row = data[i];
+
+              //this is to dynamically create the description by adding any headers and values that are not predefined to it
+              fullDescription = "Place: " + String(row.Place);
+              let keys = Object.keys(row);
+              
+              for (var j in keys){
+                let keyHeader = String(keys[j]);
+                if(!listOfHeaders.includes(keys[j])){
+                    fullDescription += "\n" + keys[j] + ": " + row[keyHeader];
+                }
+              }
+
+              //switch to change the color of the icon
+              let colorstr = String(row.Color).toLowerCase();
+              switch (colorstr){
+                case "red":
+                    iconColor = redIcon;
+                    break;
+                case "green":
+                    iconColor = greenIcon;
+                    break;
+                case "yellow":
+                    iconColor = yellowIcon;
+                    break;
+                case "purple":
+                    iconColor = purpleIcon;
+                    break;
+                default:
+                    iconColor = blueIcon;
+              }
+
+              //switch to change the feature type and do a pseudo click for that specific feature type
+              let featureTypeStr = String(row.FeatureType).toLowerCase();
+              switch (featureTypeStr){
+                case "marker":
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:fullDescription, icon:iconColor}, "ADD_MARKER");
+                    break;
+                case "circle":
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:fullDescription, radius:row.Radius}, "ADD_CIRCLE");
+                    break;
+                case "rectangle":
+                    let bound1Coords = new L.latLng(row.Bound1Lat, row.Bound1Lng);
+                    let bound2Coords = new L.latLng(row.Bound2Lat, row.Bound2Lng);
+                    let boundCoords = [bound1Coords, bound2Coords];
+                    //console.log(boundCoords);
+                    //clicker.psuedoMapClick({bound1Coords}, {title:row.Person, description:row.Place}, "ADD_RECTANGLE");
+                    break;
+                default:
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:fullDescription, icon:iconColor}, "ADD_MARKER");
+              }
+            }
+        }
+        reader.readAsText(file);
+    }
+    input.click();
 }
 
 function testMapParser() {
