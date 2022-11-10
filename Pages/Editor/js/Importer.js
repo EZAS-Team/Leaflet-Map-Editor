@@ -54,11 +54,18 @@ function csvToMap(str, delimiter = ",") {
 
     // slice from start of text to the first \n index
     // use split to create an array from string by delimiter
-    const headers = str.slice(0, str.indexOf("\r\n")).split(delimiter);
+    //const headers = str.slice(0, str.indexOf("\r\n")).split(delimiter);
+
+    //parse the csv into an array using the parseCSV function
+    const rows = parseCSV(str);
+    //get the headers from the first row
+    const headers = rows[0];
+    //remove the headers from the rows array
+    rows.shift();
 
     // slice from \n index + 1 to the end of the text
     // use split to create an array of each csv value row
-    const rows = str.slice(str.indexOf("\n") + 1).split("\r\n");
+    //const rows = str.slice(str.indexOf("\n") + 1).split("\r\n");
 
     // Map the rows
     // split values from each row into an array
