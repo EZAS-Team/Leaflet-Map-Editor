@@ -150,7 +150,7 @@ function importMap() {
     clearMap();
     //the map that is built by the importer based on JSON and dispatched to the editor when the import is done
     let clicker = new EZAS.PsuedoMapInteract();
-    let listOfHeaders = ["Title", "Description", "Latitude", "Longitude", "FeatureType", "Color", "Radius", "Bound1Lat", "Bound1Lng", "Bound2Lat", "Bound2Lng"];   
+    let listOfHeaders = ["Title", "Description", "Latitude", "Longitude", "FeatureType", "Color", "Radius", "Bound1Lat", "Bound1Lng", "Bound2Lat", "Bound2Lng", "ImageURL"];   
     let iconColor;
     let iconName;
     let hexStrokeColor;
@@ -239,21 +239,25 @@ function importMap() {
               //switch to change the color of the icon
               let colorstr = String(row.Color).toLowerCase();
               switch (colorstr){
+                case "default-red":
                 case "red":
                     iconColor = redIcon;
                     iconName = "DEFAULT-RED";
                     hexStrokeColor = "#ff0000";
                     break;
+                case "default-green":
                 case "green":
                     iconColor = greenIcon;
                     iconName = "DEFAULT-GREEN";
                     hexStrokeColor = "#00ff00";
                     break;
+                case "default-yellow":
                 case "yellow":
                     iconColor = yellowIcon;
                     iconName = "DEFAULT-YELLOW";
                     hexStrokeColor = "#FFFF00";
                     break;
+                case "default-purple":
                 case "purple":
                     iconColor = purpleIcon;
                     iconName = "DEFAULT-PURPLE";
