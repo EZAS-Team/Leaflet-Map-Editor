@@ -81,7 +81,7 @@ function csvToMap(str, delimiter = ",") {
       return el;
     });
 
-    arr.splice((arr.length - 1), 1);
+    //arr.splice((arr.length - 1), 1);
     return arr;
   }
 
@@ -164,7 +164,7 @@ function importMap() {
     let blueIcon = EZAS.MarkerFeature.icons["DEFAULT-BLUE"];
     let greenIcon = EZAS.MarkerFeature.icons["DEFAULT-GREEN"];
     let yellowIcon = EZAS.MarkerFeature.icons["DEFAULT-YELLOW"];
-    
+
     // This loads in the selected file and performs pseudoclicks based on the info in the file
     var input = document.createElement('input');
     input.type = 'file';
