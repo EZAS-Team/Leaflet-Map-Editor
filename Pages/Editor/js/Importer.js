@@ -164,51 +164,7 @@ function importMap() {
     let blueIcon = EZAS.MarkerFeature.icons["DEFAULT-BLUE"];
     let greenIcon = EZAS.MarkerFeature.icons["DEFAULT-GREEN"];
     let yellowIcon = EZAS.MarkerFeature.icons["DEFAULT-YELLOW"];
-
-    // let purpleIcon = new L.icon({
-    //     iconUrl: '../../../Resources/Features/Marker/Icons/default-purple.png',
-    //     iconSize:    [25, 41],
-    //     iconAnchor:  [12, 41],
-    //     popupAnchor: [1, -34],
-    //     tooltipAnchor: [16, -28],
-    //     shadowSize:  [41, 41]
-    // })
-    // let blueIcon = new L.icon({
-    //     iconUrl: '../../../Resources/Features/Marker/Icons/default-blue.png',
-    //     iconSize:    [25, 41],
-    //     iconAnchor:  [12, 41],
-    //     popupAnchor: [1, -34],
-    //     tooltipAnchor: [16, -28],
-    //     shadowSize:  [41, 41]
-    // })
-
-    // let redIcon = new L.icon({
-    //     iconUrl: '../../../Resources/Features/Marker/Icons/default-red.png',
-    //     iconSize:    [25, 41],
-    //     iconAnchor:  [12, 41],
-    //     popupAnchor: [1, -34],
-    //     tooltipAnchor: [16, -28],
-    //     shadowSize:  [41, 41]
-    // })
-
-    // let greenIcon = new L.icon({
-    //     iconUrl: '../../../Resources/Features/Marker/Icons/default-green.png',
-    //     iconSize:    [25, 41],
-    //     iconAnchor:  [12, 41],
-    //     popupAnchor: [1, -34],
-    //     tooltipAnchor: [16, -28],
-    //     shadowSize:  [41, 41]
-    // })
-
-    // let yellowIcon = new L.icon({
-    //     iconUrl: '../../../Resources/Features/Marker/Icons/default-yellow.png',
-    //     iconSize:    [25, 41],
-    //     iconAnchor:  [12, 41],
-    //     popupAnchor: [1, -34],
-    //     tooltipAnchor: [16, -28],
-    //     shadowSize:  [41, 41]
-    // })
-
+    
     // This loads in the selected file and performs pseudoclicks based on the info in the file
     var input = document.createElement('input');
     input.type = 'file';
