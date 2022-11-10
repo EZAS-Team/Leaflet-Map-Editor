@@ -125,7 +125,7 @@ function exportCSVFile(headers, items, fileTitle) {
     }
 }
 
-function markersToFile(content, gemap){
+function featuresToFile(content, gemap){
     let i;
     let numberOfMarkers;
     numberOfMarkers = gemap.getMarkers().length;
@@ -136,6 +136,14 @@ function markersToFile(content, gemap){
         content += ", " + gemap.getMarkers()[i].getLatLng().lng.toString();
         content += "]).addTo(map);\n";
     }
+
+    gemap.getMap().featureArray.forEach((item) => {
+        if(item instanceof EZAS.MarkerFeature){
+            content += "        L.marker([" + item.getLatLng().lat.toString();
+            content += ", " + item.getLatLng().lng.toString();
+            content += "]).addTo(map);\n";
+        }
+    });
 
     return content;
 }
@@ -169,20 +177,7 @@ function parseDescription(description){
     }
 
     console.log(result);
-    /*
-    let result = '';
-    let temp = '';
-    result += '"';
-    result += description.substring(0, description.indexOf(':'));
-    temp = description.substring(description.indexOf(':'), description.length - 1);
-    result += temp.substring(0, temp.indexOf('\n'));
-    result += ';';
-    temp = temp.substring(temp.indexOf('\n'), temp.length -1);
-    console.log(temp);
-    */
-
     return result;
-    
 }
 
 //exports the map
@@ -286,7 +281,7 @@ function exportMap(gemap) {
     content += "            maxZoom: 19,\n";
     content += "            attribution: \'&copy; OpenStreetMap\'\n";
     content += "            }).addTo(map);\n\n";
-    content = markersToFile(content, gemap);
+    content = featuresToFile(content, gemap);
     content += "\n  </script>\n"
     //content += "        L.marker([51.5, -0.09]).addTo(map);\n</script>\n"
     content += "    </body>\n</html>"
