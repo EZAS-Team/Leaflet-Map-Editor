@@ -73,7 +73,7 @@ function csvToMap(str, delimiter = ",") {
     // object properties derived from headers:values
     // the object passed as an element of the array
     const arr = rows.map(function (row) {
-      const values = row.split(delimiter);
+      const values = row;
       const el = headers.reduce(function (object, header, index) {
         object[header] = values[index];
         return object;
