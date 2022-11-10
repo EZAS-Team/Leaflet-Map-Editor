@@ -40,6 +40,7 @@ function importMap() {
     let clicker = new EZAS.PsuedoMapInteract();
     let listOfHeaders = ["Person", "Place", "Latitude", "Longitude", "FeatureType", "Color", "Radius", "Bound1Lat", "Bound1Lng", "Bound2Lat", "Bound2Lng"];   
     let iconColor;
+    let hexStrokeColor;
     let fullDescription;
 
     //these are the colors for the icons since it would not change properly when given the color as an option below
@@ -119,6 +120,7 @@ function importMap() {
               switch (colorstr){
                 case "red":
                     iconColor = redIcon;
+                    hexStrokeColor = "#ff0000";
                     break;
                 case "green":
                     iconColor = greenIcon;
@@ -140,14 +142,14 @@ function importMap() {
                     clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:fullDescription, icon:iconColor}, "ADD_MARKER");
                     break;
                 case "circle":
-                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:fullDescription, radius:row.Radius}, "ADD_CIRCLE");
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:fullDescription, radius:row.Radius, color:hexStrokeColor}, "ADD_CIRCLE");
                     break;
                 case "rectangle":
                     let bound1Coords = new L.latLng(row.Bound1Lat, row.Bound1Lng);
                     let bound2Coords = new L.latLng(row.Bound2Lat, row.Bound2Lng);
                     let boundCoords = [bound1Coords, bound2Coords];
                     //console.log(boundCoords);
-                    //clicker.psuedoMapClick({bound1Coords}, {title:row.Person, description:row.Place}, "ADD_RECTANGLE");
+                    clicker.psuedoMapClick({boundCoords}, {title:row.Person, description:row.Place}, "ADD_RECTANGLE");
                     break;
                 default:
                     clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:fullDescription, icon:iconColor}, "ADD_MARKER");
