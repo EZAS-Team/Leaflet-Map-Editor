@@ -101,6 +101,7 @@ function importMap() {
     let clicker = new EZAS.PsuedoMapInteract();
     let listOfHeaders = ["Title", "Description", "Latitude", "Longitude", "FeatureType", "Color", "Radius", "Bound1Lat", "Bound1Lng", "Bound2Lat", "Bound2Lng"];   
     let iconColor;
+    let iconName;
     let hexStrokeColor;
     let fullDescription;
     let genDescription;
@@ -183,12 +184,13 @@ function importMap() {
                     genDescription += keyHeader + ": " + row[keyHeader] + "\n";
                 }
               }
-              fullDescription = providedDescription + fullDescription;
+              fullDescription = providedDescription + genDescription;
               //switch to change the color of the icon
               let colorstr = String(row.Color).toLowerCase();
               switch (colorstr){
                 case "red":
                     iconColor = redIcon;
+                    iconName = "DEFAULT-RED";
                     hexStrokeColor = "#ff0000";
                     break;
                 case "green":
@@ -212,19 +214,19 @@ function importMap() {
               let featureTypeStr = String(row.FeatureType).toLowerCase();
               switch (featureTypeStr){
                 case "marker":
-                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:fullDescription, icon:iconColor}, "ADD_MARKER");
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Title, description:fullDescription, icon:iconColor, iconType:iconName}, "ADD_MARKER");
                     break;
                 case "circle":
-                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:fullDescription, radius:row.Radius, color:hexStrokeColor}, "ADD_CIRCLE");
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Title, description:fullDescription, radius:row.Radius, color:hexStrokeColor}, "ADD_CIRCLE");
                     break;
                 case "rectangle":
                     let bound1Coords = new L.latLng(row.Bound1Lat, row.Bound1Lng);
                     let bound2Coords = new L.latLng(row.Bound2Lat, row.Bound2Lng);
                     let boundCoords = [bound1Coords, bound2Coords];
-                    clicker.psuedoMapClick({bound1Coords}, {bounds:boundCoords, title:row.Person, description:fullDescription, color:hexStrokeColor}, "ADD_RECTANGLE");
+                    clicker.psuedoMapClick({bound1Coords}, {bounds:boundCoords, title:row.Title, description:fullDescription, color:hexStrokeColor}, "ADD_RECTANGLE");
                     break;
                 default:
-                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Person, description:fullDescription, icon:iconColor}, "ADD_MARKER");
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Title, description:fullDescription, icon:iconColor}, "ADD_MARKER");
               }
             }
         }
