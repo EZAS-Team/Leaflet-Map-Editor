@@ -125,23 +125,79 @@ function exportCSVFile(headers, items, fileTitle) {
     }
 }
 
+function getIconUrl(icon){
+    let result;
+
+    if(icon.localeCompare("DEFAULT-BLUE") === 0){
+        result = 'https://raw.githubusercontent.com/EZAS-Team/Leaflet-Map-Editor/Alex-Dev/Resources/Features/Marker/Icons/default-blue.png'
+    }
+    else if(icon.localeCompare("DEFAULT-RED") === 0){
+        result = 'https://raw.githubusercontent.com/EZAS-Team/Leaflet-Map-Editor/Alex-Dev/Resources/Features/Marker/Icons/default-red.png'
+    }
+    else if (icon.localeCompare("DEFAULT-GREEN") === 0){
+        result = 'https://raw.githubusercontent.com/EZAS-Team/Leaflet-Map-Editor/Alex-Dev/Resources/Features/Marker/Icons/default-green.png'
+    }
+    else if (icon.localeCompare("DEFAULT-PURPLE") === 0){
+        result = 'https://raw.githubusercontent.com/EZAS-Team/Leaflet-Map-Editor/Alex-Dev/Resources/Features/Marker/Icons/default-purple.png'
+    }
+    else if (icon.localeCompare("DEFAULT-YELLOW") === 0){
+        result = 'https://raw.githubusercontent.com/EZAS-Team/Leaflet-Map-Editor/Alex-Dev/Resources/Features/Marker/Icons/default-yellow.png'
+    }
+    else{
+        console.log("Something went wrong in getIconUrl");
+    }
+
+    console.log(result);
+    return result;
+}
+
 function featuresToFile(content, gemap){
     let i;
     let numberOfMarkers;
+    let popupHtml, title, desc;
     numberOfMarkers = gemap.getMarkers().length;
     //console.log(numberOfMarkers);
     //content += "        L.marker([51.5, -0.09]).addTo(map);
-    for( i = 0; i < numberOfMarkers; i++){
-        content += "        L.marker([" + gemap.getMarkers()[i].getLatLng().lat.toString();
-        content += ", " + gemap.getMarkers()[i].getLatLng().lng.toString();
-        content += "]).addTo(map);\n";
-    }
 
     gemap.getMap().featureArray.forEach((item) => {
         if(item instanceof EZAS.MarkerFeature){
+            getIconUrl(item.options.iconType);
+            popupHtml = '';
+            popupHtml += '<div>';
+            popupHtml += `<h1>${item.options.title}</h1>`;
+            popupHtml += `<p>${item.options.description}</p>`;
+            popupHtml += `<img src = \'${item.options.imageURL}\'></img>`
+            popupHtml += `</div>`;
+
             content += "        L.marker([" + item.getLatLng().lat.toString();
             content += ", " + item.getLatLng().lng.toString();
-            content += "]).addTo(map);\n";
+            content += "], {icon: L.icon({\n\t";
+            content += "    iconUrl: \'" + getIconUrl(item.options.iconType);
+            content += "\',\n"
+            content += "                iconSize: [25, 41],\n"
+            content += "                iconAnchor: [12, 41],\n"
+            content += "                popupAnchor: [1, -34],\n"
+            content += "                tooltipAnchor: [16, -28],\n"
+            content += "                shadowSize: [41, 41]"
+            content += "    })}).addTo(map)"
+            content += `.bindPopup(\"${popupHtml}\",{maxHeight:300,maxWidth:300});\n`
+
+            //)}).addTo(map);\n";
+        }
+        else if(item instanceof EZAS.CircleFeature){
+            console.log(item.options.radius);
+            content += "        L.circle([" + item.getLatLng().lat.toString();
+            content += ", " + item.getLatLng().lng.toString() + "], {\n";
+            content += "            radius: " + item.options.radius;
+            content += "\n      }).addTo(map);\n";
+        }
+        else if(item instanceof EZAS.RectangleFeature){
+            content += "        L.rectangle([[" + item.bounds[0].lat.toString() + ", " + item.bounds[0].lng.toString() + "], ";
+            content += "[" + item.bounds[1].lat.toString() + ", " +item.bounds[1].lng.toString() + "]).addTo(map);\n";
+        }
+
+        else if(item instanceof EZAS.RectangleFeature){
+
         }
     });
 
@@ -199,7 +255,8 @@ function exportMap(gemap) {
         Bound1Lat: 'Bound1Lat',
         Bound1Lng: 'Bound1Lng',
         Bound2Lat: 'Bound2Lat',
-        Bound2Lng: 'Bound2Lng'
+        Bound2Lng: 'Bound2Lng',
+        ImageURL: 'ImageURL'
 
     };
 
@@ -222,16 +279,11 @@ function exportMap(gemap) {
                 Bound1Lat: filler,
                 Bound1Lng: filler,
                 Bound2Lat: filler,
-                Bound2Lng: filler
+                Bound2Lng: filler,
+                ImageURL: item.options.imageURL
             });
         }
         else if(item instanceof EZAS.CircleFeature){
-            console.log("This is a circle");
-            console.log(item.options.title);
-            console.log(item.options.description);
-            console.log(item.options.radius);
-            console.log(item.getLatLng().lat.toString());
-            console.log(item.getLatLng().lng.toString());
             itemsFormatted.push({
                 Title: item.options.title.replace(/,/g, ''),
                 Description: parseDescription(item.options.description),
@@ -243,7 +295,8 @@ function exportMap(gemap) {
                 Bound1Lat: filler,
                 Bound1Lng: filler,
                 Bound2Lat: filler,
-                Bound2Lng: filler
+                Bound2Lng: filler,
+                ImageURL: filler
             });
         }
         else if(item instanceof EZAS.MapFeature){
@@ -251,6 +304,20 @@ function exportMap(gemap) {
         }
         else if(item instanceof EZAS.RectangleFeature){
             console.log("This is a rectangle");
+            itemsFormatted.push({
+            Title: item.options.title.replace(/,/g, ''),
+                Description: parseDescription(item.options.description),
+                Latitude: filler,
+                Longitude: filler,
+                FeatureType: 'Rectangle',
+                Color: filler,
+                Radius: filler,
+                Bound1Lat: item.bounds[0].lat.toString(),
+                Bound1Lng: item.bounds[0].lng.toString(),
+                Bound2Lat: item.bounds[1].lat.toString(),
+                Bound2Lng: item.bounds[1].lng.toString(),
+                ImageURL: filler
+            });
         }
         else{
             console.log("Unknown feature");
