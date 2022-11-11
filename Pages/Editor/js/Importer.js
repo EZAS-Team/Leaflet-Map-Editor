@@ -181,15 +181,16 @@ function importMap() {
             for (var i in data){
               var row = data[i];
             
+              //check to replace any double quotes
               let heads = Object.keys(row);
               for(let head in heads){
                 let checkHead = String(heads[head]);
                 while(checkHead.includes("\"\"")){
-                    checkHead.replace("\"\"", "\"");
+                    checkHead.replace("\"\"", "");
                 }
                 let checkValue = String(row[checkHead]);
                 while(checkValue.includes("\"\"")){
-                    checkValue.replace("\"\"", "\"");
+                    checkValue.replace("\"\"", "");
                 }
               }
 
