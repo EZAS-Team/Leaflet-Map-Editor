@@ -1,6 +1,5 @@
 "use strict";
 import * as EZAS from "../js/Requirements.js";
-//let gemap;
 
 class ExportFeature{
     map;
@@ -61,11 +60,9 @@ class ExportFeature{
 
 //listens for an event that tells it to export the map given by the event
 document.addEventListener("exportMap", (e) => {
-    //gemap = e.detail.map_object;
     let gemap;
     gemap = new ExportFeature(e.detail.map_object);
     exportMap(gemap);
-    //testGemap();
 });
 
 
@@ -146,27 +143,45 @@ function getIconUrl(icon){
     else{
         console.log("Something went wrong in getIconUrl");
     }
+    return result;
+}
 
-    console.log(result);
+function parseHTMLDescription(description){
+    if(description == undefined){
+        return "";
+    }
+    let descArray = description.split('\n');
+    let result = "";
+    let i;
+
+    for(i = 0; i < descArray.length; i++){
+        result += descArray[i];
+        result += "<br>";
+    }
     return result;
 }
 
 function featuresToFile(content, gemap){
-    let i;
-    let numberOfMarkers;
-    let popupHtml, title, desc;
-    numberOfMarkers = gemap.getMarkers().length;
-    //console.log(numberOfMarkers);
-    //content += "        L.marker([51.5, -0.09]).addTo(map);
+    let popupHtml, title;
 
     gemap.getMap().featureArray.forEach((item) => {
+        if(item.options.title == undefined){
+            title = '';
+        }
+        else{
+            title = item.options.title;
+        }
         if(item instanceof EZAS.MarkerFeature){
             getIconUrl(item.options.iconType);
             popupHtml = '';
             popupHtml += '<div>';
-            popupHtml += `<h1>${item.options.title}</h1>`;
-            popupHtml += `<p>${item.options.description}</p>`;
-            popupHtml += `<img src = \'${item.options.imageURL}\'></img>`
+            popupHtml += `<h2>${title}</h2>`;
+            popupHtml += `<p>` + parseHTMLDescription(item.options.description) + `</p>`;
+            //If no value is passed for image URL, imageURL is set to undefined
+            //Only adds image to popup if not undefined
+            if(item.options.imageURL != undefined){
+                popupHtml += `<img src = \'${item.options.imageURL}\'></img>`
+            }
             popupHtml += `</div>`;
 
             content += "        L.marker([" + item.getLatLng().lat.toString();
@@ -181,23 +196,30 @@ function featuresToFile(content, gemap){
             content += "                shadowSize: [41, 41]"
             content += "    })}).addTo(map)"
             content += `.bindPopup(\"${popupHtml}\",{maxHeight:300,maxWidth:300});\n`
-
-            //)}).addTo(map);\n";
         }
         else if(item instanceof EZAS.CircleFeature){
-            console.log(item.options.radius);
+            popupHtml = '';
+            popupHtml += '<div>';
+            popupHtml += `<h2>${title}</h2>`;
+            popupHtml += `<p>` + parseHTMLDescription(item.options.description) + `</p>`;
+            popupHtml += `</div>`;
+
             content += "        L.circle([" + item.getLatLng().lat.toString();
             content += ", " + item.getLatLng().lng.toString() + "], {\n";
-            content += "            radius: " + item.options.radius;
-            content += "\n      }).addTo(map);\n";
+            content += "            radius: " + item.getRadius();
+            content += "\n      }).addTo(map)";
+            content += `.bindPopup(\"${popupHtml}\", {maxHeight:300, maxWidth:300});\n`
         }
         else if(item instanceof EZAS.RectangleFeature){
+            popupHtml = '';
+            popupHtml += '<div>';
+            popupHtml += `<h2>${title}</h2>`;
+            popupHtml += `<p>` + parseHTMLDescription(item.options.description) + `</p>`;
+            popupHtml += `</div>`;
+
             content += "        L.rectangle([[" + item.bounds[0].lat.toString() + ", " + item.bounds[0].lng.toString() + "], ";
-            content += "[" + item.bounds[1].lat.toString() + ", " +item.bounds[1].lng.toString() + "]).addTo(map);\n";
-        }
-
-        else if(item instanceof EZAS.RectangleFeature){
-
+            content += "[" + item.bounds[1].lat.toString() + ", " +item.bounds[1].lng.toString() + "]]).addTo(map)";
+            content += `.bindPopup(\"${popupHtml}\", {maxHeight: 300, maxWidth:300});\n`
         }
     });
 
@@ -205,6 +227,9 @@ function featuresToFile(content, gemap){
 }
 
 function parseDescription(description){
+    if(description == undefined){
+        return "";
+    }
     let descArray = description.split('\n');
     let result = '"';
     let i;
@@ -231,8 +256,6 @@ function parseDescription(description){
         }
 
     }
-
-    console.log(result);
     return result;
 }
 
@@ -241,8 +264,6 @@ function exportMap(gemap) {
     var itemsFormatted = [];
     gemap.getMarkersFromMap();
     gemap.parseExportInfo();
-    let test = JSON.parse(gemap.getExportInfo());
-    console.log(gemap.getMap().featureArray.length);
     var exportFileName = prompt("Filename for map");
     var headers = {
         Title: 'Title'.replace(/,/g, ''),
@@ -263,13 +284,26 @@ function exportMap(gemap) {
     let keys = Object.keys(gemap.getMap().featureArray.length);
     console.log(keys);
     let filler = '';
+    let image = '';
+    let title = '';
 
     gemap.getMap().featureArray.forEach((item) => {
-        //console.log(item.getLatLng().lat.toString());
+        if(item.options.title == undefined){
+            title = '';
+        }
+        else{
+            title = item.options.title;
+        }
+
+        if(item.options.image == undefined){
+            image = '';
+        }
+        else{
+            image = item.options.imageURL;
+        }
         if(item instanceof EZAS.MarkerFeature){
-            console.log(parseDescription(item.options.description));
             itemsFormatted.push({
-                Title: item.options.title.replace(/,/g, ''),
+                Title: title.replace(/,/g, ''),
                 Description: parseDescription(item.options.description),
                 Latitude: item.getLatLng().lat.toString(),
                 Longitude: item.getLatLng().lng.toString(),
@@ -280,12 +314,12 @@ function exportMap(gemap) {
                 Bound1Lng: filler,
                 Bound2Lat: filler,
                 Bound2Lng: filler,
-                ImageURL: item.options.imageURL
+                ImageURL: image
             });
         }
         else if(item instanceof EZAS.CircleFeature){
             itemsFormatted.push({
-                Title: item.options.title.replace(/,/g, ''),
+                Title: title.replace(/,/g, ''),
                 Description: parseDescription(item.options.description),
                 Latitude: item.getLatLng().lat.toString(),
                 Longitude: item.getLatLng().lng.toString(),
@@ -299,13 +333,9 @@ function exportMap(gemap) {
                 ImageURL: filler
             });
         }
-        else if(item instanceof EZAS.MapFeature){
-            console.log("This is the map");
-        }
         else if(item instanceof EZAS.RectangleFeature){
-            console.log("This is a rectangle");
             itemsFormatted.push({
-            Title: item.options.title.replace(/,/g, ''),
+                Title: title.replace(/,/g, ''),
                 Description: parseDescription(item.options.description),
                 Latitude: filler,
                 Longitude: filler,
@@ -318,9 +348,6 @@ function exportMap(gemap) {
                 Bound2Lng: item.bounds[1].lng.toString(),
                 ImageURL: filler
             });
-        }
-        else{
-            console.log("Unknown feature");
         }
     });
 
@@ -339,7 +366,6 @@ function exportMap(gemap) {
     content += "    </script><!-- End of remote required for leaflet -->\n";
     content += "    </head>\n";
     content += "    <body>\n";
-    //content += mapElement;
     content += "\n";
     content += "    <div id=\"map\" style=\"width: 1000px; height: 600px\"></div>\n";
     content += "    <script>\n";
@@ -348,9 +374,9 @@ function exportMap(gemap) {
     content += "            maxZoom: 19,\n";
     content += "            attribution: \'&copy; OpenStreetMap\'\n";
     content += "            }).addTo(map);\n\n";
+    //featuresToFile exports all features on the current map to the .html export
     content = featuresToFile(content, gemap);
     content += "\n  </script>\n"
-    //content += "        L.marker([51.5, -0.09]).addTo(map);\n</script>\n"
     content += "    </body>\n</html>"
 
     //Same process as .csv export
