@@ -33,7 +33,7 @@ class CircleFeature extends L.Circle {
 		this.circle = this; //reference to the circle object (Self due to extending L.circle)
 		this.guid = guid.get; //GUID object for the circle
         console.debug(`Circle ${this.guid} constructor fired with options: `, options);
-		if (options.title == undefined) options.title = "Circle";
+		if (options.title == undefined) options.title = `Circle: ${this.guid}`;
 		if (options.description == undefined) options.description = "";
 		//create the fields that can be edited in the property editor for the circle
 		//cant be static because guid is required and unique for each circle
@@ -47,7 +47,7 @@ class CircleFeature extends L.Circle {
 					"Title",
 					`${options.title}`,
 				),
-				""
+				`${options.title}`
 			),
 			new EditorRequirements.EditableField(
 				`${this.guid}`,
@@ -58,7 +58,7 @@ class CircleFeature extends L.Circle {
 					"Description",
 					`${options.description}`,
 				),
-				""
+				`${options.description}`
 			),
 			new EditorRequirements.EditableField(
 				`${this.guid}`,
@@ -66,7 +66,8 @@ class CircleFeature extends L.Circle {
 					"number",
 					"lat",
 					"Latitude",
-					`${this.getLatLng().lat}`
+					"Latitude",
+					this.getLatLng().lat
 				),
 				this.getLatLng().lat,
 				(value) => {
@@ -79,7 +80,8 @@ class CircleFeature extends L.Circle {
 					"number",
 					"lng",
 					"Longitude",
-					`${this.getLatLng().lng}`
+					"Longitude",
+					this.getLatLng().lng
 				),
 				this.getLatLng().lng,
 				(value) => {
@@ -92,10 +94,10 @@ class CircleFeature extends L.Circle {
 					"number",
 					"radius",
 					"Radius",
-					`${this.guid}`,
-					100
+					100,
+					options.radius,
 				),
-				this.options.radius
+				options.radius
 			)
 		];
 		this.propertyEditor = new EditorRequirements.FeaturePropertyEditor(
