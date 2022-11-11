@@ -73,36 +73,58 @@
     <body>
         <div class="flex-row-l-to-r">
             <aside id="editor_buttons_panel">
-                 
-                <!-- button that calls a export callback -->
-                <button id="export_button" onclick="exportMap()">Export</button>
-                <!-- button that calls a import callback -->
-                <button id="import_button" onclick="importMap()">Import</button>
-                <!-- button that switches the state to add a marker -->
-                <button
-                id="add_marker_button"
-                onclick="changeEditorState('Map','OnClick','ADD_MARKER')"
-                >
+                <div id="general_buttons">
+                    <!-- button that calls a export callback -->
+                    <button id="export_button" onclick="exportMap()">Export</button>
+                    <!-- button that calls a import callback -->
+                    <button id="import_button" onclick="importMap()">Import</button>
+                    <!-- button that switches the state to add a marker -->
+                    <button
+                    id="delete_button"
+                    onclick="changeEditorState('Features','OnClick','DELETE')"
+                    >
+                    Delete Feature
+                    </button>
+                </div>
+                <div id="marker_buttons">
+                    
+                    <button
+                    id="add_marker_button"
+                    onclick="changeEditorState('Map','OnClick','ADD_MARKER')"
+                    >
                     Add Marker
-                </button>
-                <button
-                id="delete_marker_button"
-                onclick="changeEditorState('Marker','OnClick','DELETE')"
-                >
-                    Delete Marker
-                </button>
-                <label for="marker_type_label" id="selectmarker">Marker Type</label>
-                <select 
+                    </button>
+                    <label for="marker_type_label">Marker Type</label>
+                    <select 
                     id="marker_type_select"
-                >
-                   
-                    <option selected value="DEFAULT-BLUE" id="blue">Blue</option>
-                    <option value="DEFAULT-RED" id="red">Red</option>
-                    <option value="DEFAULT-GREEN" id="green">Green</option>
-                    <option value="DEFAULT-PURPLE" id="purple">Purple</option>
-                    <option value="DEFAULT-YELLOW" id="yellow">Yellow</option>
-                </select>
-            
+                    >
+                        <option value="DEFAULT-BLUE" selected>DEFAULT-BLUE</option>
+                        <option value="DEFAULT-RED">DEFAULT-RED</option>
+                        <option value="DEFAULT-GREEN">DEFAULT-GREEN</option>
+                        <option value="DEFAULT-PURPLE">DEFAULT-PURPLE</option>
+                        <option value="DEFAULT-YELLOW">DEFAULT-YELLOW</option>
+                    </select>
+                </div>
+                <div id="circle_buttons">
+                    
+                    <button
+                    id="add_circle_button"
+                    onclick="changeEditorState('Map','OnClick','ADD_CIRCLE')"
+                    >
+                    Add Circle
+                    </button>
+                    <label for="circle_radius_input">Radius (meters)</label>
+                    <input type="number" id="circle_radius_input" placeholder=1000 value=1000></input>
+                </div>
+                <div id="rectangle_buttons">
+                    
+                    <button
+                    id="add_rectange_button"
+                    onclick="changeEditorState('Map','OnClick','ADD_RECTANGLE')"
+                    >
+                    Add Rectangle
+                    </button>
+                </div>
             </aside>
             <div id="map">
                 <script

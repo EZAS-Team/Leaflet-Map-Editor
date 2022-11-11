@@ -147,3 +147,33 @@ body{
     flex-direction: column;
     align-items: center;
 }
+
+#general_buttons {
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid black;
+}
+
+#marker_buttons {
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid black;
+}
+
+#circle_buttons {
+    align-items: center;
+    width: auto;
+    height: auto;
+    border: 1px solid black;
+}
+
+input[type=number] {
+    width: auto;
+    height: auto;
+}
+
+.editable-field-string {
+    width: auto;
+    height: auto;
+    
+}

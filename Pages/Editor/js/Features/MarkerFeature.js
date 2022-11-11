@@ -3,7 +3,7 @@ import * as EditorRequirements from "../EditorRequirements.js";
 import { GUID, StateHandle } from "../Requirements.js";
 //Marker Feature with a property editor
 class MarkerFeature extends L.Marker {
-    static initialStates = 
+    initialStates = 
     {
         "OnClick":"EDIT",
         "OnClick_default":"EDIT",//default state for the OnClick event dont change this during runtime
@@ -25,9 +25,7 @@ class MarkerFeature extends L.Marker {
         "OnMouseOver":"NONE",
         "OnMouseOut":"NONE",
         "OnContextMenu":"NONE",
-        "OnPreClick":"NONE",
-        "IconType":"DEFAULT-BLUE",
-        "IconType_default":"DEFAULT-BLUE",
+        "OnPreClick":"NONE"
     };
 
     static icons =
@@ -77,10 +75,14 @@ class MarkerFeature extends L.Marker {
     constructor(latlng, options, guid = new GUID()) {
         super(latlng, options);
         this.eventTarget = new EventTarget();
-        this.marker = this; //reference to the marker object (Self due to extending L.Marker)
+        this.iconType = options.iconType;
         this.guid = guid.get; //GUID object for the marker
+        console.debug(`Marker ${this.guid} constructor fired with options: `, options);
         //create the fields that can be edited in the property editor for the marker
         //cant be static because guid is required and unique for each marker
+        if (options.title == undefined) options.title = "Marker";
+        if (options.description == undefined) options.description = "";
+
         this.editableFieldObjects =
         [
             new EditorRequirements.EditableField(
@@ -88,9 +90,20 @@ class MarkerFeature extends L.Marker {
                 new EditorRequirements.Field(
                     "string",
                     "title",
-                    "Marker Title",
-                    `${this.guid}`,
-                    ""
+                    "Title",
+                    "Title",
+                    `${options.title}`,
+                ),
+                ""
+            ),
+            new EditorRequirements.EditableField(
+                `${this.guid}`,
+                new EditorRequirements.Field(
+                    "stringBox",
+                    "description",
+                    "Description",
+                    "Description",
+                    `${options.description}`,    
                 ),
                 ""
             ),
@@ -98,28 +111,56 @@ class MarkerFeature extends L.Marker {
                 `${this.guid}`,
                 new EditorRequirements.Field(
                     "string",
-                    "description",
-                    "Marker Description",
-                    `${this.guid}`,
+                    "imageURL",
+                    "imageURL",
+                    ``,
                     ""
                 ),
                 ""
             ),
-
-            // the marker type dropdown is discluded because it is not editable
-            // until a feature is implemented to copy and recreate with the new icon
-            // new EditorRequirements.EditableField(
-            //     `${this.guid}`,
-            //     new EditorRequirements.Field(
-            //         "dropdown",
-            //         "icon",
-            //         "Marker Icon",
-            //         `${this.guid}`,
-            //         MarkerFeature.icons["default-blue"],
-            //         Object.keys(MarkerFeature.icons)
-            //     ),
-            //     ""
-            // ),
+            new EditorRequirements.EditableField(
+				`${this.guid}`,
+				new EditorRequirements.Field(
+					"number",
+					"lat",
+					"Latitude",
+					`${this.getLatLng().lat}`
+				),
+				this.getLatLng().lat,
+				(value) => {
+					return this.getLatLng().lat;
+				}
+			),
+			new EditorRequirements.EditableField(
+				`${this.guid}`,
+				new EditorRequirements.Field(
+					"number",
+					"lng",
+					"Longitude",
+					`${this.getLatLng().lng}`
+				),
+				this.getLatLng().lng,
+				(value) => {
+					return this.getLatLng().lng;
+				}
+			),
+            new EditorRequirements.EditableField(
+                `${this.guid}`,
+                new EditorRequirements.Field(
+                    "dropdown",
+                    "icon",
+                    "Icon",
+                    `${this.iconType}`,
+                    '',
+                    Object.keys(MarkerFeature.icons)
+                ),
+                this.iconType,
+                (value) => {
+                    //return the key of icon in icons for where the iconurl matches the given value iconurl
+                    console.debug(`Icon value in property editor set to: ${value}`);
+                    return value;
+                }
+           ),
         ];
         this.propertyEditor = new EditorRequirements.FeaturePropertyEditor(
             this,
@@ -127,27 +168,28 @@ class MarkerFeature extends L.Marker {
         );
         this.propertyEditor.open(); //open the property editor
         //create the state handle for the marker
-        this.stateHandle = new StateHandle(MarkerFeature.initialStates);
+        this.stateHandle = new StateHandle(this.initialStates);
         //listen for a marker state change event and change the state
         //this allows for all the marker states to be changed at the same time when dispatched
         //to the document. dispatches an event to itself to ensure that the event doesn't get acted on 2 times
-        
         document.addEventListener("markerStateChange", (e) => {
             let event = new CustomEvent("markerStateChange", {detail:e});
             this.eventTarget.dispatchEvent(event); 
         }, true);  //prevent the event from bubbling up
         //allows for each marker to be able to change states individually
-        this.eventTarget.addEventListener("markerStateChange", (e) => { 
+        this.eventTarget.addEventListener("markerStateChange", (e) => {
+            console.debug(`Marker ${this.guid} state change event: ${e.detail.action} ${e.detail.state}`);
             this.stateHandle.setState(e.detail.action, e.detail.state); 
         }, true); //prevent the event from bubbling up
         //create the events for the marker
         this.addEventListener("click", (e) => { this.OnClick(); }, true); //prevent the event from bubbling up
         this.addEventListener("add", (e) => {this.OnAdd();}, true); //prevent the event from bubbling up
+        this.marker = this; //reference to the marker object (Self due to extending L.Marker)
     }
     //resets the named state in the state handle to the default state
     resetState(name)
     {
-        console.debug(`Resetting ${this.guid} Marker state ${name} to back to default state from ${this.stateHandle.getState(name)}`);
+        console.debug(`Resetting ${this.guid} Marker state ${name} back to default state from ${this.stateHandle.getState(name)}`);
         this.stateHandle.resetState(name);
     }
 
@@ -158,28 +200,36 @@ class MarkerFeature extends L.Marker {
         if(!(property in this.options))//check if the property exists
         {
             //warn of a non-easy exportable property
-            console.warn(`Marker ${this.guid} updateProperty event fired with property ${property} that does not exist in standard leaflet.
-                It will be added to the marker object but requires custom importing and exporting to be used.
-                This is not recommended.`);
+            console.warn(`Marker ${this.guid} updateProperty event fired with property ${property} that may require custom importing and exporting to be used.`);
             //throw(`Property ${property} does not exist in Marker`);
         }
-        //swtich for actions based on the type of property's value
-        let propertyValue = this.options[property];
-        if(propertyValue instanceof L.Icon)
+        //switch for actions based on the type of property's value
+		//this is used to update the marker's objects property on the map
+		switch(property)
         {
-            return;
-            this.options[property] = MarkerFeature.icons[value];
+            case "latlng":
+                this.setLatLng(value);
+                break;
+            case "lat":
+                this.setLatLng([value, this.getLatLng().lng]);
+            break;
+            case "lng":
+                this.setLatLng([this.getLatLng().lat, value]);
+                break;
+            case "icon":
+                this.setIcon(MarkerFeature.icons[value]);
+                this.options['iconType'] = value;
+                break;
+            case "description":
+                    this.options.description = value;
+                    break;
+            default:
+                this.options[property] = value;
+                break;
         }
-        else if(propertyValue instanceof L.LatLng)
-        {
-            this.options[property]=this.SetLatLng(value);
-        }
-        else
-        {
-            this.options[property] = value; //update the property value of the marker
-        }
-        this.propertyEditor.setEditableFieldValue(property, value); //update the property value in the property editor
-                
+        //update the property editor information
+		this.propertyEditor.setEditableFieldValue(property, value); //update the property value in the property editor
+	
     }
 
     //Callback function for when a marker is clicked on called internally by the marker
@@ -194,11 +244,7 @@ class MarkerFeature extends L.Marker {
                 this.propertyEditor.open(); //open the property editor
                 break;
             case "DELETE":
-                //close the property editor
-                this.propertyEditor.close();
-                // Create a deleteme event to tell the editor to delete the marker
-                let event = new CustomEvent("DeleteMe", {detail:{"guid":this.guid}});
-                document.dispatchEvent(event);
+                this.remove(); //remove the marker from the map
                 break;
             default:
                 console.error("Invalid State For Marker OnClick Event", this.stateHandle.getState("OnClick"));
@@ -218,6 +264,16 @@ class MarkerFeature extends L.Marker {
                 console.error(`Marker ${this.guid} OnAdd State is Invalid or Unknown: `, this.stateHandle.getState("OnAdd"));
                 break;
         }
+    }
+
+    //function to remove the marker from the map
+    remove()
+    {
+        //close the property editor
+        this.propertyEditor.close();
+        // Create a deleteme event to tell the editor to delete the marker
+        let event = new CustomEvent("DeleteMe", {detail:{"guid":this.guid}});
+        document.dispatchEvent(event);
     }
 
 }
