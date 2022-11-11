@@ -10,61 +10,109 @@
 /* Editor Buttons Styling */
 /* align the editor_buttons_panel to the left */
 #editor_buttons_panel {
+    position: relative;
     float: left;
     margin-left: 0;
     margin-right: 0;
-    margin-top: 0;
+    
     margin-bottom: 0;
     padding-left: 0;
     padding-right: 0;
-    padding-top: 0;
+    top: 80px;
     padding-bottom: 0;
-    width: 10%;
-    height: 100%;
+    width: 150px;
+    height: 800px;
 }
 /* Map Styling*/
 /* width and height are required */
 #map {
     /*multiply the screen width by .8  and convert to px*/
+    position:relative;
     top: 80px;
-    width: 800px;
+    width: 600px;
     height: 800px;
-    padding-left: 700px;
+    padding-left: 500px;
+    left:75px;
+    border-radius: 10px;
+   
+
+}
+#selectmarker{
+    position:absolute;
+    top:350px;
+    left:0px;
 }
 #export_button {
-    position: fixed;
-   
+    position: absolute;
+    bottom: 0px;
     font-size: 25px;
-    top: 840px;
+    border-radius: 5px;
+    
 }
 #add_marker_button{
-    position: fixed;
-    top:340px;
-    left:10px;
+    position: absolute;
+    top:300px;
+    left:0;
     font-size: 20px;
+    border-radius: 5px;
     /*top: 1000px;
     //left:20px;
     */
 }
 #marker_type_select{
-    position:fixed;
-    top:380px;
-    left:10px;
+    position: absolute;
+    top: 375px;
+    left:0px;
+    font-size: 20px;
 }
 #import_button{
-    position:fixed;
-    top:800px;
+    position: absolute;
+    bottom: 40px;
     font-size: 25px;
+    border-radius: 5px;
+    
 
 }
 #delete_marker_button{
-    position:fixed;
-    top:420px;
+    position: absolute;
+    bottom:350px;
+    left: 0px;
     font-size: 20px;
+    color: white;
+    background-color: #d93333;
+    border-color: #d93333;
+    border-radius: 5px;
+    
 }
-
+#close_property_editor_button{
+     position:relative;
+     bottom:0px;
+     float: bottom;
+}
+#red{
+    color:#d93333;
+}
+#green{
+    color: #4cd018;
+}
+#purple{
+    color:#4c208e;
+}
+#blue{
+    color:#20418e;
+}
+#yellow{
+    color:#e9e105;
+}
+#footer{
+    
+    left: 600px;
+    bottom: 10px;
+    width: 100%;
+    position: fixed;
+}
 body{
-    background-color: #8bbd78;
+    background-color: #5c7751;
 }
 /* Property Editor Styling */
 
@@ -72,20 +120,21 @@ body{
 /*  give it an outline on the inner edge when the element is visible*/
 
 #property_editor{
+    
     float: right;
     margin-left: 0;
     margin-right: 0;
     margin-top: 0;
     margin-bottom: 0;
-    padding-left: 0;
+    padding-left: 100px;
     padding-right: 0;
     padding-top: 0;
-    padding-bottom: 0;
+    padding-bottom: 20px;
     width: auto;
     height: 100%;
     overflow: auto;
     /* only show the outline when the editor is visible */
-    outline: 1px solid black;
+    outline: 2px solid black;
     align-items: center;
     visibility: hidden;
 
