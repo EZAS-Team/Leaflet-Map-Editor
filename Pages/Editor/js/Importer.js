@@ -185,12 +185,12 @@ function importMap() {
               let heads = Object.keys(row);
               for(let head in heads){
                 let checkHead = String(heads[head]);
-                while(checkHead.includes("\"\"")){
-                    checkHead.replace("\"\"", "");
-                }
-                let checkValue = String(row[checkHead]);
-                while(checkValue.includes("\"\"")){
-                    checkValue.replace("\"\"", "");
+                if(checkHead.toLowerCase() == "title"){
+                    let checkValue = String(row[checkHead]);
+                    while(checkValue.includes("\"")){
+                        checkValue = checkValue.replace("\"", "");
+                        row[checkHead] = checkValue;
+                    }
                 }
               }
 
