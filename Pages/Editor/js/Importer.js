@@ -157,7 +157,6 @@ function importMap() {
     let fullDescription;
     let genDescription;
     let providedDescription;
-    let quoteCheckStr;
 
     //these are the colors for the icons since it would not change properly when given the color as an option below
     let purpleIcon = EZAS.MarkerFeature.icons["DEFAULT-PURPLE"];
@@ -181,7 +180,7 @@ function importMap() {
             for (var i in data){
               var row = data[i];
             
-              //check to replace any double quotes
+              //check to remove any quotes in the titles
               let heads = Object.keys(row);
               for(let head in heads){
                 let checkHead = String(heads[head]);
@@ -211,6 +210,7 @@ function importMap() {
                 }
               }
               fullDescription = providedDescription + genDescription;
+
               //switch to change the color of the icon
               let colorstr = String(row.Color).toLowerCase();
               switch (colorstr){
@@ -248,7 +248,7 @@ function importMap() {
               let featureTypeStr = String(row.FeatureType).toLowerCase();
               switch (featureTypeStr){
                 case "marker":
-                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Title, description:fullDescription, icon:iconColor, iconType:iconName}, "ADD_MARKER");
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Title, description:fullDescription, icon:iconColor, iconType:iconName, imageURL:row.ImageURL}, "ADD_MARKER");
                     break;
                 case "circle":
                     clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Title, description:fullDescription, radius:row.Radius, color:hexStrokeColor}, "ADD_CIRCLE");
@@ -260,7 +260,7 @@ function importMap() {
                     clicker.psuedoMapClick({bound1Coords}, {bounds:boundCoords, title:row.Title, description:fullDescription, color:hexStrokeColor}, "ADD_RECTANGLE");
                     break;
                 default:
-                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Title, description:fullDescription, icon:iconColor, iconType:iconName}, "ADD_MARKER");
+                    clicker.psuedoMapClick({lat:row.Latitude, lng:row.Longitude}, {title:row.Title, description:fullDescription, icon:iconColor, iconType:iconName, imageURL:row.ImageURL}, "ADD_MARKER");
               }
             }
         }
