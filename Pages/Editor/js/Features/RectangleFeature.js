@@ -34,7 +34,7 @@ class RectangleFeature extends L.Rectangle {
 		this.rectangle = this; //reference to the rectangle object (Self due to extending L.rectangle)
 		this.guid = guid.get; //GUID object for the rectangle
         console.debug(`Rectangle ${this.guid} constructor fired with options: `, options);
-        if (options.title == undefined) options.title = "Rectangle";
+        if (options.title == undefined) options.title = `Rectangle: ${this.guid}`;
 		if (options.description == undefined) options.description = "";
 		//create the fields that can be edited in the property editor for the rectangle
 		//cant be static because guid is required and unique for each rectangle
@@ -46,9 +46,9 @@ class RectangleFeature extends L.Rectangle {
 					"title",
 					"Title",
                     "Title",
-					`${this.options.title}`
+					`${options.title}`
 				),
-				""
+				`${options.title}`
 			),
 			new EditorRequirements.EditableField(
 				`${this.guid}`,
@@ -57,9 +57,9 @@ class RectangleFeature extends L.Rectangle {
 					"description",
 					"Description",
                     "Description",
-					`${this.options.description}`,
+					`${options.description}`,
 				),
-				""
+				`${options.description}`
 			),
 			new EditorRequirements.EditableField(
 				`${this.guid}`,
@@ -68,7 +68,7 @@ class RectangleFeature extends L.Rectangle {
 					"bounds1lat",
 					"Bounds 1 Latitude",
 					"Bounds 1 Latitude",
-					`${this.bounds[0].lat}`,
+					this.bounds[0].lat,
 				),
 				this.bounds[0].lat,
 			),
@@ -79,7 +79,7 @@ class RectangleFeature extends L.Rectangle {
 					"bounds1lng",
 					"Bounds 1 Longitude",
                     "Bounds 1 Longitude",
-					`${this.bounds[0].lng}`,
+					this.bounds[0].lng,
 				),
 				this.bounds[0].lng,
 			),
@@ -90,7 +90,7 @@ class RectangleFeature extends L.Rectangle {
 					"bounds2lat",
 					"Bounds 2 Latitude",
                     "Bounds 2 Latitude",
-					`${this.bounds[1].lat}`,
+					this.bounds[1].lat,
 				),
 				this.bounds[1].lat,
 			),
@@ -101,7 +101,7 @@ class RectangleFeature extends L.Rectangle {
 					"bounds2lng",
 					"Bounds 2 longitude",
                     "Bounds 2 longitude",
-					`${this.bounds[1].lng}`,
+					this.bounds[1].lng,
 				),
 				this.bounds[1].lng,
 			)
