@@ -79,11 +79,12 @@ function toCSV(test){
 
     for (var i = 0; i < array.length; i++){
         var line = '';
-
+        let first = true;
         for (var index in array[i]) {
-            if (line != '') {
+            if (!first) {
                 line += ',';
             }
+            first = false;
             line += array[i][index];
         }
 
