@@ -205,20 +205,21 @@ body{
     
    
     
-    
-    margin-left: 50px;
+    position: relative;
+
+    margin-left: 135px;
     margin-right: 0;
     margin-top: 0;
     margin-bottom: 0;
-    padding-left: 100px;
+    padding-left: 0;
     padding-right: 0;
     padding-top: 0;
     padding-bottom: 20px;
-    width: auto;
-    height: 100%;
-    overflow: auto;
+    width: 500px;
+    height: 300px;
+    /*overflow: auto;*/
     /* only show the outline when the editor is visible */
-   /* outline: 2px solid black; */
+    /*outline: 2px solid black;*/
     align-items: center;
     visibility: hidden;
    
@@ -237,17 +238,35 @@ body{
 }
 */
 #close_property_editor_button{
-    
-    width: 80px;
+    position: absolute;
+   /* left:900px;*/
+    top: 0px;
+    bottom:290px;
+    width: 100px;
+  
     font-size: 15px;
 }
-
-
+#property_editor_panel{
+   position:absolute;
+}
+#property_editor_buttons{
+    position: absolute;
+}
+#property_editor_panel{
+    position: absolute;
+}
 #property_editor_content {
+   
+    width: 500px;
+    height: 300px;
     outline:3px solid black;
     position:absolute; 
-    display: flex;
-    flex-direction: column;
+    bottom: 0px;
+    top: 33px;
+    font-size: 30px;
+    padding-left: 12px;
+    /* display: flex;*/
+    /*flex-direction: column;*/
     align-items: center;
 }
 
