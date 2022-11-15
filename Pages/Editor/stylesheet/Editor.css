@@ -32,9 +32,9 @@
     width: 600px;
     height: 800px;
     padding-left: 500px;
-    left:75px;
+    left:100px;
     border-radius: 10px;
-   
+    box-shadow: 5px 5px 10px  rgba(0, 0, 0, 0.4); 
 
 }
 #selectmarker{
@@ -46,32 +46,103 @@
     position: absolute;
     bottom: 0px;
     font-size: 25px;
-    border-radius: 5px;
-    
+    border-radius: 2px;
+    width: 200px;
+    box-shadow: 2px 2px 5px  rgba(0, 0, 0, 0.4);
 }
 #add_marker_button{
     position: absolute;
-    top:300px;
+    top:50px;
     left:0;
-    font-size: 20px;
-    border-radius: 5px;
+    font-size: 25px;
+    border-radius: 2px;
+    width: 200px;
+    box-shadow: 2px 2px 5px  rgba(0, 0, 0, 0.4);
+   
+    
     /*top: 1000px;
     //left:20px;
     */
 }
 #marker_type_select{
     position: absolute;
-    top: 375px;
+    top: 95px;
     left:0px;
-    font-size: 20px;
+    font-size: 16px;
+    width: auto;
+    box-shadow: 2px 2px 5px  rgba(0, 0, 0, 0.4);
 }
 #import_button{
     position: absolute;
     bottom: 40px;
     font-size: 25px;
-    border-radius: 5px;
-    
+    border-radius: 2px;
+    width: 200px;
+    box-shadow: 2px 2px 5px  rgba(0, 0, 0, 0.4);
 
+}
+#add_rectange_button{
+    position:absolute;
+    top: 335px;
+    width: 200px;
+    font-size: 25px;
+
+    box-shadow: 2px 2px 5px  rgba(0, 0, 0, 0.4);
+    
+}
+#delete_button{
+    position:absolute;
+    top: 600px;
+    width: 200px;
+    font-size: 25px;
+    box-shadow: 2px 2px 5px  rgba(0, 0, 0, 0.4);
+}
+#add_circle_button{
+    position:absolute;
+    top: 185px;
+    width: 200px;
+    font-size: 25px;
+    box-shadow: 2px 2px 5px  rgba(0, 0, 0, 0.4);
+    
+}
+#circle_radius_input{
+    position:absolute;
+    font-size: 15px;
+    width:150px;
+    top: 248px;
+    left:0;
+    box-shadow: 2px 2px 5px  rgba(0, 0, 0, 0.4);
+}
+#circle_radius_label{
+    position:absolute;
+    font-size: 20px;
+    top: 225px;
+}
+
+#add_marker_button:focus{
+    background-color: #fbce2b;
+     
+}
+button:hover{
+    background-color: #b3b2b1;
+}
+button:active{
+    
+    box-shadow: 0px 0px 0px  rgba(0, 0, 0, 0.4); 
+    background-color: #fbce2b;
+}
+#add_rectange_button:focus{
+    background-color: #fbce2b; 
+     
+}
+#add_circle_button:focus{
+    background-color: #fbce2b;
+     
+}
+
+#delete_button:focus{
+    background-color: #d93333; 
+    color:antiquewhite; 
 }
 #delete_marker_button{
     position: absolute;
@@ -84,35 +155,47 @@
     border-radius: 5px;
     
 }
+#general_buttons{
+    width:150px;
+}
+#marker_type_label{
+    position: absolute;
+    top: 8px;
+    font-size:28px;
+    width: 250px;
+}
 #close_property_editor_button{
      position:relative;
      bottom:0px;
      float: bottom;
 }
 #red{
-    color:#d93333;
+    color:#cb1818;
 }
 #green{
-    color: #4cd018;
+    color: #367f1a;
 }
 #purple{
-    color:#4c208e;
+    color:#6a35bb;
 }
 #blue{
-    color:#20418e;
+    color:#2b4e9f;
 }
 #yellow{
-    color:#e9e105;
+    
+    background-color: yellow;
 }
+
 #footer{
     
-    left: 600px;
-    bottom: 10px;
+    
+    bottom: 0px;
     width: 100%;
     position: fixed;
+    text-align: center;
 }
 body{
-    background-color: #5c7751;
+    background-color: #4a6741;
 }
 /* Property Editor Styling */
 
@@ -121,52 +204,96 @@ body{
 
 #property_editor{
     
-    float: right;
-    margin-left: 0;
+   
+    
+    position: relative;
+
+    margin-left: 135px;
     margin-right: 0;
     margin-top: 0;
     margin-bottom: 0;
-    padding-left: 100px;
+    padding-left: 0;
     padding-right: 0;
     padding-top: 0;
     padding-bottom: 20px;
     width: auto;
-    height: 100%;
-    overflow: auto;
+    height: 300px;
+    /*overflow: auto;*/
     /* only show the outline when the editor is visible */
-    outline: 2px solid black;
+    /*outline: 2px solid black;*/
     align-items: center;
     visibility: hidden;
-
+   
 }
 
 /* stack the elements in the property_editor_content element */
 /* aligned to the center */
+/*
+#property_editor_buttons{
+    position: relative;
+    right: 0px;
+    
+}
+#close_property_editor_button{
+    position: absolute;
+}
+*/
+#close_property_editor_button{
+    position: absolute;
+   /* left:900px;*/
+    top: 0px;
+    bottom:290px;
+    width: 100px;
+  
+    font-size: 15px;
+}
+#property_editor_panel{
+   position:absolute;
+}
+#property_editor_buttons{
+    position: absolute;
+}
+#property_editor_panel{
+    position: absolute;
+}
 #property_editor_content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-#general_buttons {
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid black;
-}
-
-#marker_buttons {
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid black;
-}
-
-#circle_buttons {
-    align-items: center;
+   
     width: auto;
     height: auto;
-    border: 1px solid black;
+    outline:3px solid black;
+    position:absolute; 
+    bottom: 0px;
+    top: 33px;
+    font-size: 30px;
+    padding-left: 12px;
+    /* display: flex;*/
+    /*flex-direction: column;*/
+    align-items: center;
 }
 
+
+
+
+/*
+    #general_buttons {
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid black;
+    }
+
+    #marker_buttons {
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid black;
+    }
+
+    #circle_buttons {
+        align-items: center;
+        width: auto;
+        height: auto;
+        border: 1px solid black;
+    }
+*/
 input[type=number] {
     width: auto;
     height: auto;
