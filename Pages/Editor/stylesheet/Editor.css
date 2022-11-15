@@ -216,7 +216,7 @@ body{
     padding-right: 0;
     padding-top: 0;
     padding-bottom: 20px;
-    width: 500px;
+    width: auto;
     height: 300px;
     /*overflow: auto;*/
     /* only show the outline when the editor is visible */
@@ -258,8 +258,8 @@ body{
 }
 #property_editor_content {
    
-    width: 500px;
-    height: 300px;
+    width: auto;
+    height: auto;
     outline:3px solid black;
     position:absolute; 
     bottom: 0px;
