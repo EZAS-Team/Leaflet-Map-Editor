@@ -162,6 +162,7 @@ button:active{
     position: absolute;
     top: 8px;
     font-size:28px;
+    width: 250px;
 }
 #close_property_editor_button{
      position:relative;
