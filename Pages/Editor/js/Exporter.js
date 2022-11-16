@@ -296,7 +296,7 @@ function exportMap(gemap) {
             title = item.options.title;
         }
 
-        if(item.options.image == undefined){
+        if(item.options.imageURL == undefined){
             image = '';
         }
         else{
