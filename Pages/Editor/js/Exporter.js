@@ -326,7 +326,7 @@ function exportMap(gemap) {
                 Longitude: item.getLatLng().lng.toString(),
                 FeatureType: 'Circle',
                 Color: filler,
-                Radius: item.options.radius,
+                Radius: item.getRadius(),
                 Bound1Lat: filler,
                 Bound1Lng: filler,
                 Bound2Lat: filler,
