@@ -145,7 +145,7 @@ function importMap() {
                 {
                     providedDescription = String(row[keyHeader]) + "\n";
                     providedDescription = providedDescription.replaceAll(":", ": ");
-                    providedDescription = providedDescription.replaceAll(";", "\n");
+                    providedDescription = providedDescription.replaceAll(";", ";\n");
                 }
                 if(!listOfHeaders.includes(keyHeader)){
                     genDescription += keyHeader + ": " + row[keyHeader] + "\n";
