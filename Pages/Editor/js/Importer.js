@@ -3,7 +3,7 @@ import * as EZAS from "./Requirements.js";
 
 //listen for if we need to import a map
 document.addEventListener("importTheMap", (e) => {
-    importMap();
+    confirmImport();
 });
 
 function parseCSV(str) {
@@ -85,9 +85,24 @@ function csvToMap(str, delimiter = ",") {
     document.dispatchEvent(event);
   }
 
+  function confirmImport(){
+    if (confirm('Would you like to import a map?')){
+        //do nothing, then prompt if they want to clear the map first
+    } else {
+        return;
+    }
+
+    if(confirm('Would you like to clear the map before you import? \nIf you clear the map before exporting, your work will not be saved!')){
+        clearMap();
+        importMap();
+    } else {
+        importMap();
+    }
+  }
+
 //import the map and then tell the editor that it needs to update the map
 function importMap() {
-    clearMap();
+
     //the map that is built by the importer based on JSON and dispatched to the editor when the import is done
     let clicker = new EZAS.PsuedoMapInteract();
     let listOfHeaders = ["Title", "Description", "Latitude", "Longitude", "FeatureType", "Color", "Radius", "Bound1Lat", "Bound1Lng", "Bound2Lat", "Bound2Lng", "ImageURL"];   
